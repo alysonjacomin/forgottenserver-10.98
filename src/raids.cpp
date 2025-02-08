@@ -266,9 +266,9 @@ RaidEvent* Raid::getNextRaidEvent()
 {
 	if (nextEvent < raidEvents.size()) {
 		return raidEvents[nextEvent];
-	} else {
-		return nullptr;
 	}
+
+	return nullptr;
 }
 
 bool RaidEvent::configureRaidEvent(const pugi::xml_node& eventNode)
