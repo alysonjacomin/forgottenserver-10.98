@@ -448,7 +448,7 @@ Direction getDirectionTo(const Position& from, const Position& to)
 	if (from == to) {
 		return DIRECTION_NONE;
 	}
-	
+
 	Direction dir;
 
 	int32_t x_offset = Position::getOffsetX(from, to);

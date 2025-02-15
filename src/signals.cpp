@@ -138,7 +138,7 @@ void sigintHandler()
 // https://github.com/otland/forgottenserver/pull/2473
 void dispatchSignalHandler(int signal)
 {
-	switch(signal) {
+	switch (signal) {
 		case SIGINT: //Shuts the server down
 			g_dispatcher.addTask(createTask(sigintHandler));
 			break;
