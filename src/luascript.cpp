@@ -6713,7 +6713,7 @@ int LuaScriptInterface::luaItemMoveTo(lua_State* L)
 
 	uint32_t flags = getNumber<uint32_t>(L, 3, FLAG_NOLIMIT | FLAG_IGNOREBLOCKITEM | FLAG_IGNOREBLOCKCREATURE | FLAG_IGNORENOTMOVEABLE);
 
-	if (item->getParent() == VirtualCylinder::virtualCylinder) {
+	if (item && item->getParent() == VirtualCylinder::virtualCylinder) {
 		pushBoolean(L, g_game.internalAddItem(toCylinder, item, INDEX_WHEREEVER, flags) == RETURNVALUE_NOERROR);
 	} else {
 		Item* moveItem = nullptr;
