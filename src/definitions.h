@@ -5,8 +5,8 @@
 #define FS_DEFINITIONS_H_877452FEC245450C9F96B8FD268D8963
 
 static constexpr auto STATUS_SERVER_NAME = "The Forgotten Server";
-static constexpr auto STATUS_SERVER_VERSION = "1.4.2";
-static constexpr auto STATUS_SERVER_DEVELOPERS = "The Forgotten Server Team";
+static constexpr auto STATUS_SERVER_VERSION = "10.98";
+static constexpr auto STATUS_SERVER_DEVELOPERS = "The Forgotten Server Team & ALS";
 
 static constexpr auto CLIENT_VERSION_MIN = 1097;
 static constexpr auto CLIENT_VERSION_MAX = 1098;
