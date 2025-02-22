@@ -4,13 +4,19 @@ local pack = table.pack
 local EventCallbackData, callbacks, updateableParameters, autoID = {}, {}, {}, 0
 -- This metatable creates an auto-configuration mechanism to create new types of EventCallbacks
 local ec = setmetatable({}, { __newindex = function (self, key, value)
-	autoID = autoID +1
+	autoID = autoID + 1
 	callbacks[key] = autoID
 	local info, update = {}, {}
-	for k, v in pairs(value) do if type(k)=="string" then info[k]=v else update[k]=v end end
+	for k, v in pairs(value) do
+		if type(k) == "string" then
+			info[k] = v
+		else
+			update[k] = v
+		end
+	end
 	updateableParameters[autoID] = update
 	callbacks[autoID] = info
-	EventCallbackData[autoID] = {maxn=0}
+	EventCallbackData[autoID] = {maxn = 0}
 	EVENT_CALLBACK_LAST = autoID
 end})
 
@@ -30,10 +36,10 @@ ec.onDisband = {}
 ec.onShareExperience = {}
 -- Player
 ec.onBrowseField = {}
-ec.onLook = {[5]=1}
-ec.onLookInBattleList = {[4]=1}
-ec.onLookInTrade = {[5]=1}
-ec.onLookInShop = {[4]=1}
+ec.onLook = {[5] = 1}
+ec.onLookInBattleList = {[4] = 1}
+ec.onLookInTrade = {[5] = 1}
+ec.onLookInShop = {[4] = 1}
 ec.onTradeRequest = {}
 ec.onTradeAccept = {}
 ec.onTradeCompleted = {}
@@ -43,9 +49,9 @@ ec.onMoveCreature = {}
 ec.onReportRuleViolation = {}
 ec.onReportBug = {}
 ec.onTurn = {}
-ec.onGainExperience = {[3]=1}
-ec.onLoseExperience = {[2]=1}
-ec.onGainSkillTries = {[3]=1}
+ec.onGainExperience = {[3] = 1}
+ec.onLoseExperience = {[2] = 1}
+ec.onGainSkillTries = {[3] = 1}
 ec.onWrapItem = {}
 ec.onInventoryUpdate = {}
 -- Monster
@@ -62,7 +68,7 @@ EventCallback = {
 				return
 			end
 			local eventData = EventCallbackData[eventType]
-			eventData.maxn = #eventData +1
+			eventData.maxn = #eventData + 1
 			eventData[eventData.maxn] = {
 				callback = callback,
 				triggerIndex = tonumber(triggerIndex) or 0
@@ -75,7 +81,7 @@ EventCallback = {
 	clear = function (self)
 		EventCallbackData = {}
 		for i = 1, EVENT_CALLBACK_LAST do
-			EventCallbackData[i] = {maxn=0}
+			EventCallbackData[i] = {maxn = 0}
 		end
 	end
 }
@@ -121,13 +127,24 @@ setmetatable(EventCallback, {
 					results = {event.callback(unpack(args))}
 					local output = results[1]
 					-- If the call returns nil then we continue with the next call
-					if output == nil then break end
+					if output == nil then
+						break
+					end
 					-- If the call returns false then we exit the loop
-					if output == false then return false end
+					if output == false then
+						return false
+					end
 					-- If the call of type returnvalue returns noerror then we continue the loop
-					if info.returnValue then if output == RETURNVALUE_NOERROR then break end return output end
+					if info.returnValue then
+						if output == RETURNVALUE_NOERROR then
+							break
+						end
+						return output
+					end
 					-- We left the loop why have we reached the end
-					if index == eventData.maxn then return unpack(results) end
+					if index == eventData.maxn then
+						return unpack(results)
+					end
 				until true
 				-- Update the results for the next call
 				for index, value in pairs(updateableParameters[callback]) do
