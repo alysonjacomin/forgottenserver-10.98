@@ -178,10 +178,12 @@ do
 			end
 		end
 
-		local magicPoints = abilities.stats[4]
-		if magicPoints ~= 0 then
-			begin = addSeparator(ss, begin)
-			ss:append('magic level %s%d', showpos(magicPoints), math.abs(magicPoints))
+		-- flat buffs
+		for stats, value in ipairs(abilities.stats) do
+			if value ~= 0 then
+				begin = addSeparator(ss, begin)
+				ss:append('%s %s%d%%', getStatName(stats - 1), showpos(value), math.abs(value))
+			end
 		end
 
 		-- Absorb
