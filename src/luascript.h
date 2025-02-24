@@ -544,6 +544,7 @@ class LuaScriptInterface
 		static int luaGameGetNpcCount(lua_State* L);
 		static int luaGameGetMonsterTypes(lua_State* L);
 		static int luaGameGetCurrencyItems(lua_State* L);
+		static int luaGameGetItemTypeByClientId(lua_State* L);
 
 		static int luaGameGetTowns(lua_State* L);
 		static int luaGameGetHouses(lua_State* L);
@@ -1158,6 +1159,7 @@ class LuaScriptInterface
 		static int luaHouseGetPayRentWarnings(lua_State* L);
 		static int luaHouseSetPayRentWarnings(lua_State* L);
 
+		static int luaHouseGetOwnerName(lua_State* L);
 		static int luaHouseGetOwnerGuid(lua_State* L);
 		static int luaHouseSetOwnerGuid(lua_State* L);
 		static int luaHouseStartTrade(lua_State* L);

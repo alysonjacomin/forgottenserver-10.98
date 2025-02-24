@@ -94,7 +94,6 @@ minimumLevelToSendPrivate = 1
 premiumToSendPrivate = false
 forceMonsterTypesOnLoad = true
 cleanProtectionZones = false
-luaItemDesc = false
 showPlayerLogInConsole = true
 
 -- VIP and Depot limits

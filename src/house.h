@@ -145,6 +145,10 @@ class House
 			return houseName;
 		}
 
+		const std::string& getOwnerName() const {
+			return ownerName;
+		}
+
 		void setOwner(uint32_t guid, bool updateDatabase = true, Player* player = nullptr);
 		uint32_t getOwner() const {
 			return owner;
