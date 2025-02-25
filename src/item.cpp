@@ -1627,8 +1627,7 @@ bool Item::canDecay() const
 		return false;
 	}
 
-	const ItemType& it = Item::items[id];
-	if (getDecayTo() < 0 || it.decayTime == 0) {
+	if (getDecayTo() < 0 || getDecayTime() == 0) {
 		return false;
 	}
 
