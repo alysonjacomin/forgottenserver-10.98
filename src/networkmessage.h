@@ -6,11 +6,11 @@
 
 #include "const.h"
 
+#include "container.h"
+
 class Item;
-class Creature;
-class Player;
+
 struct Position;
-class RSA;
 
 class NetworkMessage
 {

@@ -4,16 +4,16 @@
 #include "otpch.h"
 
 #include "item.h"
+
+#include "bed.h"
+#include "combat.h"
 #include "container.h"
+#include "game.h"
+#include "house.h"
+#include "mailbox.h"
+#include "spells.h"
 #include "teleport.h"
 #include "trashholder.h"
-#include "mailbox.h"
-#include "house.h"
-#include "game.h"
-#include "bed.h"
-
-#include "actions.h"
-#include "spells.h"
 
 extern Game g_game;
 extern Spells* g_spells;
@@ -1354,7 +1354,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 			if (it.isKey()) {
 				int32_t keyNumber = (item ? item->getActionId() : 0);
 				if (keyNumber != 0) {
-					s << " (Key:" << std::setfill('0') << std::setw(4) << keyNumber << ')';
+					s << " (Key:" << keyNumber << ')';
 				}
 			} else if (it.isFluidContainer()) {
 				if (subType > 0) {

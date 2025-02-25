@@ -4,10 +4,14 @@
 #include "otpch.h"
 
 #include "iologindata.h"
+
+#include "condition.h"
 #include "configmanager.h"
+#include "depotchest.h"
 #include "game.h"
 
-#include <fmt/format.h>
+#include "inbox.h"
+#include "storeinbox.h"
 
 extern ConfigManager g_config;
 extern Game g_game;
@@ -220,7 +224,8 @@ static GuildWarVector getWarList(uint32_t guildId)
 			guildWarVector.push_back(result->getNumber<uint32_t>("guild2"));
 		}
 	} while (result->next());
-	return std::move(guildWarVector);
+
+	return guildWarVector;
 }
 
 bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)

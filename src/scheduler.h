@@ -5,7 +5,6 @@
 #define FS_SCHEDULER_H
 
 #include "tasks.h"
-#include <unordered_map>
 
 #include "thread_holder_base.h"
 
