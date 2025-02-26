@@ -342,6 +342,7 @@ enum Icons_t {
 	ICON_REDSWORDS = 1 << 13,
 	ICON_PIGEON = 1 << 14,
 	ICON_BLEEDING = 1 << 15,
+	ICON_ROOT = 1 << 16,
 };
 
 enum WeaponType_t : uint8_t {
