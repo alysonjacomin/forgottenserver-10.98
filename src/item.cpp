@@ -918,14 +918,14 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 				if (!showVocMap.empty()) {
 					auto vocIt = showVocMap.begin(), vocLast = (showVocMap.end() - 1);
 					while (vocIt != vocLast) {
-						s << asLowerCaseString((*vocIt)->getVocName()) << "s";
+						s << boost::algorithm::to_lower_copy<std::string>((*vocIt)->getVocName()) << "s";
 						if (++vocIt == vocLast) {
 							s << " and ";
 						} else {
 							s << ", ";
 						}
 					}
-					s << asLowerCaseString((*vocLast)->getVocName()) << "s";
+					s << boost::algorithm::to_lower_copy<std::string>((*vocLast)->getVocName()) << "s";
 				} else {
 					s << "players";
 				}
