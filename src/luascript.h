@@ -8,8 +8,6 @@
 #include "enums.h"
 #include "position.h"
 
-#include <cassert>
-
 #if LUA_VERSION_NUM >= 502
 #ifndef LUA_COMPAT_ALL
 #ifndef LUA_COMPAT_MODULE
