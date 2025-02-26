@@ -40,10 +40,10 @@ NORTHEAST = DIRECTION_NORTHEAST
 do
 	local function storageProxy(player)
 		return setmetatable({}, {
-			__index = function (self, key)
+			__index = function(self, key)
 				return player:getStorageValue(key)
 			end,
-			__newindex = function (self, key, value)
+			__newindex = function(self, key, value)
 				player:setStorageValue(key, value)
 			end
 		})
@@ -51,10 +51,10 @@ do
 
 	local function accountStorageProxy(player)
 		return setmetatable({}, {
-			__index = function (self, key)
+			__index = function(self, key)
 				return Game.getAccountStorageValue(player:getAccountId(), key)
 			end,
-			__newindex = function (self, key, value)
+			__newindex = function(self, key, value)
 				Game.setAccountStorageValue(player:getAccountId(), key, value)
 			end
 		})

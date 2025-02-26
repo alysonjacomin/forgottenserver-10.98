@@ -35,7 +35,7 @@
 		<item id="2050" chance="4180" /><!-- torch -->
 		<item name="bow" chance="14930" />
 		<item name="leather helmet" chance="30600" />
-		<item name="arrow" countmax="17" chance="49500" />
+		<item id="2544" countmax="17" chance="49500" />
 		<item name="poison arrow" countmax="3" chance="2930" />
 		<item id="2578" chance="710" /><!-- closed trap -->
 		<item name="leather legs" chance="26740" />

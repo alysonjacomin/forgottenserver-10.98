@@ -66,7 +66,7 @@
 		<item name="war axe" chance="95" />
 		<item name="knight legs" chance="961" />
 		<item name="ancient shield" chance="990" />
-		<item name="power bolt" countmax="4" chance="9090" />
+		<item id="2547" countmax="4" chance="9090" />
 		<item name="ham" countmax="2" chance="29000" />
 		<item name="mysterious voodoo skull" chance="123" />
 		<item name="soul orb" chance="20000" />

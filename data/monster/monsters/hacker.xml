@@ -49,7 +49,7 @@
 		<item id="2044" chance="6666" /><!-- lamp -->
 		<item name="gold coin" countmax="12" chance="100000" />
 		<item name="battle axe" chance="5000" />
-		<item name="halberd" chance="10000" />
+		<item id="2381" chance="10000" />
 		<item name="axe" chance="10000" />
 		<item name="war hammer" chance="5000" />
 		<item name="ham" chance="50000" />

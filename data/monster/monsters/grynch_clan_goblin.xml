@@ -77,7 +77,7 @@
 		<item name="scarf" chance="4000" />
 		<item name="red apple" countmax="3" chance="700" />
 		<item name="orange" countmax="3" chance="7000" />
-		<item name="cherry" countmax="4" chance="7000" />
+		<item id="2679" countmax="4" chance="7000" />
 		<item name="cookie" countmax="5" chance="7000" />
 		<item name="candy cane" countmax="3" chance="5000" />
 		<item id="2695" countmax="2" chance="5000" /><!-- egg -->

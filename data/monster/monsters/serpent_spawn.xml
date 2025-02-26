@@ -68,7 +68,7 @@
 		<item name="green mushroom" chance="18200" />
 		<item name="snake skin" chance="14800" />
 		<item name="small sapphire" chance="12000" />
-		<item name="power bolt" chance="6200" />
+		<item id="2547" chance="6200" />
 		<item name="life ring" chance="6050" />
 		<item name="energy ring" chance="5900" />
 		<item name="golden mug" chance="2870" />

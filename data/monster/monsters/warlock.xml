@@ -67,7 +67,7 @@
 	</voices>
 	<loot>
 		<item name="gold coin" countmax="80" chance="30000" />
-		<item name="cherry" countmax="4" chance="19000" />
+		<item id="2679" countmax="4" chance="19000" />
 		<item name="bread" chance="9000" />
 		<item name="poison dagger" chance="7600" />
 		<item name="skull staff" chance="6370" />

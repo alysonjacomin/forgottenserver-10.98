@@ -45,7 +45,7 @@
 		<item name="hunting spear" chance="4300" />
 		<item name="lizard leather" chance="2100" />
 		<item name="lizard scale" chance="1960" />
-		<item name="halberd" chance="1300" />
+		<item id="2381" chance="1300" />
 		<item name="obsidian lance" chance="1320" />
 		<item name="health potion" chance="1100" />
 		<item name="sentinel shield" chance="320" />
