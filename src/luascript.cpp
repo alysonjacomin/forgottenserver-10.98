@@ -10904,6 +10904,7 @@ int LuaScriptInterface::luaNpcSetSpeechBubble(lua_State* L)
 		lua_pushnil(L);
 	} else {
 		npc->setSpeechBubble(speechBubble);
+		pushBoolean(L, true);
 	}
 	return 1;
 }
