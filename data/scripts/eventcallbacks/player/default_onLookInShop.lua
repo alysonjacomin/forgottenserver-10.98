@@ -1,7 +1,7 @@
 local ec = EventCallback
 
 ec.onLookInShop = function(self, itemType, count, description)
-	local description = "You see " .. itemType:getDescription(distance)
+	local description = "You see " .. itemType:getDescription()
 	if self:getGroup():getAccess() then
 		description = string.format("%s\nItem ID: %d", description, itemType:getId())
 		description = string.format("%s\nClient ID: %d", description, itemType:getClientId())
