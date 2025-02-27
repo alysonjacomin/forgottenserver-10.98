@@ -57,8 +57,9 @@ void Connection::close(bool force)
 	closed = true;
 
 	if (protocol) {
-		g_dispatcher.addTask(
-			createTask(std::bind(&Protocol::release, protocol)));
+		g_dispatcher.addTask([protocol = protocol]() {
+			protocol->release();
+		});
 	}
 
 	if (messageQueue.empty() || force) {
@@ -91,7 +92,9 @@ Connection::~Connection()
 void Connection::accept(Protocol_ptr protocol)
 {
 	this->protocol = protocol;
-	g_dispatcher.addTask(createTask([=]() { protocol->onConnect(); }));
+	g_dispatcher.addTask([=]() {
+		protocol->onConnect();
+	});
 
 	accept();
 }
