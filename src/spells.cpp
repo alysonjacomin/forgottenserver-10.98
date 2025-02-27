@@ -876,7 +876,7 @@ bool InstantSpell::playerCastInstant(Player* player, std::string& param)
 			}
 
 			target = playerTarget;
-			if (!target || target->getHealth() <= 0) {
+			if (!target || target->isDead()) {
 				if (!casterTargetOrDirection) {
 					if (cooldown > 0) {
 						Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, cooldown, 0, false, spellId);
@@ -906,7 +906,7 @@ bool InstantSpell::playerCastInstant(Player* player, std::string& param)
 			}
 		} else {
 			target = player->getAttackedCreature();
-			if (!target || target->getHealth() <= 0) {
+			if (!target || target->isDead()) {
 				if (!casterTargetOrDirection) {
 					player->sendCancelMessage(RETURNVALUE_YOUCANONLYUSEITONCREATURES);
 					g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF);
@@ -1004,7 +1004,7 @@ bool InstantSpell::castSpell(Creature* creature)
 
 	if (casterTargetOrDirection) {
 		Creature* target = creature->getAttackedCreature();
-		if (target && target->getHealth() > 0) {
+		if (target && !target->isDead()) {
 			if (!canThrowSpell(creature, target)) {
 				return false;
 			}

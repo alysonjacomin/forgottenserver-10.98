@@ -177,7 +177,7 @@ void Creature::onAttacking(uint32_t interval)
 
 void Creature::onIdleStatus()
 {
-	if (getHealth() > 0) {
+	if (!isDead()) {
 		damageMap.clear();
 		lastHitCreatureId = 0;
 	}
@@ -801,7 +801,7 @@ void Creature::changeHealth(int32_t healthChange, bool sendHealthChange/* = true
 		g_game.addCreatureHealth(this);
 	}
 
-	if (health <= 0) {
+	if (isDead()) {
 		g_dispatcher.addTask(createTask([id = getID()]() { g_game.executeDeath(id); }));
 	}
 }
