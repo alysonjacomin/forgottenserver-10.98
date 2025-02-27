@@ -10,7 +10,9 @@ function Player:onLook(thing, position, distance)
 	if EventCallback.onLook then
 		description = EventCallback.onLook(self, thing, position, distance, description)
 	end
-	self:sendTextMessage(MESSAGE_INFO_DESCR, description)
+	if description ~= "" then
+		self:sendTextMessage(MESSAGE_INFO_DESCR, description)
+	end
 end
 
 function Player:onLookInBattleList(creature, distance)
@@ -18,7 +20,9 @@ function Player:onLookInBattleList(creature, distance)
 	if EventCallback.onLookInBattleList then
 		description = EventCallback.onLookInBattleList(self, creature, distance, description)
 	end
-	self:sendTextMessage(MESSAGE_INFO_DESCR, description)
+	if description ~= "" then
+		self:sendTextMessage(MESSAGE_INFO_DESCR, description)
+	end
 end
 
 function Player:onLookInTrade(partner, item, distance)
@@ -26,7 +30,9 @@ function Player:onLookInTrade(partner, item, distance)
 	if EventCallback.onLookInTrade then
 		description = EventCallback.onLookInTrade(self, partner, item, distance, description)
 	end
-	self:sendTextMessage(MESSAGE_INFO_DESCR, description)
+	if description ~= "" then
+		self:sendTextMessage(MESSAGE_INFO_DESCR, description)
+	end
 end
 
 function Player:onLookInShop(itemType, count)
@@ -34,7 +40,9 @@ function Player:onLookInShop(itemType, count)
 	if EventCallback.onLookInShop then
 		description = EventCallback.onLookInShop(self, itemType, count, description)
 	end
-	self:sendTextMessage(MESSAGE_INFO_DESCR, description)
+	if description ~= "" then
+		self:sendTextMessage(MESSAGE_INFO_DESCR, description)
+	end
 end
 
 function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
