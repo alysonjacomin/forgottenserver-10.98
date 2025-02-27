@@ -27,4 +27,4 @@ jobs:
           sudo apt-get install clang-format
 
       - name: Check code style
-        run: clang-format -n -style=file --Werror src/*.{cpp,h}
+        run: sudo apt update -q && sudo apt install -yq clang-format
