@@ -2057,9 +2057,11 @@ void LuaScriptInterface::registerFunctions()
 	// Game
 	registerTable("Game");
 
+	registerMethod("Game", "loadMap", LuaScriptInterface::luaGameLoadMap);
 	registerMethod("Game", "getSpectators", LuaScriptInterface::luaGameGetSpectators);
 	registerMethod("Game", "getPlayers", LuaScriptInterface::luaGameGetPlayers);
-	registerMethod("Game", "loadMap", LuaScriptInterface::luaGameLoadMap);
+	registerMethod("Game", "getNpcs", LuaScriptInterface::luaGameGetNpcs);
+	registerMethod("Game", "getMonsters", LuaScriptInterface::luaGameGetMonsters);
 
 	registerMethod("Game", "getExperienceStage", LuaScriptInterface::luaGameGetExperienceStage);
 	registerMethod("Game", "getExperienceForLevel", LuaScriptInterface::luaGameGetExperienceForLevel);
@@ -4286,6 +4288,22 @@ int LuaScriptInterface::luaTablePack(lua_State* L)
 }
 
 // Game
+int LuaScriptInterface::luaGameLoadMap(lua_State* L)
+{
+	// Game.loadMap(path)
+	const std::string& path = getString(L, 1);
+	g_dispatcher.addTask(createTask([path]() {
+		try {
+			g_game.loadMap(path);
+		} catch (const std::exception& e) {
+			// FIXME: Should only catch some exceptions
+			std::cout << "[Error - LuaScriptInterface::luaGameLoadMap] Failed to load map: "
+				<< e.what() << std::endl;
+		}
+	}));
+	return 0;
+}
+
 int LuaScriptInterface::luaGameGetSpectators(lua_State* L)
 {
 	// Game.getSpectators(position[, multifloor = false[, onlyPlayer = false[, minRangeX = 0[, maxRangeX = 0[, minRangeY = 0[, maxRangeY = 0]]]]]])
@@ -4325,20 +4343,32 @@ int LuaScriptInterface::luaGameGetPlayers(lua_State* L)
 	return 1;
 }
 
-int LuaScriptInterface::luaGameLoadMap(lua_State* L)
+int LuaScriptInterface::luaGameGetNpcs(lua_State* L)
 {
-	// Game.loadMap(path)
-	const std::string& path = getString(L, 1);
-	g_dispatcher.addTask(createTask([path]() {
-		try {
-			g_game.loadMap(path);
-		} catch (const std::exception& e) {
-			// FIXME: Should only catch some exceptions
-			std::cout << "[Error - LuaScriptInterface::luaGameLoadMap] Failed to load map: "
-				<< e.what() << std::endl;
-		}
-	}));
-	return 0;
+	// Game.getNpcs()
+	lua_createtable(L, g_game.getNpcsOnline(), 0);
+
+	int index = 0;
+	for (const auto& npcEntry : g_game.getNpcs()) {
+		pushUserdata<Npc>(L, npcEntry.second);
+		setMetatable(L, -1, "Npc");
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}
+
+int LuaScriptInterface::luaGameGetMonsters(lua_State* L)
+{
+	// Game.getMonsters()
+	lua_createtable(L, g_game.getMonstersOnline(), 0);
+
+	int index = 0;
+	for (const auto& monsterEntry : g_game.getMonsters()) {
+		pushUserdata<Monster>(L, monsterEntry.second);
+		setMetatable(L, -1, "Monster");
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
 }
 
 int LuaScriptInterface::luaGameGetExperienceStage(lua_State* L)
