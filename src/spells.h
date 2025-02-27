@@ -9,14 +9,16 @@
 #include "creature.h"
 #include "luascript.h"
 #include "talkaction.h"
+#include "vocation.h"
 
 class InstantSpell;
 class RuneSpell;
 class Spell;
 
-using VocSpellMap = std::map<uint16_t, bool>;
 using InstantSpell_ptr = std::unique_ptr<InstantSpell>;
 using RuneSpell_ptr = std::unique_ptr<RuneSpell>;
+
+extern Vocations g_vocations;
 
 class Spells final : public BaseEvents
 {
@@ -179,11 +181,17 @@ class Spell : public BaseSpell
 			learnable = l;
 		}
 
-		const VocSpellMap& getVocMap() const {
-			return vocSpellMap;
+		const auto& getVocationSpellMap() const {
+			return vocationSpellMap;
 		}
-		void addVocMap(uint16_t n, bool b) {
-			vocSpellMap[n] = b;
+		void addVocationSpellMap(const std::string& vocationName, bool showInDescription) {
+			int32_t vocationId = g_vocations.getVocationId(vocationName);
+			if (vocationId != -1) {
+				vocationSpellMap[vocationId] = showInDescription;
+			}
+		}
+		bool hasVocationSpellMap(uint16_t vocationId) const{
+			return !vocationSpellMap.empty() && vocationSpellMap.find(vocationId) != vocationSpellMap.end();
 		}
 
 		SpellGroup_t getGroup() const {
@@ -281,7 +289,7 @@ class Spell : public BaseSpell
 		bool playerInstantSpellCheck(Player* player, const Position& toPos);
 		bool playerRuneSpellCheck(Player* player, const Position& toPos);
 
-		VocSpellMap vocSpellMap;
+		std::map<uint16_t, bool> vocationSpellMap;
 
 		SpellGroup_t group = SPELLGROUP_NONE;
 		SpellGroup_t secondaryGroup = SPELLGROUP_NONE;

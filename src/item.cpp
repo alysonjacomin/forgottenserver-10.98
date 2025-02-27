@@ -903,7 +903,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 				}
 				s << " (\"" << it.runeSpellName << "\"). " << (it.stackable && tmpSubType > 1 ? "They" : "It") << " can only be used by ";
 
-				const VocSpellMap& vocMap = rune->getVocMap();
+				auto& vocMap = rune->getVocationSpellMap();
 				std::vector<Vocation*> showVocMap;
 
 				// vocations are usually listed with the unpromoted and promoted version, the latter being

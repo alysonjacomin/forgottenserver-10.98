@@ -199,10 +199,10 @@ bool Weapon::configureEvent(const pugi::xml_node& node)
 
 		int32_t vocationId = g_vocations.getVocationId(attr.as_string());
 		if (vocationId != -1) {
-			vocWeaponMap[vocationId] = true;
+			vocationWeaponSet.insert(vocationId);
 			int32_t promotedVocation = g_vocations.getPromotedVocation(vocationId);
 			if (promotedVocation != VOCATION_NONE) {
-				vocWeaponMap[promotedVocation] = true;
+				vocationWeaponSet.insert(promotedVocation);
 			}
 
 			if (vocationNode.attribute("showInDescription").as_bool(true)) {
@@ -277,7 +277,10 @@ int32_t Weapon::playerWeaponCheck(Player* player, Creature* target, uint8_t shoo
 		return 0;
 	}
 
-	if (!player->hasFlag(PlayerFlag_IgnoreWeaponCheck)) {
+		if (player->hasFlag(PlayerFlag_IgnoreWeaponCheck)) {
+			return 100;
+		}
+
 		if (!enabled) {
 			return 0;
 		}
@@ -298,10 +301,8 @@ int32_t Weapon::playerWeaponCheck(Player* player, Creature* target, uint8_t shoo
 			return 0;
 		}
 
-		if (!vocWeaponMap.empty()) {
-			if (vocWeaponMap.find(player->getVocationId()) == vocWeaponMap.end()) {
-				return 0;
-			}
+		if (hasVocationWeaponSet(player->getVocationId())) {
+			return 0;
 		}
 
 		int32_t damageModifier = 100;
@@ -313,7 +314,6 @@ int32_t Weapon::playerWeaponCheck(Player* player, Creature* target, uint8_t shoo
 			damageModifier = (isWieldedUnproperly() ? damageModifier / 2 : 0);
 		}
 		return damageModifier;
-	}
 
 	return 100;
 }
