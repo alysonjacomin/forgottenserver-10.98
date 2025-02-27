@@ -3144,6 +3144,22 @@ void LuaScriptInterface::registerFunctions()
 
 	// exclusively for wands & distance weapons
 	registerMethod("Weapon", "shootType", LuaScriptInterface::luaWeaponShootType);
+
+	// XML
+	registerClass("XMLDocument", "", LuaScriptInterface::luaCreateXmlDocument);
+	registerMetaMethod("XMLDocument", "__gc", LuaScriptInterface::luaDeleteXmlDocument);
+	registerMethod("XMLDocument", "delete", LuaScriptInterface::luaDeleteXmlDocument);
+
+	registerMethod("XMLDocument", "child", LuaScriptInterface::luaXmlDocumentChild);
+
+	registerClass("XMLNode", "");
+	registerMetaMethod("XMLNode", "__gc", LuaScriptInterface::luaDeleteXmlNode);
+	registerMethod("XMLNode", "delete", LuaScriptInterface::luaDeleteXmlNode);
+
+	registerMethod("XMLNode", "attribute", LuaScriptInterface::luaXmlNodeAttribute);
+	registerMethod("XMLNode", "name", LuaScriptInterface::luaXmlNodeName);
+	registerMethod("XMLNode", "firstChild", LuaScriptInterface::luaXmlNodeFirstChild);
+	registerMethod("XMLNode", "nextSibling", LuaScriptInterface::luaXmlNodeNextSibling);
 }
 
 #undef registerEnum
@@ -17032,24 +17048,6 @@ int LuaScriptInterface::luaWeaponBreakChance(lua_State* L)
 	return 1;
 }
 
-int LuaScriptInterface::luaWeaponWandDamage(lua_State* L)
-{
-	// weapon:damage(damage[min, max]) only use this if the weapon is a wand!
-	WeaponWand* weapon = getUserdata<WeaponWand>(L, 1);
-	if (weapon) {
-		weapon->setMinChange(getNumber<uint32_t>(L, 2));
-		if (lua_gettop(L) > 2) {
-			weapon->setMaxChange(getNumber<uint32_t>(L, 3));
-		} else {
-			weapon->setMaxChange(getNumber<uint32_t>(L, 2));
-		}
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
 int LuaScriptInterface::luaWeaponElement(lua_State* L)
 {
 	// weapon:element(combatType)
@@ -17276,21 +17274,6 @@ int LuaScriptInterface::luaWeaponTransformDeEquipTo(lua_State* L)
 	return 1;
 }
 
-int LuaScriptInterface::luaWeaponShootType(lua_State* L)
-{
-	// weapon:shootType(type)
-	Weapon* weapon = getUserdata<Weapon>(L, 1);
-	if (weapon) {
-		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
-		it.shootType = getNumber<ShootType_t>(L, 2);
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
 int LuaScriptInterface::luaWeaponSlotType(lua_State* L)
 {
 	// weapon:slotType(slot)
@@ -17312,31 +17295,6 @@ int LuaScriptInterface::luaWeaponSlotType(lua_State* L)
 	return 1;
 }
 
-int LuaScriptInterface::luaWeaponAmmoType(lua_State* L)
-{
-	// weapon:ammoType(type)
-	WeaponDistance* weapon = getUserdata<WeaponDistance>(L, 1);
-	if (weapon) {
-		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
-		std::string type = getString(L, 2);
-
-		if (type == "arrow") {
-			it.ammoType = AMMO_ARROW;
-		} else if (type == "bolt"){
-			it.ammoType = AMMO_BOLT;
-		} else {
-			std::cout << "[Warning - weapon:ammoType] Type \"" << type << "\" does not exist." << std::endl;
-			lua_pushnil(L);
-			return 1;
-		}
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
 int LuaScriptInterface::luaWeaponHitChance(lua_State* L)
 {
 	// weapon:hitChance(chance)
@@ -17345,21 +17303,6 @@ int LuaScriptInterface::luaWeaponHitChance(lua_State* L)
 		uint16_t id = weapon->getID();
 		ItemType& it = Item::items.getItemType(id);
 		it.hitChance = getNumber<int8_t>(L, 2);
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int LuaScriptInterface::luaWeaponMaxHitChance(lua_State* L)
-{
-	// weapon:maxHitChance(max)
-	Weapon* weapon = getUserdata<Weapon>(L, 1);
-	if (weapon) {
-		uint16_t id = weapon->getID();
-		ItemType& it = Item::items.getItemType(id);
-		it.maxHitChance = getNumber<int32_t>(L, 2);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -17401,6 +17344,222 @@ int LuaScriptInterface::luaWeaponExtraElement(lua_State* L)
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+int LuaScriptInterface::luaWeaponAmmoType(lua_State* L)
+{
+	// weapon:ammoType(type)
+	WeaponDistance* weapon = getUserdata<WeaponDistance>(L, 1);
+	if (weapon) {
+		uint16_t id = weapon->getID();
+		ItemType& it = Item::items.getItemType(id);
+		std::string type = getString(L, 2);
+
+		if (type == "arrow") {
+			it.ammoType = AMMO_ARROW;
+		} else if (type == "bolt"){
+			it.ammoType = AMMO_BOLT;
+		} else {
+			std::cout << "[Warning - weapon:ammoType] Type \"" << type << "\" does not exist." << std::endl;
+			lua_pushnil(L);
+			return 1;
+		}
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int LuaScriptInterface::luaWeaponMaxHitChance(lua_State* L)
+{
+	// weapon:maxHitChance(max)
+	Weapon* weapon = getUserdata<Weapon>(L, 1);
+	if (weapon) {
+		uint16_t id = weapon->getID();
+		ItemType& it = Item::items.getItemType(id);
+		it.maxHitChance = getNumber<int32_t>(L, 2);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int LuaScriptInterface::luaWeaponWandDamage(lua_State* L)
+{
+	// weapon:damage(damage[min, max]) only use this if the weapon is a wand!
+	WeaponWand* weapon = getUserdata<WeaponWand>(L, 1);
+	if (weapon) {
+		weapon->setMinChange(getNumber<uint32_t>(L, 2));
+		if (lua_gettop(L) > 2) {
+			weapon->setMaxChange(getNumber<uint32_t>(L, 3));
+		} else {
+			weapon->setMaxChange(getNumber<uint32_t>(L, 2));
+		}
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int LuaScriptInterface::luaWeaponShootType(lua_State* L)
+{
+	// weapon:shootType(type)
+	Weapon* weapon = getUserdata<Weapon>(L, 1);
+	if (weapon) {
+		uint16_t id = weapon->getID();
+		ItemType& it = Item::items.getItemType(id);
+		it.shootType = getNumber<ShootType_t>(L, 2);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+// XML
+int LuaScriptInterface::luaCreateXmlDocument(lua_State* L)
+{
+	// XMLDocument(filename)
+	std::string filename = getString(L, 2);
+	if (filename.empty()) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto doc = std::make_unique<pugi::xml_document>();
+	if (auto result = doc->load_file(filename.c_str())) {
+		pushUserdata<pugi::xml_document>(L, doc.release());
+		setMetatable(L, -1, "XMLDocument");
+	} else {
+		printXMLError("Error - LuaScriptInterface::luaCreateXmlDocument", filename, result);
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int LuaScriptInterface::luaDeleteXmlDocument(lua_State* L)
+{
+	// doc:delete() or doc:__gc()
+	pugi::xml_document** document = getRawUserdata<pugi::xml_document>(L, 1);
+	if (document && *document) {
+		delete *document;
+		*document = nullptr;
+	}
+	return 1;
+}
+
+int LuaScriptInterface::luaXmlDocumentChild(lua_State* L)
+{
+	// doc:child(name)
+	pugi::xml_document* document = getUserdata<pugi::xml_document>(L, 1);
+	if (!document) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	std::string name = getString(L, 2);
+	if (name.empty()) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto node = std::make_unique<pugi::xml_node>(document->child(name.c_str()));
+	pushUserdata<pugi::xml_node>(L, node.release());
+	setMetatable(L, -1, "XMLNode");
+	return 1;
+}
+
+int LuaScriptInterface::luaDeleteXmlNode(lua_State* L)
+{
+	// node:delete() or node:__gc()
+	pugi::xml_node** node = getRawUserdata<pugi::xml_node>(L, 1);
+	if (node && *node) {
+		delete *node;
+		*node = nullptr;
+	}
+	return 1;
+}
+
+int LuaScriptInterface::luaXmlNodeAttribute(lua_State* L)
+{
+	// node:attribute(name)
+	pugi::xml_node* node = getUserdata<pugi::xml_node>(L, 1);
+	if (!node) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	std::string name = getString(L, 2);
+	if (name.empty()) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	pugi::xml_attribute attribute = node->attribute(name.c_str());
+	if (attribute) {
+		pushString(L, attribute.value());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int LuaScriptInterface::luaXmlNodeName(lua_State* L)
+{
+	// node:name()
+	pugi::xml_node* node = getUserdata<pugi::xml_node>(L, 1);
+	if (!node) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	pushString(L, node->name());
+	return 1;
+}
+
+int LuaScriptInterface::luaXmlNodeFirstChild(lua_State* L)
+{
+	// node:firstChild()
+	pugi::xml_node* node = getUserdata<pugi::xml_node>(L, 1);
+	if (!node) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto firstChild = node->first_child();
+	if (!firstChild) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto newNode = std::make_unique<pugi::xml_node>(std::move(firstChild));
+	pushUserdata<pugi::xml_node>(L, newNode.release());
+	setMetatable(L, -1, "XMLNode");
+	return 1;
+}
+
+int LuaScriptInterface::luaXmlNodeNextSibling(lua_State* L)
+{
+	// node:nextSibling()
+	pugi::xml_node* node = getUserdata<pugi::xml_node>(L, 1);
+	if (!node) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto nextSibling = node->next_sibling();
+	if (!nextSibling) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto newNode = std::make_unique<pugi::xml_node>(std::move(nextSibling));
+	pushUserdata<pugi::xml_node>(L, newNode.release());
+	setMetatable(L, -1, "XMLNode");
 	return 1;
 }
 
