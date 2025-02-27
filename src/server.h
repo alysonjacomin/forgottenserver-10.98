@@ -51,7 +51,6 @@ class ServicePort : public std::enable_shared_from_this<ServicePort>
 		ServicePort(const ServicePort&) = delete;
 		ServicePort& operator=(const ServicePort&) = delete;
 
-		static void openAcceptor(std::weak_ptr<ServicePort> weak_service, uint16_t port);
 		void open(uint16_t port);
 		void close();
 		bool is_single_socket() const;

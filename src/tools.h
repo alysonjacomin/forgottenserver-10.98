@@ -41,7 +41,6 @@ std::string getFirstLine(const std::string& str);
 
 std::string formatDate(time_t time);
 std::string formatDateShort(time_t time);
-std::string convertIPToString(uint32_t ip);
 
 MagicEffectClasses getMagicEffect(const std::string& strValue);
 ShootType_t getShootType(const std::string& strValue);
