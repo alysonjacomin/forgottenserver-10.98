@@ -837,7 +837,7 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 	if (isImmune(combatType)) {
 		damage = 0;
 		blockType = BLOCK_IMMUNITY;
-	} else if (checkDefense || checkArmor) {
+	} else if (combatType != COMBAT_HEALING && (checkDefense || checkArmor)) {
 		bool hasDefense = false;
 
 		if (blockCount > 0) {
@@ -875,11 +875,15 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 	}
 
 	if (attacker) {
-		attacker->onAttackedCreature(this);
-		attacker->onAttackedCreatureBlockHit(blockType);
+		if (combatType != COMBAT_HEALING) {
+			attacker->onAttackedCreature(this);
+			attacker->onAttackedCreatureBlockHit(blockType);
+		}
 	}
 
-	onAttacked();
+	if (combatType != COMBAT_HEALING) {
+		onAttacked();
+	}
 	return blockType;
 }
 
