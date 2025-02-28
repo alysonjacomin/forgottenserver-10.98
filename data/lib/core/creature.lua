@@ -28,6 +28,10 @@ function Creature.getClosestFreePosition(self, position, maxRadius, mustBeReacha
 	return Position()
 end
 
+function Creature.getMonster(self)
+	return self:isMonster() and self or nil
+end
+
 function Creature.getPlayer(self)
 	return self:isPlayer() and self or nil
 end
