@@ -818,7 +818,7 @@ if not Modules then
 				if it:getId() ~= 0 then
 					local shopItem = self:getShopItem(itemid, itemSubType)
 					if not shopItem then
-						self.npcHandler.shopItems[#self.npcHandler.shopItems + 1] = {id = itemid, buy = cost, sell = -1, subType = itemSubType, name = realName or it:getName()}
+						self.npcHandler.shopItems[#self.npcHandler.shopItems + 1] = {id = itemid, buy = cost, sell = 0, subType = itemSubType, name = realName or it:getName()}
 					else
 						if cost < shopItem.sell then
 							print("[Warning : " .. Npc():getName() .. "] NpcSystem: Buy price lower than sell price: (" .. shopItem.name .. ")")
@@ -921,9 +921,9 @@ if not Modules then
 				if it:getId() ~= 0 then
 					local shopItem = self:getShopItem(itemid, itemSubType)
 					if not shopItem then
-						self.npcHandler.shopItems[#self.npcHandler.shopItems + 1] = {id = itemid, buy = -1, sell = cost, subType = itemSubType, name = realName or it:getName()}
+						self.npcHandler.shopItems[#self.npcHandler.shopItems + 1] = {id = itemid, buy = 0, sell = cost, subType = itemSubType, name = realName or it:getName()}
 					else
-						if shopItem.buy > -1 and cost > shopItem.buy then
+						if shopItem.buy > 0 and cost > shopItem.buy then
 							print("[Warning : " .. Npc():getName() .. "] NpcSystem: Sell price higher than buy price: (" .. shopItem.name .. ")")
 						end
 						shopItem.sell = cost
@@ -967,7 +967,7 @@ if not Modules then
 			return false
 		end
 
-		if shopItem.buy == -1 then
+		if shopItem.buy == 0 then
 			error("[ShopModule.onSell] attempt to buy a non-buyable item")
 			return false
 		end
@@ -1034,7 +1034,7 @@ if not Modules then
 			return false
 		end
 
-		if shopItem.sell == -1 then
+		if shopItem.sell == 0 then
 			error("[ShopModule.onSell] attempt to sell a non-sellable item")
 			return false
 		end
