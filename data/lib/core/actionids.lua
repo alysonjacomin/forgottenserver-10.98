@@ -6,3 +6,7 @@ actionIds = {
 	citizenship = 30020, -- citizenship teleport
 	citizenshipLast = 30050, -- citizenship teleport last
 }
+
+uniqueIds = {
+
+}

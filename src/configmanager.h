@@ -49,6 +49,7 @@ class ConfigManager
 			ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS,
 			REMOVE_ON_DESPAWN,
 			PLAYER_CONSOLE_LOGS,
+			CHECK_DUPLICATE_STORAGE_KEYS,
 
 			LAST_BOOLEAN_CONFIG /* this must be the last one */
 		};

@@ -4,6 +4,14 @@ Reserved storage ranges:
 - 20000 to 21000+ reserved for achievement progress
 - 10000000 to 20000000 reserved for outfits and mounts on source
 ]]--
+
+AccountStorageKeys = {
+}
+
+GlobalStorageKeys = {
+	cobraBastionFlask = 30000,
+}
+
 PlayerStorageKeys = {
 	annihilatorReward = 30015,
 	promotion = 30018,
@@ -22,7 +30,4 @@ PlayerStorageKeys = {
 	mutatedPumpkin = 30035,
 	achievementsBase = 300000,
 	achievementsCounter = 20000,
-}
-
-GlobalStorageKeys = {
 }
