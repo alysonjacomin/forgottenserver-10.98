@@ -50,6 +50,7 @@ class ConfigManager
 			REMOVE_ON_DESPAWN,
 			PLAYER_CONSOLE_LOGS,
 			CHECK_DUPLICATE_STORAGE_KEYS,
+			MONSTER_OVERSPAWN,
 
 			LAST_BOOLEAN_CONFIG /* this must be the last one */
 		};
