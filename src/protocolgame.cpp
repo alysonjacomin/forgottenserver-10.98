@@ -495,6 +495,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		case 0x70: g_dispatcher.addTask(DISPATCHER_TASK_EXPIRATION, [playerID = player->getID()]() { g_game.playerTurn(playerID, DIRECTION_EAST); }); break;
 		case 0x71: g_dispatcher.addTask(DISPATCHER_TASK_EXPIRATION, [playerID = player->getID()]() { g_game.playerTurn(playerID, DIRECTION_SOUTH); }); break;
 		case 0x72: g_dispatcher.addTask(DISPATCHER_TASK_EXPIRATION, [playerID = player->getID()]() { g_game.playerTurn(playerID, DIRECTION_WEST); }); break;
+		case 0x73: g_dispatcher.addTask([playerID = player->getID(), pos = msg.getPosition()]() {Player* player = g_game.getPlayerByID(playerID); if (player && player->isAccessPlayer()) {g_game.internalTeleport(player, pos);} }); break;
 		case 0x77: parseEquipObject(msg); break;
 		case 0x78: parseThrow(msg); break;
 		case 0x79: parseLookInShop(msg); break;
