@@ -330,3 +330,9 @@ function Player.addAllMounts(self)
 		self:addMount(mounts[mount].id)
 	end
 end
+
+function Player.isPromoted(self)
+	local vocation = self:getVocation()
+	local fromVocId = vocation:getDemotion():getId()
+	return vocation:getId() ~= fromVocId
+end
