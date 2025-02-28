@@ -301,7 +301,7 @@ int32_t Weapon::playerWeaponCheck(Player* player, Creature* target, uint8_t shoo
 			return 0;
 		}
 
-		if (hasVocationWeaponSet(player->getVocationId())) {
+		if (!hasVocationWeaponSet(player->getVocationId())) {
 			return 0;
 		}
 

@@ -169,7 +169,7 @@ class Weapon : public Event
 			}
 		}
 		bool hasVocationWeaponSet(uint16_t vocationId) const {
-			return !vocationWeaponSet.empty() && vocationWeaponSet.find(vocationId) != vocationWeaponSet.end();
+			return vocationWeaponSet.empty() || vocationWeaponSet.find(vocationId) != vocationWeaponSet.end();
 		}
 
 		const std::string& getVocationString() const {
