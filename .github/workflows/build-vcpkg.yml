@@ -62,12 +62,8 @@ jobs:
             luajit: off
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
-          submodules: true
-
-      - name: Unshallow
-        run: git fetch --prune --unshallow
 
       - name: Get latest CMake
         # Using 'latest' branch, the latest CMake is installed.
@@ -145,12 +141,8 @@ jobs:
               lua luajit libmariadb pugixml cryptopp fmt
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
-          submodules: true
-
-      - name: Unshallow
-        run: git fetch --prune --unshallow
 
       - name: Get latest CMake
         # Using 'latest' branch, the latest CMake is installed.
@@ -206,4 +198,3 @@ jobs:
         with:
           name: tfs-${{ matrix.name }}-${{ matrix.buildtype }}-luajit=on-${{ github.sha }}
           path: ${{ github.workspace }}
-
