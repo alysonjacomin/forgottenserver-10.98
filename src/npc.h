@@ -156,6 +156,10 @@ class Npc final : public Creature
 			}
 		}
 
+		const auto& getSpectators() {
+			return spectators;
+		}
+
 		void onPlayerCloseChannel(Player* player);
 		void onPlayerTrade(Player* player, int32_t callback, uint16_t itemId, uint8_t count,
 		                   uint8_t amount, bool ignore = false, bool inBackpacks = false);
