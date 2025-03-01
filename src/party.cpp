@@ -82,7 +82,7 @@ bool Party::leaveParty(Player* player, bool forceRemove /* = false */)
 			if (memberList.size() == 1 && inviteList.empty()) {
 				missingLeader = true;
 			} else {
-				passPartyLeadership(memberList.front());
+				passPartyLeadership(memberList.front(), true);
 			}
 		} else {
 			missingLeader = true;
@@ -130,9 +130,13 @@ bool Party::leaveParty(Player* player, bool forceRemove /* = false */)
 	return true;
 }
 
-bool Party::passPartyLeadership(Player* player)
+bool Party::passPartyLeadership(Player* player, bool forceRemove /* = false*/)
 {
 	if (!player || leader == player || player->getParty() != this) {
+		return false;
+	}
+
+	if (!g_events->eventPartyOnPassLeadership(this, player) && !forceRemove) {
 		return false;
 	}
 
@@ -253,6 +257,10 @@ bool Party::removeInvite(Player& player, bool removeFromPlayer/* = true*/)
 
 void Party::revokeInvitation(Player& player)
 {
+	if (!g_events->eventPartyOnRevokeInvitation(this, &player)) {
+		return;
+	}
+
 	player.sendTextMessage(MESSAGE_INFO_DESCR, fmt::format("{:s} has revoked {:s} invitation.", leader->getName(), leader->getSex() == PLAYERSEX_FEMALE ? "her" : "his"));
 	leader->sendTextMessage(MESSAGE_INFO_DESCR, fmt::format("Invitation for {:s} has been revoked.", player.getName()));
 	removeInvite(player);

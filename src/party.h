@@ -47,7 +47,7 @@ class Party
 		bool invitePlayer(Player& player);
 		bool joinParty(Player& player);
 		void revokeInvitation(Player& player);
-		bool passPartyLeadership(Player* player);
+		bool passPartyLeadership(Player* player, bool forceRemove = false);
 		bool leaveParty(Player* player, bool forceRemove = false);
 
 		bool removeInvite(Player& player, bool removeFromPlayer = true);
