@@ -574,14 +574,28 @@ function isPlayerGhost(cid) local p = Player(cid) return p and p:isInGhostMode()
 function isPlayerPzLocked(cid) local p = Player(cid) return p and p:isPzLocked() or false end
 function isPremium(cid) local p = Player(cid) return p and p:isPremium() or false end
 function getPlayersByIPAddress(ip, mask)
+	local result = {}
+
+	if type(ip) == "string" then
+		for _, player in ipairs(Game.getPlayers()) do
+			if player:getIp() == ip then
+				result[#result + 1] = player:getId()
+			end
+		end
+
+		return result
+	end
+
 	if not mask then mask = 0xFFFFFFFF end
 	local masked = bit.band(ip, mask)
-	local result = {}
+	local lshift = bit.lshift
 	for _, player in ipairs(Game.getPlayers()) do
-		if bit.band(player:getIp(), mask) == masked then
-			result[#result + 1] = player:getId()
+		local a, b, c, d = player:getIp():match("(%d*)%.(%d*)%.(%d*)%.(%d*)")
+		if a and b and c and d and bit.band(lshift(a, 24) + lshift(b, 16) + lshift(c, 8) + d, mask) == masked then
+			players[#players + 1] = player:getId()
 		end
 	end
+
 	return result
 end
 getPlayersByIp = getPlayersByIPAddress

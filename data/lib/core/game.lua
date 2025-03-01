@@ -9,6 +9,10 @@ function Game.broadcastMessage(message, messageType)
 end
 
 function Game.convertIpToString(ip)
+	if type(ip) == "string" then
+		return ip
+	end
+
 	local band = bit.band
 	local rshift = bit.rshift
 	return string.format("%d.%d.%d.%d",
