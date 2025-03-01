@@ -1,20 +1,23 @@
 function Party:onJoin(player)
-	if EventCallback.onJoin then
-		return EventCallback.onJoin(self, player)
+	local onJoin = EventCallback.onJoin
+	if onJoin then
+		return onJoin(self, player)
 	end
 	return true
 end
 
 function Party:onLeave(player)
-	if EventCallback.onLeave then
-		return EventCallback.onLeave(self, player)
+	local onLeave = EventCallback.onLeave
+	if onLeave then
+		return onLeave(self, player)
 	end
 	return true
 end
 
 function Party:onDisband()
-	if EventCallback.onDisband then
-		return EventCallback.onDisband(self)
+	local onDisband = EventCallback.onDisband
+	if onDisband then
+		return onDisband(self)
 	end
 	return true
 end
@@ -41,6 +44,6 @@ function Party:onShareExperience(exp)
 		sharedExperienceMultiplier = 1.0 + ((size * (5 * (size - 1) + 10)) / 100)
 	end
 
-	exp = math.ceil((exp * sharedExperienceMultiplier) / (#self:getMembers() + 1))
-	return EventCallback.onShareExperience and EventCallback.onShareExperience(self, exp, rawExp) or exp
+	local onShareExperience = EventCallback.onShareExperience
+	return onShareExperience and onShareExperience(self, exp, rawExp) or exp
 end
