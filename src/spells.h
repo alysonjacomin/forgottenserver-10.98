@@ -40,7 +40,9 @@ class Spells final : public BaseEvents
 		TalkActionResult_t playerSaySpell(Player* player, std::string& words);
 
 		static Position getCasterPosition(Creature* creature, Direction dir);
-		std::string getScriptBaseName() const override;
+		std::string_view getScriptBaseName() const override {
+			return "spells";
+		}
 
 		const std::map<std::string, InstantSpell>& getInstantSpells() const {
 			return instants;
@@ -97,10 +99,9 @@ class CombatSpell final : public Event, public BaseSpell
 		}
 
 	private:
-		std::string getScriptEventName() const override {
+		std::string_view getScriptEventName() const override {
 			return "onCastSpell";
 		}
-
 		Combat_ptr combat;
 
 		bool needDirection;
@@ -184,7 +185,7 @@ class Spell : public BaseSpell
 		const auto& getVocationSpellMap() const {
 			return vocationSpellMap;
 		}
-		void addVocationSpellMap(const std::string& vocationName, bool showInDescription) {
+		void addVocationSpellMap(std::string_view vocationName, bool showInDescription) {
 			int32_t vocationId = g_vocations.getVocationId(vocationName);
 			if (vocationId != -1) {
 				vocationSpellMap[vocationId] = showInDescription;
@@ -375,7 +376,9 @@ class InstantSpell final : public TalkAction, public Spell
 		bool canThrowSpell(const Creature* creature, const Creature* target) const;
 
 	private:
-		std::string getScriptEventName() const override;
+		std::string_view getScriptEventName() const override {
+			return "onCastSpell";
+		}
 
 		bool internalCastSpell(Creature* creature, const LuaVariant& var);
 
@@ -429,7 +432,9 @@ class RuneSpell final : public Action, public Spell
 		}
 
 	private:
-		std::string getScriptEventName() const override;
+		std::string_view getScriptEventName() const override {
+			return "onCastSpell";
+		}
 
 		bool internalCastSpell(Creature* creature, const LuaVariant& var, bool isHotkey);
 

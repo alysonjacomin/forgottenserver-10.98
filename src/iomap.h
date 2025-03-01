@@ -90,7 +90,7 @@ class IOMap
 	static Tile* createTile(Item*& ground, Item* item, uint16_t x, uint16_t y, uint8_t z);
 
 	public:
-		bool loadMap(Map* map, const std::string& fileName);
+		bool loadMap(Map* map, const std::filesystem::path& fileName);
 
 		/* Load the spawns
 		 * \param map pointer to the Map class
@@ -104,7 +104,7 @@ class IOMap
 				map->spawnfile += "-spawn.xml";
 			}
 
-			return map->spawns.loadFromXml(map->spawnfile);
+			return map->spawns.loadFromXml(map->spawnfile.string());
 		}
 
 		/* Load the houses (not house tile-data)
@@ -119,7 +119,7 @@ class IOMap
 				map->housefile += "-house.xml";
 			}
 
-			return map->houses.loadHousesXML(map->housefile);
+			return map->houses.loadHousesXML(map->housefile.string());
 		}
 
 		const std::string& getLastErrorString() const {
@@ -131,7 +131,7 @@ class IOMap
 		}
 
 	private:
-		bool parseMapDataAttributes(OTB::Loader& loader, const OTB::Node& mapNode, Map& map, const std::string& fileName);
+		bool parseMapDataAttributes(OTB::Loader& loader, const OTB::Node& mapNode, Map& map, const std::filesystem::path& fileName);
 		bool parseWaypoints(OTB::Loader& loader, const OTB::Node& waypointsNode, Map& map);
 		bool parseTowns(OTB::Loader& loader, const OTB::Node& townsNode, Map& map);
 		bool parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Map& map);

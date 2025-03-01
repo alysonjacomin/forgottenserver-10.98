@@ -132,7 +132,7 @@ class ConfigManager
 		bool getBoolean(boolean_config_t what) const;
 		float getExperienceStage(uint32_t level) const;
 
-		bool setString(string_config_t what, const std::string& value);
+		bool setString(string_config_t what, std::string_view value);
 		bool setNumber(integer_config_t what, int32_t value);
 		bool setBoolean(boolean_config_t what, bool value);
 

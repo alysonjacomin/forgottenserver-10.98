@@ -72,7 +72,7 @@ class CreatureEvent final : public Event
 		//
 
 	private:
-		std::string getScriptEventName() const override;
+		std::string_view getScriptEventName() const override;
 
 		std::string eventName;
 		CreatureEventType_t type;
@@ -102,7 +102,9 @@ class CreatureEvents final : public BaseEvents
 
 	private:
 		LuaScriptInterface& getScriptInterface() override;
-		std::string getScriptBaseName() const override;
+		std::string_view getScriptBaseName() const override {
+			return "creaturescripts";
+		}
 		Event_ptr getEvent(const std::string& nodeName) override;
 		bool registerEvent(Event_ptr event, const pugi::xml_node& node) override;
 

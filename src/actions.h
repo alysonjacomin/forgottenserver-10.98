@@ -84,7 +84,9 @@ class Action : public Event
 		ActionFunction function;
 
 	private:
-		std::string getScriptEventName() const override;
+		std::string_view getScriptEventName() const override {
+			return "onUse";
+		}
 
 		bool allowFarUse = false;
 		bool checkFloor = true;
@@ -118,7 +120,9 @@ class Actions final : public BaseEvents
 		ReturnValue internalUseItem(Player* player, const Position& pos, uint8_t index, Item* item, bool isHotkey);
 
 		LuaScriptInterface& getScriptInterface() override;
-		std::string getScriptBaseName() const override;
+		std::string_view getScriptBaseName() const override {
+			return "actions";
+		}
 		Event_ptr getEvent(const std::string& nodeName) override;
 		bool registerEvent(Event_ptr event, const pugi::xml_node& node) override;
 

@@ -285,11 +285,11 @@ class ItemAttributes
 
 				switch (pos) {
 					case 1: { // std::string
-						std::string tmp;
-						if (!propStream.readString(tmp)) {
+						auto [str, ok] = propStream.readString();
+						if (!ok) {
 							return false;
 						}
-						value = tmp;
+						value = std::string{str};
 						break;
 					}
 
@@ -408,7 +408,7 @@ class ItemAttributes
 		uint32_t attributeBits = 0;
 
 		const std::string& getStrAttr(itemAttrTypes type) const;
-		void setStrAttr(itemAttrTypes type, const std::string& value);
+		void setStrAttr(itemAttrTypes type, std::string_view value);
 
 		int64_t getIntAttr(itemAttrTypes type) const;
 		void setIntAttr(itemAttrTypes type, int64_t value);
@@ -437,24 +437,24 @@ class ItemAttributes
 		}
 
 		template<typename R>
-		void setCustomAttribute(std::string& key, R value) {
-			boost::algorithm::to_lower(key);
+		void setCustomAttribute(std::string_view key, R value) {
 			if (hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
 				removeCustomAttribute(key);
 			} else {
 				getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom = new CustomAttributeMap();
 			}
-			getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom->emplace(key, value);
+			auto lowercaseKey = boost::algorithm::to_lower_copy(std::string{key});
+			getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom->emplace(lowercaseKey, value);
 		}
 
-		void setCustomAttribute(std::string& key, CustomAttribute& value) {
-			boost::algorithm::to_lower(key);
+		void setCustomAttribute(std::string_view key, const CustomAttribute& value) {
 			if (hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
 				removeCustomAttribute(key);
 			} else {
 				getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom = new CustomAttributeMap();
 			}
-			getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom->insert(std::make_pair(std::move(key), std::move(value)));
+			auto lowercaseKey = boost::algorithm::to_lower_copy(std::string{key});
+			getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom->emplace(lowercaseKey, value);
 		}
 
 		const CustomAttribute* getCustomAttribute(int64_t key) {
@@ -462,10 +462,10 @@ class ItemAttributes
 			return getCustomAttribute(tmp);
 		}
 
-		const CustomAttribute* getCustomAttribute(const std::string& key) {
+		const CustomAttribute* getCustomAttribute(std::string_view key) {
 			if (const CustomAttributeMap* customAttrMap = getCustomAttributeMap()) {
-				auto it = customAttrMap->find(boost::algorithm::to_lower_copy(key));
-				if (it != customAttrMap->end()) {
+				auto lowercaseKey = boost::algorithm::to_lower_copy(std::string{key});
+				if (auto it = customAttrMap->find(lowercaseKey); it != customAttrMap->end()) {
 					return &(it->second);
 				}
 			}
@@ -477,10 +477,10 @@ class ItemAttributes
 			return removeCustomAttribute(tmp);
 		}
 
-		bool removeCustomAttribute(const std::string& key) {
+		bool removeCustomAttribute(std::string_view key) {
 			if (CustomAttributeMap* customAttrMap = getCustomAttributeMap()) {
-				auto it = customAttrMap->find(boost::algorithm::to_lower_copy(key));
-				if (it != customAttrMap->end()) {
+				auto lowercaseKey = boost::algorithm::to_lower_copy(std::string{key});
+				if (auto it = customAttrMap->find(lowercaseKey); it != customAttrMap->end()) {
 					customAttrMap->erase(it);
 					return true;
 				}
@@ -585,7 +585,7 @@ class Item : virtual public Thing
 			}
 			return attributes->getStrAttr(type);
 		}
-		void setStrAttr(itemAttrTypes type, const std::string& value) {
+		void setStrAttr(itemAttrTypes type, std::string_view value) {
 			getAttributes()->setStrAttr(type, value);
 		}
 
@@ -615,11 +615,11 @@ class Item : virtual public Thing
 		}
 
 		template<typename R>
-		void setCustomAttribute(std::string& key, R value) {
+		void setCustomAttribute(std::string_view key, R value) {
 			getAttributes()->setCustomAttribute(key, value);
 		}
 
-		void setCustomAttribute(std::string& key, ItemAttributes::CustomAttribute& value) {
+		void setCustomAttribute(std::string_view key, ItemAttributes::CustomAttribute& value) {
 			getAttributes()->setCustomAttribute(key, value);
 		}
 
@@ -644,21 +644,21 @@ class Item : virtual public Thing
 			return getAttributes()->removeCustomAttribute(key);
 		}
 
-		bool removeCustomAttribute(const std::string& key) {
+		bool removeCustomAttribute(std::string_view key) {
 			if (!attributes) {
 				return false;
 			}
 			return getAttributes()->removeCustomAttribute(key);
 		}
 
-		void setSpecialDescription(const std::string& desc) {
+		void setSpecialDescription(std::string_view desc) {
 			setStrAttr(ITEM_ATTRIBUTE_DESCRIPTION, desc);
 		}
 		const std::string& getSpecialDescription() const {
 			return getStrAttr(ITEM_ATTRIBUTE_DESCRIPTION);
 		}
 
-		void setText(const std::string& text) {
+		void setText(std::string_view text) {
 			setStrAttr(ITEM_ATTRIBUTE_TEXT, text);
 		}
 		void resetText() {
@@ -678,7 +678,7 @@ class Item : virtual public Thing
 			return static_cast<time_t>(getIntAttr(ITEM_ATTRIBUTE_DATE));
 		}
 
-		void setWriter(const std::string& writer) {
+		void setWriter(std::string_view writer) {
 			setStrAttr(ITEM_ATTRIBUTE_WRITER, writer);
 		}
 		void resetWriter() {
