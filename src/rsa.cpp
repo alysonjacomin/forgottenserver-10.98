@@ -20,6 +20,7 @@ void RSA::decrypt(char* msg) const
 		c.Encode(reinterpret_cast<uint8_t*>(msg), 128);
 	} catch (const CryptoPP::Exception& e) {
 		//fmt::print(fg(fmt::color::crimson) | fmt::emphasis::bold, e.what(), "\n");
+		std::cout << e.what() << std::endl;
 	}
 }
 
