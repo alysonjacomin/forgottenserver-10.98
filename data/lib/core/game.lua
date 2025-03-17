@@ -126,3 +126,19 @@ end
 function Game.setStorageValue(key, value)
 	globalStorageTable[key] = value
 end
+
+if not accountsStorage then
+	accountsStorage = {}
+end
+
+function Game.getAccountStorageValue(accountId, key)
+	local accountStorage = accountsStorage[accountId]
+	return accountStorage and accountStorage[key] or nil
+end
+
+function Game.setAccountStorageValue(accountId, key, value)
+	if not accountsStorage[accountId] then
+		accountsStorage[accountId] = {}
+	end
+	accountsStorage[accountId][key] = value
+end

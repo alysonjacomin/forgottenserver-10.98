@@ -371,3 +371,11 @@ function Player.takeScreenshot(self, screenshotType, ignoreConfig)
  	msg:delete()
  	return true
  end
+ 
+ function Player.setAccountStorageValue(self, key, value)
+ 	return Game.setAccountStorageValue(self:getAccountId(), key, value)
+ end
+ 
+ function Player.getAccountStorageValue(self, key)
+ 	return Game.getAccountStorageValue(self:getAccountId(), key)
+ end
