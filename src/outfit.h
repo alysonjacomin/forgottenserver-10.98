@@ -23,7 +23,7 @@ struct Outfit {
 
 struct ProtocolOutfit {
 	ProtocolOutfit(std::string_view name, uint16_t lookType, uint8_t addons) :
- 	    name{name}, lookType{lookType}, addons{addons}
+ 	    name{name}, lookType{lookType}, addons{addons} {}
 
 	std::string name;
 	uint16_t lookType;
