@@ -336,3 +336,10 @@ function Player.isPromoted(self)
 	local fromVocId = vocation:getDemotion():getId()
 	return vocation:getId() ~= fromVocId
 end
+
+function Player.updateClientExpDisplay(self)
+	-- Experience bonus (includes server rates)
+	local expGainRate = 100 * Game.getExperienceStage(self:getLevel())
+	self:setClientExpDisplay(expGainRate)
+	return true
+end

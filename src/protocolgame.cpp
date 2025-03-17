@@ -3117,7 +3117,7 @@ void ProtocolGame::AddPlayerStats(NetworkMessage& msg)
 	msg.add<uint16_t>(player->getLevel());
 	msg.addByte(player->getLevelPercent());
 
-	msg.add<uint16_t>(100); // base xp gain rate
+	msg.add<uint16_t>(player->getClientExpDisplay()); // base xp gain rate
 	msg.add<uint16_t>(0); // xp voucher
 	msg.add<uint16_t>(0); // low level bonus
 	msg.add<uint16_t>(0); // xp boost

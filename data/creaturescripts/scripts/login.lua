@@ -21,6 +21,9 @@ function onLogin(player)
 		player:setVocation(vocation:getDemotion())
 	end
 
+	-- Update client exp display
+ 	player:updateClientExpDisplay()
+
 	-- Events
 	player:registerEvent("PlayerDeath")
 	player:registerEvent("DropLoot")
