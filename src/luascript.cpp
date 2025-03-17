@@ -2568,6 +2568,7 @@ void LuaScriptInterface::registerFunctions()
 	registerMethod("Player", "isNearDepotBox", LuaScriptInterface::luaPlayerIsNearDepotBox);
 
 	registerMethod("Player", "getIdleTime", LuaScriptInterface::luaPlayerGetIdleTime);
+	registerMethod("Player", "resetIdleTime", LuaScriptInterface::luaPlayerResetIdleTime);
 
 	registerMethod("Player", "sendCreatureSquare", LuaScriptInterface::luaPlayerSendCreatureSquare);
 
@@ -10482,6 +10483,20 @@ int LuaScriptInterface::luaPlayerGetIdleTime(lua_State* L)
 	lua_pushnumber(L, player->getIdleTime());
 	return 1;
 }
+
+int LuaScriptInterface::luaPlayerResetIdleTime(lua_State* L)
+ {
+ 	// player:resetIdleTime()
+ 	Player* player = getUserdata<Player>(L, 1);
+ 	if (!player) {
+ 		lua_pushnil(L);
+ 		return 1;
+ 	}
+ 
+ 	player->resetIdleTime();
+ 	pushBoolean(L, true);
+ 	return 1;
+ }
 
 int LuaScriptInterface::luaPlayerSendCreatureSquare(lua_State* L)
 {

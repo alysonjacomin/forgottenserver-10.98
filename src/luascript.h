@@ -1024,6 +1024,7 @@ class LuaScriptInterface
 		static int luaPlayerIsNearDepotBox(lua_State* L);
 
 		static int luaPlayerGetIdleTime(lua_State* L);
+		static int luaPlayerResetIdleTime(lua_State* L);
 
 		static int luaPlayerSendCreatureSquare(lua_State* L);
 
