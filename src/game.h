@@ -421,6 +421,7 @@ class Game
 		void updatePlayerHelpers(const Player& player);
 		void updateCreatureType(Creature* creature);
 		void updateCreatureWalkthrough(const Creature* creature);
+		void updateKnownCreature(const Creature* creature);
 
 		GameState_t getGameState() const;
 		void setGameState(GameState_t newState);

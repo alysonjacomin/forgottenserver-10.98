@@ -7656,7 +7656,8 @@ int LuaScriptInterface::luaCreatureSetMaster(lua_State* L)
 	}
 
 	pushBoolean(L, creature->setMaster(getCreature(L, 2)));
-	g_game.updateCreatureType(creature);
+
+	g_game.updateKnownCreature(creature);
 	return 1;
 }
 
@@ -11017,6 +11018,7 @@ int LuaScriptInterface::luaNpcSetSpeechBubble(lua_State* L)
 		lua_pushnil(L);
 	} else {
 		npc->setSpeechBubble(speechBubble);
+ 		g_game.updateKnownCreature(npc); // update creature speech bubble
 		pushBoolean(L, true);
 	}
 	return 1;
