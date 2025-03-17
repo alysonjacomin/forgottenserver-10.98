@@ -573,6 +573,15 @@ function getPlayerLearnedInstantSpell(cid, name) local p = Player(cid) return p 
 function isPlayerGhost(cid) local p = Player(cid) return p and p:isInGhostMode() or false end
 function isPlayerPzLocked(cid) local p = Player(cid) return p and p:isPzLocked() or false end
 function isPremium(cid) local p = Player(cid) return p and p:isPremium() or false end
+
+function Player:getStorageValue(key)
+	return Creature.getStorageValue(self, key) or -1
+end
+ 
+function Player:setStorageValue(key, value)
+	Creature.setStorageValue(self, key, value)
+end
+
 function getPlayersByIPAddress(ip, mask)
 	local result = {}
 
