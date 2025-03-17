@@ -1143,6 +1143,9 @@ class Player final : public Creature, public Cylinder
 		uint16_t getClientExpDisplay() const { return clientExpDisplay; }
 		void setClientExpDisplay(uint16_t value) { clientExpDisplay = value; }
 
+		uint16_t getClientStaminaBonusDisplay() const { return clientStaminaBonusDisplay; }
+		void setClientStaminaBonusDisplay(uint16_t value) { clientStaminaBonusDisplay = value; }
+
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
 
@@ -1287,6 +1290,7 @@ class Player final : public Creature, public Cylinder
 		int16_t lastDepotId = -1;
 
 		uint16_t clientExpDisplay = 100;
+		uint16_t clientStaminaBonusDisplay = 100;
 
 		uint8_t soul = 0;
 		std::bitset<6> blessings;
