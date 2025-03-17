@@ -22,7 +22,7 @@ set_target_properties(tfs PROPERTIES CXX_STANDARD 17)
 set_target_properties(tfs PROPERTIES CXX_STANDARD_REQUIRED ON)
 
 if (NOT WIN32)
-    add_compile_options(-Wall -Werror -pipe -fvisibility=hidden)
+    add_compile_options(-Wall -Wextra -Wnon-virtual-dtor -pedantic -Werror -pipe -fvisibility=hidden)
 endif ()
 
 if (CMAKE_COMPILER_IS_GNUCXX)
