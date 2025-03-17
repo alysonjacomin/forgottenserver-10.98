@@ -76,7 +76,7 @@ set(tfs_SRC
 	${CMAKE_CURRENT_LIST_DIR}/weapons.cpp
 	${CMAKE_CURRENT_LIST_DIR}/wildcardtree.cpp
 	${CMAKE_CURRENT_LIST_DIR}/xtea.cpp
-	PARENT_SCOPE)
+PARENT_SCOPE)
 
 set(tfs_HDR
 	${CMAKE_CURRENT_LIST_DIR}/otpch.h
@@ -166,6 +166,20 @@ set(tfs_HDR
 	${CMAKE_CURRENT_LIST_DIR}/weapons.h
 	${CMAKE_CURRENT_LIST_DIR}/wildcardtree.h
 	${CMAKE_CURRENT_LIST_DIR}/xtea.h
-	)
+)
+
+set(tfs_MAIN ${CMAKE_CURRENT_LIST_DIR}/main.cpp PARENT_SCOPE)
+
+add_library(tfslib ${tfs_SRC})
+target_link_libraries(tfslib PRIVATE
+ 	Boost::iostreams
+ 	Boost::system
+ 	fmt::fmt
+ 	pugixml::pugixml
+ 	${CMAKE_THREAD_LIBS_INIT}
+ 	${Crypto++_LIBRARIES}
+ 	${LUA_LIBRARIES}
+ 	${MYSQL_CLIENT_LIBS}
+)
 
 add_custom_target(format COMMAND /usr/bin/clang-format -style=file -i ${tfs_HDR} ${tfs_SRC})
