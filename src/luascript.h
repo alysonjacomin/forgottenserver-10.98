@@ -1034,6 +1034,9 @@ class LuaScriptInterface
 		static int luaPlayerGetClientStaminaBonusDisplay(lua_State* L);
 		static int luaPlayerSetClientStaminaBonusDisplay(lua_State* L);
 
+		static int luaPlayerGetClientLowLevelBonusDisplay(lua_State* L);
+		static int luaPlayerSetClientLowLevelBonusDisplay(lua_State* L);
+
 		// Monster
 		static int luaMonsterCreate(lua_State* L);
 
