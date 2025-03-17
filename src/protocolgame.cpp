@@ -2909,7 +2909,6 @@ void ProtocolGame::sendOutfitWindow()
 		protocolOutfits.emplace_back("Gamemaster", 75, 0);
 	}
 
-	protocolOutfits.reserve(outfits.size());
 	for (const Outfit& outfit : outfits) {
 		uint8_t addons;
 		if (!player->getOutfitAddons(outfit, addons)) {
