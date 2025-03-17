@@ -811,6 +811,7 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 
 	if (!mType) {
 		mType = &monsters[boost::algorithm::to_lower_copy(monsterName)];
+		mType->info = {};
 	}
 
 	mType->name = attr.as_string();
