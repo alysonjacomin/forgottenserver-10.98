@@ -1160,6 +1160,8 @@ class Player final : public Creature, public Cylinder
 			clientLowLevelBonusDisplay = value;
 		}
 
+		using Creature::onWalk;
+
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
 

@@ -172,6 +172,8 @@ class Npc final : public Creature
 
 		static uint32_t npcAutoID;
 
+		using Creature::onWalk;
+
 	private:
 		explicit Npc(const std::string& name);
 

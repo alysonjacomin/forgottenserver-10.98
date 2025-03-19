@@ -320,6 +320,8 @@ class DynamicTile : public Tile
 		CreatureVector* makeCreatures() override {
 			return &creatures;
 		}
+
+		using Tile::internalAddThing;
 };
 
 // For blocking tiles, where we very rarely actually have items
@@ -368,6 +370,8 @@ class StaticTile final : public Tile
 			}
 			return creatures.get();
 		}
+
+		using Tile::internalAddThing;
 };
 
 #endif // FS_TILE_H

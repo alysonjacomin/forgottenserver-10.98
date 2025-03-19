@@ -29,6 +29,8 @@ class HouseTile final : public DynamicTile
 			return house;
 		}
 
+		using DynamicTile::internalAddThing;
+
 	private:
 		void updateHouse(Item* item);
 

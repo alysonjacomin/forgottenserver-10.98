@@ -170,6 +170,8 @@ class Monster final : public Creature
 
 		static uint32_t monsterAutoID;
 
+		using Creature::onWalk;
+
 	private:
 		CreatureHashSet friendList;
 		CreatureList targetList;
