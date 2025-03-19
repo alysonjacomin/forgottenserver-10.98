@@ -5,6 +5,8 @@
 
 #include "rsa.h"
 
+#include "protocol.h"
+
 #include <cryptopp/base64.h>
 #include <cryptopp/osrng.h>
 
@@ -15,9 +17,9 @@ static CryptoPP::AutoSeededRandomPool prng;
 void RSA::decrypt(char* msg) const
 {
 	try {
-		CryptoPP::Integer m{reinterpret_cast<uint8_t*>(msg), 128};
+		CryptoPP::Integer m{reinterpret_cast<uint8_t*>(msg), Protocol::RSA_BUFFER_LENGTH};
 		auto c = pk.CalculateInverse(prng, m);
-		c.Encode(reinterpret_cast<uint8_t*>(msg), 128);
+		c.Encode(reinterpret_cast<uint8_t*>(msg), Protocol::RSA_BUFFER_LENGTH);
 	} catch (const CryptoPP::Exception& e) {
 		//fmt::print(fg(fmt::color::crimson) | fmt::emphasis::bold, e.what(), "\n");
 		std::cout << e.what() << std::endl;
