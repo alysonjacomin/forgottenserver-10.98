@@ -130,6 +130,7 @@ set(tfs_HDR
 	${CMAKE_CURRENT_LIST_DIR}/movement.h
 	${CMAKE_CURRENT_LIST_DIR}/networkmessage.h
 	${CMAKE_CURRENT_LIST_DIR}/npc.h
+	${CMAKE_CURRENT_LIST_DIR}/otserv.h
 	${CMAKE_CURRENT_LIST_DIR}/outfit.h
 	${CMAKE_CURRENT_LIST_DIR}/outputmessage.h
 	${CMAKE_CURRENT_LIST_DIR}/party.h
