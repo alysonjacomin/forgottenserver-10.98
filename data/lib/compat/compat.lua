@@ -230,6 +230,7 @@ do
 			self:onThink(value)
 			return
 		elseif key == "onTime" then
+			self:type("timer")
 			self:onTime(value)
 			return
 		elseif key == "onStartup" then
@@ -1335,10 +1336,6 @@ end
 
 function doSetGameState(state)
 	return Game.setGameState(state)
-end
-
-function doExecuteRaid(raidName)
-	return Game.startRaid(raidName)
 end
 
 numberToVariant = Variant

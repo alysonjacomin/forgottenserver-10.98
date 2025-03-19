@@ -10,7 +10,6 @@
 #include "player.h"
 #include "position.h"
 #include "quests.h"
-#include "raids.h"
 #include "wildcardtree.h"
 
 class Monster;
@@ -507,7 +506,6 @@ class Game
 		Groups groups;
 		Map map;
 		Mounts mounts;
-		Raids raids;
 		Quests quests;
 
 		std::forward_list<Item*> toDecayItems;
