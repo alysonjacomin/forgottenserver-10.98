@@ -142,3 +142,17 @@ function Game.setAccountStorageValue(accountId, key, value)
 	end
 	accountsStorage[accountId][key] = value
 end
+
+function Game.getFormattedWorldTime()
+ 	local worldTime = Game.getWorldTime()
+ 	local hours = math.floor(worldTime / 60)
+ 
+ 	local minutes = worldTime % 60
+ 	if minutes < 10 then
+ 		minutes = '0' .. minutes
+ 	end
+ 
+ 	minutes = math.floor(minutes)
+ 
+ 	return hours .. ':' .. minutes
+end
