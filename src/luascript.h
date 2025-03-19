@@ -524,6 +524,7 @@ class LuaScriptInterface
 
 		// DB Insert
 		static int luaDBInsertCreate(lua_State* L);
+		static int luaDBInsertDelete(lua_State* L);
 		static int luaDBInsertAddRow(lua_State* L);
 		static int luaDBInsertExecute(lua_State* L);
 	 

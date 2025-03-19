@@ -2059,7 +2059,7 @@ void LuaScriptInterface::registerFunctions()
 
 	// DB Insert
  	registerClass("DBInsert", "", LuaScriptInterface::luaDBInsertCreate);
- 
+	registerMetaMethod("DBInsert", "__gc", LuaScriptInterface::luaDBInsertDelete);
  	registerMethod("DBInsert", "addRow", LuaScriptInterface::luaDBInsertAddRow);
  	registerMethod("DBInsert", "execute", LuaScriptInterface::luaDBInsertExecute);
  
@@ -4294,7 +4294,17 @@ int LuaScriptInterface::luaDBInsertExecute(lua_State* L)
  	}
  	return 1;
 }
- 
+
+int LuaScriptInterface::luaDBInsertDelete(lua_State* L)
+{
+ 	DBInsert** insertPtr = getRawUserdata<DBInsert>(L, 1);
+ 	if (insertPtr && *insertPtr) {
+ 		delete *insertPtr;
+ 		*insertPtr = nullptr;
+ 	}
+ 	return 0;
+}
+
  // DB Transaction
 int LuaScriptInterface::luaDBTransactionCreate(lua_State* L)
 {
