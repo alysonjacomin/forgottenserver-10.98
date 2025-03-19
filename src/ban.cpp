@@ -44,13 +44,13 @@ bool Ban::acceptConnection(const Connection::Address& clientIP)
 	return true;
 }
 
-bool IOBan::isAccountBanned(uint32_t accountId, BanInfo& banInfo)
+const std::optional<BanInfo> IOBan::getAccountBanInfo(uint32_t accountId)
 {
 	Database& db = Database::getInstance();
 
 	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `reason`, `expires_at`, `banned_at`, `banned_by`, (SELECT `name` FROM `players` WHERE `id` = `banned_by`) AS `name` FROM `account_bans` WHERE `account_id` = {:d}", accountId));
 	if (!result) {
-		return false;
+		return std::nullopt;
 	}
 
 	int64_t expiresAt = result->getNumber<int64_t>("expires_at");
@@ -58,38 +58,50 @@ bool IOBan::isAccountBanned(uint32_t accountId, BanInfo& banInfo)
 		// Move the ban to history if it has expired
 		g_databaseTasks.addTask(fmt::format("INSERT INTO `account_ban_history` (`account_id`, `reason`, `banned_at`, `expired_at`, `banned_by`) VALUES ({:d}, {:s}, {:d}, {:d}, {:d})", accountId, db.escapeString(result->getString("reason")), result->getNumber<time_t>("banned_at"), expiresAt, result->getNumber<uint32_t>("banned_by")));
 		g_databaseTasks.addTask(fmt::format("DELETE FROM `account_bans` WHERE `account_id` = {:d}", accountId));
-		return false;
+		return std::nullopt;
 	}
 
-	banInfo.expiresAt = expiresAt;
-	banInfo.reason = result->getString("reason");
-	banInfo.bannedBy = result->getString("name");
-	return true;
+	auto banInfo = std::make_optional<BanInfo>();
+ 	banInfo->expiresAt = expiresAt;
+ 
+ 	banInfo->reason = result->getString("reason");
+ 	if (banInfo->reason.empty()) {
+ 		banInfo->reason = "(none)";
+ 	}
+ 
+ 	banInfo->bannedBy = result->getString("name");
+ 	return banInfo;
 }
 
-bool IOBan::isIpBanned(const Connection::Address& clientIP, BanInfo& banInfo)
+const std::optional<BanInfo> IOBan::getIpBanInfo(const Connection::Address& clientIP)
 {
 	if (clientIP.is_unspecified()) {
-		return false;
+		return std::nullopt;
 	}
 
 	Database& db = Database::getInstance();
 
 	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `reason`, `expires_at`, (SELECT `name` FROM `players` WHERE `id` = `banned_by`) AS `name` FROM `ip_bans` WHERE `ip` = INET6_ATON('{:s}')", clientIP.to_string()));
 	if (!result) {
-		return false;
+		return std::nullopt;
 	}
 
 	int64_t expiresAt = result->getNumber<int64_t>("expires_at");
 	if (expiresAt != 0 && time(nullptr) > expiresAt) {
 		g_databaseTasks.addTask(fmt::format("DELETE FROM `ip_bans` WHERE `ip` = INET6_ATON('{:s}')", clientIP.to_string()));
-		return false;
+		return std::nullopt;
 	}
 
-	banInfo.expiresAt = expiresAt;
-	banInfo.reason = result->getString("reason");
-	banInfo.bannedBy = result->getString("name");
-	return true;
+	auto banInfo = std::make_optional<BanInfo>();
+ 	banInfo->expiresAt = expiresAt;
+ 
+ 	banInfo->reason = result->getString("reason");
+ 	if (banInfo->reason.empty()) {
+ 		banInfo->reason = "(none)";
+ 	}
+ 
+ 	banInfo->bannedBy = result->getString("name");
+ 	return banInfo;
 }
 
 bool IOBan::isPlayerNamelocked(uint32_t playerId)
