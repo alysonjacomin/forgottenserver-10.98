@@ -1035,7 +1035,7 @@ function hasProperty(uid, prop)
 	return item:hasProperty(prop)
 end
 
-function doSetItemText(uid, text)
+function doSetItemText(uid, text, writer, date)
 	local item = Item(uid)
 	if not item then
 		return false
@@ -1046,6 +1046,19 @@ function doSetItemText(uid, text)
 	else
 		item:removeAttribute(ITEM_ATTRIBUTE_TEXT)
 	end
+
+	if writer then
+ 		item:setAttribute(ITEM_ATTRIBUTE_WRITER, tostring(writer))
+ 	else
+ 		item:removeAttribute(ITEM_ATTRIBUTE_WRITER)
+ 	end
+ 
+ 	if date then
+ 		item:setAttribute(ITEM_ATTRIBUTE_DATE, tonumber(date))
+ 	else
+ 		item:removeAttribute(ITEM_ATTRIBUTE_DATE)
+ 	end
+
 	return true
 end
 function doSetItemSpecialDescription(uid, desc)
