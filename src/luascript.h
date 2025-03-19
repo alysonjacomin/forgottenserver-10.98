@@ -1042,6 +1042,7 @@ class LuaScriptInterface
 
 		static int luaMonsterIsMonster(lua_State* L);
 
+		static int luaMonsterGetId(lua_State* L);
 		static int luaMonsterGetType(lua_State* L);
 
 		static int luaMonsterRename(lua_State* L);
