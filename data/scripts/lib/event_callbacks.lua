@@ -51,6 +51,7 @@ ec.onItemMoved = {}
 ec.onMoveCreature = {}
 ec.onReportRuleViolation = {}
 ec.onReportBug = {}
+ec.onRotateItem = {}
 ec.onTurn = {}
 ec.onGainExperience = {[3] = 1}
 ec.onLoseExperience = {[2] = 1}
