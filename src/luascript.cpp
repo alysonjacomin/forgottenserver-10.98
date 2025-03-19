@@ -2598,6 +2598,10 @@ void LuaScriptInterface::registerFunctions()
 	registerMethod("Player", "getClientLowLevelBonusDisplay", LuaScriptInterface::luaPlayerGetClientLowLevelBonusDisplay);
  	registerMethod("Player", "setClientLowLevelBonusDisplay", LuaScriptInterface::luaPlayerSetClientLowLevelBonusDisplay);
 
+	registerMethod("Player", "sendTakeScreenshot", LuaScriptInterface::luaPlayerSendTakeScreenshot);
+
+	registerMethod("Player", "sendExtendedOpcode", LuaScriptInterface::luaPlayerSendExtendedOpcode);
+
 	// Monster
 	registerClass("Monster", "Creature", LuaScriptInterface::luaMonsterCreate);
 	registerMetaMethod("Monster", "__eq", LuaScriptInterface::luaUserdataCompare);
@@ -10704,6 +10708,40 @@ int LuaScriptInterface::luaPlayerGetClientLowLevelBonusDisplay(lua_State* L)
  	}
  	return 1;
  }
+
+int LuaScriptInterface::luaPlayerSendTakeScreenshot(lua_State* L)
+{
+	// player:sendTakeScreenshot(screenshotType, ignoreConfig)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	uint8_t screenshotType = getNumber<uint8_t>(L, 2);
+	bool ignoreConfig = getBoolean(L, 3);
+
+	player->sendTakeScreenshot(screenshotType, ignoreConfig);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int LuaScriptInterface::luaPlayerSendExtendedOpcode(lua_State* L)
+{
+	// player:sendExtendedOpcode(opcode, buffer)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	uint8_t opcode = getNumber<uint8_t>(L, 2);
+	const std::string& buffer = getString(L, 3);
+
+	player->sendExtendedOpcode(opcode, buffer);
+	pushBoolean(L, true);
+	return 1;
+}
 
 // Monster
 int LuaScriptInterface::luaMonsterCreate(lua_State* L)

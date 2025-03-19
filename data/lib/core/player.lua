@@ -106,20 +106,6 @@ function Player.isUsingOtClient(self)
 	return self:getClient().os >= CLIENTOS_OTCLIENT_LINUX
 end
 
-function Player.sendExtendedOpcode(self, opcode, buffer)
-	if not self:isUsingOtClient() then
-		return false
-	end
-
-	local networkMessage = NetworkMessage()
-	networkMessage:addByte(0x32)
-	networkMessage:addByte(opcode)
-	networkMessage:addString(buffer)
-	networkMessage:sendToPlayer(self)
-	networkMessage:delete()
-	return true
-end
-
 APPLY_SKILL_MULTIPLIER = true
 local addSkillTriesFunc = Player.addSkillTries
 function Player.addSkillTries(...)
@@ -374,19 +360,6 @@ function Player.updateClientExpDisplay(self)
  	self:setClientLowLevelBonusDisplay(levelBonus)
 	return true
 end
-
-function Player.takeScreenshot(self, screenshotType, ignoreConfig)
- 	if not ignoreConfig and (screenshotType < SCREENSHOT_TYPE_FIRST or screenshotType > SCREENSHOT_TYPE_LAST) then
- 		return false
- 	end
- 
- 	local msg = NetworkMessage()
- 	msg:addByte(0x75)
- 	msg:addByte(screenshotType)
- 	msg:sendToPlayer(self)
- 	msg:delete()
- 	return true
- end
  
  function Player.setAccountStorageValue(self, key, value)
  	return Game.setAccountStorageValue(self:getAccountId(), key, value)

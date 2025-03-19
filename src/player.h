@@ -830,6 +830,16 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 		void sendModalWindow(const ModalWindow& modalWindow);
+		void sendTakeScreenshot(uint8_t screenshotType, bool ignoreConfig = true) {
+			if (client) {
+				client->sendTakeScreenshot(screenshotType, ignoreConfig);
+			}
+		}
+		void sendExtendedOpcode(uint8_t opcode, const std::string& buffer) {
+			if (client) {
+				client->sendExtendedOpcode(opcode, buffer);
+			}
+		}
 
 		//container
 		void sendAddContainerItem(const Container* container, const Item* item);

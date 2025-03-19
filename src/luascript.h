@@ -1049,6 +1049,10 @@ class LuaScriptInterface
 		static int luaPlayerGetClientLowLevelBonusDisplay(lua_State* L);
 		static int luaPlayerSetClientLowLevelBonusDisplay(lua_State* L);
 
+		static int luaPlayerSendTakeScreenshot(lua_State* L);
+
+		static int luaPlayerSendExtendedOpcode(lua_State* L);
+
 		// Monster
 		static int luaMonsterCreate(lua_State* L);
 

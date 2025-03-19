@@ -3018,6 +3018,31 @@ void ProtocolGame::sendModalWindow(const ModalWindow& modalWindow)
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::sendTakeScreenshot(uint8_t screenshotType, bool ignoreConfig)
+{
+ 	if (!ignoreConfig && (screenshotType < SCREENSHOT_TYPE_FIRST || screenshotType > SCREENSHOT_TYPE_LAST)) {
+ 		return;
+ 	}
+
+	NetworkMessage msg;
+	msg.addByte(0x75);
+	msg.addByte(screenshotType);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendExtendedOpcode(uint8_t opcode, const std::string& buffer)
+{
+ 	if (!player || player->getOperatingSystem() < CLIENTOS_OTCLIENT_LINUX) {
+ 		return;
+ 	}
+
+	NetworkMessage msg;
+	msg.addByte(0x32);
+	msg.addByte(opcode);
+	msg.addString(buffer);
+	writeToOutputBuffer(msg);
+}
+
 ////////////// Add common messages
 void ProtocolGame::AddCreature(NetworkMessage& msg, const Creature* creature, bool known, uint32_t remove)
 {

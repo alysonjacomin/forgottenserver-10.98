@@ -256,6 +256,12 @@ class ProtocolGame final : public Protocol
 		//messages
 		void sendModalWindow(const ModalWindow& modalWindow);
 
+		//take screenshot
+		void sendTakeScreenshot(uint8_t screenshotType, bool ignoreConfig);
+
+		//extended opcode
+		void sendExtendedOpcode(uint8_t opcode, const std::string& buffer);
+
 		//Help functions
 
 		// translate a tile to client-readable format
