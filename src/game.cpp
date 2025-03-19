@@ -1212,7 +1212,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 		uint32_t n;
 
 		if (item->equals(toItem)) {
-			n = std::min<uint32_t>(100 - toItem->getItemCount(), m);
+			n = std::min<uint32_t>(ITEM_STACK_SIZE - toItem->getItemCount(), m);
 			toCylinder->updateThing(toItem, toItem->getID(), toItem->getItemCount() + n);
 			updateItem = toItem;
 		} else {
@@ -1330,7 +1330,7 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 
 	if (item->isStackable() && item->equals(toItem)) {
 		uint32_t m = std::min<uint32_t>(item->getItemCount(), maxQueryCount);
-		uint32_t n = std::min<uint32_t>(100 - toItem->getItemCount(), m);
+		uint32_t n = std::min<uint32_t>(ITEM_STACK_SIZE - toItem->getItemCount(), m);
 
 		toCylinder->updateThing(toItem, toItem->getID(), toItem->getItemCount() + n);
 
@@ -1590,7 +1590,7 @@ void Game::addMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*/)
 
 		money -= currencyCoins * worth;
 		while (currencyCoins > 0) {
-			const uint16_t count = std::min<uint32_t>(100, currencyCoins);
+			const uint16_t count = std::min<uint32_t>(ITEM_STACK_SIZE, currencyCoins);
 
 			Item* remaindItem = Item::CreateItem(it.second, count);
 
@@ -1846,7 +1846,8 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t spriteId)
 		internalGetPosition(equipItem, fromPos, fromStackPos);
 	}
 
-	if (slotItem && slotItem->getID() == it.id && (!it.stackable || slotItem->getItemCount() == 100 || !equipItem)) {
+	if (slotItem && slotItem->getID() == it.id &&
+	    (!it.stackable || slotItem->getItemCount() == ITEM_STACK_SIZE || !equipItem)) {
 		internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr, 0, player, nullptr, &fromPos, &toPos);
 	} else if (equipItem) {
 		internalMoveItem(equipItem->getParent(), player, slot, equipItem, equipItem->getItemCount(), nullptr, 0, player, nullptr, &fromPos, &toPos);
@@ -2725,8 +2726,8 @@ void Game::playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t st
 	}
 
 	Container* tradeContainer = tradeItem->getContainer();
-	if (tradeContainer && tradeContainer->getItemHoldingCount() + 1 > 100) {
-		player->sendCancelMessage("You can only trade up to 100 objects at once.");
+	if (tradeContainer && tradeContainer->getItemHoldingCount() + 1 > ITEM_STACK_SIZE) {
+		player->sendCancelMessage("You can only trade up to " + std::to_string(ITEM_STACK_SIZE) + " objects at once.");
 		return;
 	}
 
@@ -3013,7 +3014,7 @@ void Game::internalCloseTrade(Player* player, bool sendCancel/* = true*/)
 void Game::playerPurchaseItem(uint32_t playerId, uint16_t spriteId, uint8_t count, uint8_t amount,
                               bool ignoreCap/* = false*/, bool inBackpacks/* = false*/)
 {
-	if (amount == 0 || amount > 100) {
+	if (amount == 0 || amount > ITEM_STACK_SIZE) {
 		return;
 	}
 
@@ -3050,7 +3051,7 @@ void Game::playerPurchaseItem(uint32_t playerId, uint16_t spriteId, uint8_t coun
 
 void Game::playerSellItem(uint32_t playerId, uint16_t spriteId, uint8_t count, uint8_t amount, bool ignoreEquipped)
 {
-	if (amount == 0 || amount > 100) {
+	if (amount == 0 || amount > ITEM_STACK_SIZE) {
 		return;
 	}
 
@@ -5304,7 +5305,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (it.stackable) {
 			uint16_t tmpAmount = offer.amount;
 			while (tmpAmount > 0) {
-				int32_t stackCount = std::min<int32_t>(100, tmpAmount);
+				int32_t stackCount = std::min<int32_t>(ITEM_STACK_SIZE, tmpAmount);
 				Item* item = Item::CreateItem(it.id, stackCount);
 				if (internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 					delete item;
@@ -5416,7 +5417,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
-				uint16_t stackCount = std::min<uint16_t>(100, tmpAmount);
+				uint16_t stackCount = std::min<uint16_t>(ITEM_STACK_SIZE, tmpAmount);
 				Item* item = Item::CreateItem(it.id, stackCount);
 				if (internalAddItem(buyerPlayer->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 					delete item;
@@ -5461,7 +5462,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
-				uint16_t stackCount = std::min<uint16_t>(100, tmpAmount);
+				uint16_t stackCount = std::min<uint16_t>(ITEM_STACK_SIZE, tmpAmount);
 				Item* item = Item::CreateItem(it.id, stackCount);
 				if (internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 					delete item;
