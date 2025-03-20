@@ -29,6 +29,7 @@ class LuaScriptInterface;
 class LuaVariant;
 class Npc;
 class Player;
+class Spell;
 class Thing;
 struct LootBlock;
 struct Mount;
@@ -376,6 +377,7 @@ class LuaScriptInterface
 		static void pushBoolean(lua_State* L, bool value);
 		static void pushCombatDamage(lua_State* L, const CombatDamage& damage);
 		static void pushInstantSpell(lua_State* L, const InstantSpell& spell);
+		static void pushSpell(lua_State* L, const Spell& spell);
 		static void pushPosition(lua_State* L, const Position& position, int32_t stackpos = 0);
 		static void pushOutfit(lua_State* L, const Outfit_t& outfit);
 		static void pushOutfit(lua_State* L, const Outfit* outfit);

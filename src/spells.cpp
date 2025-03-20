@@ -7,11 +7,13 @@
 
 #include "combat.h"
 #include "configmanager.h"
+#include "events.h"
 #include "game.h"
 #include "luavariant.h"
 #include "monsters.h"
 #include "pugicast.h"
 
+extern Events* g_events;
 extern Game g_game;
 extern Spells* g_spells;
 extern Monsters g_monsters;
@@ -556,6 +558,10 @@ bool Spell::playerSpellCheck(Player* player) const
 	if (!enabled) {
 		return false;
 	}
+
+	if (!g_events->eventPlayerOnSpellCheck(player, this)) {
+ 		return false;
+ 	}
 
 	if ((aggressive || pzLock) && (range < 1 || (range > 0 && !player->getAttackedCreature())) && player->getSkull() == SKULL_BLACK) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
