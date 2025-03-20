@@ -3170,7 +3170,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage& msg)
 	}
 
 	for (uint8_t i = SPECIALSKILL_FIRST; i <= SPECIALSKILL_LAST; ++i) {
-		msg.add<uint16_t>(std::min<int32_t>(100, player->varSpecialSkills[i]));
+		msg.add<uint16_t>(std::min<int32_t>(10000, player->varSpecialSkills[i]));
 		msg.add<uint16_t>(0);
 	}
 }
