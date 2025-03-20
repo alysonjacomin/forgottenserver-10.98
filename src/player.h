@@ -1177,7 +1177,6 @@ class Player final : public Creature, public Cylinder
 		void updateInventoryWeight();
 
 		void setNextWalkActionTask(SchedulerTask* task);
-		void setNextWalkTask(SchedulerTask* task);
 		void setNextActionTask(SchedulerTask* task, bool resetIdleTime = true);
 
 		void death(Creature* lastHitCreature) override;
@@ -1281,7 +1280,6 @@ class Player final : public Creature, public Cylinder
 		uint32_t level = 1;
 		uint32_t magLevel = 0;
 		uint32_t actionTaskEvent = 0;
-		uint32_t nextStepEvent = 0;
 		uint32_t walkTaskEvent = 0;
 		uint32_t MessageBufferTicks = 0;
 		uint32_t accountNumber = 0;
