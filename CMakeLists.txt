@@ -70,7 +70,11 @@ if (NOT FORCE_LUAJIT)
     find_package(Lua REQUIRED)
 endif()
 
-find_package(Boost 1.66.0 REQUIRED COMPONENTS system iostreams)
+if (APPLE)
+	find_package(Iconv REQUIRED)
+endif()
+ 
+find_package(Boost 1.66.0 REQUIRED COMPONENTS system iostreams locale)
 
 include_directories(${Boost_INCLUDE_DIRS} ${Crypto++_INCLUDE_DIR} ${LUA_INCLUDE_DIR} ${MYSQL_INCLUDE_DIR} ${PUGIXML_INCLUDE_DIR})
 
