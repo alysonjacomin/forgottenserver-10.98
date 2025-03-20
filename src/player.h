@@ -64,13 +64,6 @@ struct OpenContainer {
 	uint16_t index;
 };
 
-struct OutfitEntry {
-	constexpr OutfitEntry(uint16_t lookType, uint8_t addons) : lookType(lookType), addons(addons) {}
-
-	uint16_t lookType;
-	uint8_t addons;
-};
-
 static constexpr int16_t MINIMUM_SKILL_LEVEL = 10;
 
 struct Skill {
@@ -126,14 +119,14 @@ class Player final : public Creature, public Cylinder
 			return CREATURETYPE_PLAYER;
 		}
 
-		uint8_t getCurrentMount() const;
-		void setCurrentMount(uint8_t mountId);
+		uint16_t getCurrentMount() const;
+		void setCurrentMount(uint16_t mountId);
 		bool isMounted() const {
 			return defaultOutfit.lookMount != 0;
 		}
 		bool toggleMount(bool mount);
-		bool tameMount(uint8_t mountId);
-		bool untameMount(uint8_t mountId);
+		bool tameMount(uint16_t mountId);
+		bool untameMount(uint16_t mountId);
 		bool hasMount(const Mount* mount) const;
 		void dismount();
 
@@ -321,7 +314,6 @@ class Player final : public Creature, public Cylinder
 		bool canOpenCorpse(uint32_t ownerId) const;
 
 		void setStorageValue(uint32_t key, std::optional<int32_t> value, bool isSpawn = false) override;
-		void genReservedStorageRange();
 
 		void setGroup(Group* newGroup) {
 			group = newGroup;
@@ -1226,7 +1218,8 @@ class Player final : public Creature, public Cylinder
 		std::map<uint32_t, DepotLocker_ptr> depotLockerMap;
 		std::map<uint32_t, DepotChest*> depotChests;
 
-		std::vector<OutfitEntry> outfits;
+		std::map<uint16_t, uint8_t> outfits;
+		std::unordered_set<uint16_t> mounts;
 		GuildWarVector guildWarVector;
 
 		std::list<ShopInfo> shopItemList;
