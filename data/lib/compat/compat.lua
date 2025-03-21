@@ -1608,3 +1608,9 @@ end
 function getFormattedWorldTime()
  	return Game.getFormattedWorldTime()
 end
+
+do
+ 	local getmetatable = getmetatable
+ 
+ 	function isClass(obj, class) return getmetatable(obj) == class end
+end
