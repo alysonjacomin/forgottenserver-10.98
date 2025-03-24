@@ -33,7 +33,7 @@ local function useStamina(player)
 	player:setStamina(staminaMinutes)
 end
 
-local default = EventCallback
+local default = Event()
  
 function default.onGainExperience(player, source, exp, rawExp, sendText)
 	if not source or source:isPlayer() then
