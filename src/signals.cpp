@@ -28,7 +28,6 @@ extern Scheduler g_scheduler;
 extern DatabaseTasks g_databaseTasks;
 extern Dispatcher g_dispatcher;
 
-extern ConfigManager g_config;
 extern Actions* g_actions;
 extern Monsters g_monsters;
 extern TalkActions* g_talkActions;
@@ -61,7 +60,7 @@ void sighupHandler()
 	g_actions->reload();
 	std::cout << "Reloaded actions." << std::endl;
 
-	g_config.reload();
+	ConfigManager::reload();
 	std::cout << "Reloaded config." << std::endl;
 
 	g_creatureEvents->reload();

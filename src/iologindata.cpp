@@ -13,7 +13,6 @@
 #include "inbox.h"
 #include "storeinbox.h"
 
-extern ConfigManager g_config;
 extern Game g_game;
 
 Account IOLoginData::loadAccount(uint32_t accno)
@@ -162,7 +161,7 @@ void IOLoginData::setAccountType(uint32_t accountId, AccountType_t accountType)
 
 void IOLoginData::updateOnlineStatus(uint32_t guid, bool login)
 {
-	if (g_config.getBoolean(ConfigManager::ALLOW_CLONES)) {
+	if (getBoolean(ConfigManager::ALLOW_CLONES)) {
 		return;
 	}
 

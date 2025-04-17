@@ -10,8 +10,6 @@
 #include "server.h"
 #include "tasks.h"
 
-extern ConfigManager g_config;
-
 Connection_ptr ConnectionManager::createConnection(boost::asio::io_service& io_service, ConstServicePort_ptr servicePort)
 {
 	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
@@ -135,7 +133,7 @@ void Connection::parseHeader(const boost::system::error_code& error)
 	}
 
 	uint32_t timePassed = std::max<uint32_t>(1, (time(nullptr) - timeConnected) + 1);
-	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_config.getNumber(ConfigManager::MAX_PACKETS_PER_SECOND))) {
+	if ((++packetsSent / timePassed) > static_cast<uint32_t>(getNumber(ConfigManager::MAX_PACKETS_PER_SECOND))) {
 		std::cout << getIP() << " disconnected for exceeding packet per second limit." << std::endl;
 		close();
 		return;

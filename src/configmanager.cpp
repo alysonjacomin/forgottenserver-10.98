@@ -23,6 +23,15 @@ extern Game g_game;
 
 namespace {
 
+std::array<std::string, ConfigManager::LAST_STRING_CONFIG> string = {};
+std::array<int32_t, ConfigManager::LAST_INTEGER_CONFIG> integer = {};
+std::array<bool, ConfigManager::LAST_BOOLEAN_CONFIG> boolean = {};
+ 
+using ExperienceStages = std::vector<std::tuple<uint32_t, uint32_t, float>>;
+ExperienceStages expStages;
+ 
+bool loaded = false;
+
 std::string getGlobalString(lua_State* L, const char* identifier, const char* defaultValue)
 {
 	lua_getglobal(L, identifier);
@@ -69,15 +78,6 @@ bool getGlobalBoolean(lua_State* L, const char* identifier, const bool defaultVa
 	lua_pop(L, 1);
 	return val != 0;
 }
-
-}
-
-ConfigManager::ConfigManager()
-{
-	string[CONFIG_FILE] = "config.lua";
-}
-
-namespace {
 
 ExperienceStages loadLuaStages(lua_State* L)
 {
@@ -152,7 +152,8 @@ bool ConfigManager::load()
 
 	luaL_openlibs(L);
 
-	if (luaL_dofile(L, getString(CONFIG_FILE).c_str())) {
+	string[CONFIG_FILE] = "config.lua";
+	if (luaL_dofile(L, string[CONFIG_FILE].data())) {
 		std::cout << "[Error - ConfigManager::load] " << lua_tostring(L, -1) << std::endl;
 		lua_close(L);
 		return false;
@@ -298,10 +299,10 @@ bool ConfigManager::reload()
 	return result;
 }
 
-static std::string dummyStr;
-
-const std::string& ConfigManager::getString(string_config_t what) const
+const std::string& ConfigManager::getString(string_config_t what)
 {
+	static std::string dummyStr;
+
 	if (what >= LAST_STRING_CONFIG) {
 		std::cout << "[Warning - ConfigManager::getString] Accessing invalid index: " << what << std::endl;
 		return dummyStr;
@@ -309,7 +310,7 @@ const std::string& ConfigManager::getString(string_config_t what) const
 	return string[what];
 }
 
-int32_t ConfigManager::getNumber(integer_config_t what) const
+int32_t ConfigManager::getNumber(integer_config_t what)
 {
 	if (what >= LAST_INTEGER_CONFIG) {
 		std::cout << "[Warning - ConfigManager::getNumber] Accessing invalid index: " << what << std::endl;
@@ -318,7 +319,7 @@ int32_t ConfigManager::getNumber(integer_config_t what) const
 	return integer[what];
 }
 
-bool ConfigManager::getBoolean(boolean_config_t what) const
+bool ConfigManager::getBoolean(boolean_config_t what)
 {
 	if (what >= LAST_BOOLEAN_CONFIG) {
 		std::cout << "[Warning - ConfigManager::getBoolean] Accessing invalid index: " << what << std::endl;
@@ -327,7 +328,7 @@ bool ConfigManager::getBoolean(boolean_config_t what) const
 	return boolean[what];
 }
 
-float ConfigManager::getExperienceStage(uint32_t level) const
+float ConfigManager::getExperienceStage(uint32_t level)
 {
 	auto it = std::find_if(expStages.begin(), expStages.end(), [level](auto&& stage) {
  		auto&& [minLevel, maxLevel, _] = stage;

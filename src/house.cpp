@@ -13,7 +13,6 @@
 #include "iologindata.h"
 #include "pugicast.h"
 
-extern ConfigManager g_config;
 extern Game g_game;
 
 House::House(uint32_t houseId) : id(houseId) {}
@@ -70,7 +69,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase/* = true*/, Player* play
 			door->setAccessList("");
 		}
 	} else {
-		std::string strRentPeriod = boost::algorithm::to_lower_copy(g_config.getString(ConfigManager::HOUSE_RENT_PERIOD));
+		std::string strRentPeriod = boost::algorithm::to_lower_copy(getString(ConfigManager::HOUSE_RENT_PERIOD));
 		time_t currentTime = time(nullptr);
 		if (strRentPeriod == "yearly") {
 			currentTime += 24 * 60 * 60 * 365;
@@ -103,9 +102,9 @@ void House::setOwner(uint32_t guid, bool updateDatabase/* = true*/, Player* play
 
 void House::updateDoorDescription() const
 {
-	const int32_t housePrice = g_config.getNumber(ConfigManager::HOUSE_PRICE);
+	const int32_t housePrice = getNumber(ConfigManager::HOUSE_PRICE);
 	for (const auto& it : doorSet) {
-		it->setSpecialDescription(fmt::format("It belongs to house '{:s}'. {:s} owns this house.{:s}", houseName, (owner != 0) ? ownerName : "Nobody", g_config.getBoolean(ConfigManager::HOUSE_DOOR_SHOW_PRICE) && (housePrice != -1) && (owner == 0) ? fmt::format(" It costs {:d} gold coins.", (houseTiles.size() * housePrice)) : ""));
+		it->setSpecialDescription(fmt::format("It belongs to house '{:s}'. {:s} owns this house.{:s}", houseName, (owner != 0) ? ownerName : "Nobody", getBoolean(ConfigManager::HOUSE_DOOR_SHOW_PRICE) && (housePrice != -1) && (owner == 0) ? fmt::format(" It costs {:d} gold coins.", (houseTiles.size() * housePrice)) : ""));
 	}
 }
 
@@ -115,7 +114,7 @@ AccessHouseLevel_t House::getHouseAccessLevel(const Player* player) const
 		return HOUSE_OWNER;
 	}
 
-	if (g_config.getBoolean(ConfigManager::HOUSE_OWNED_BY_ACCOUNT)) {
+	if (getBoolean(ConfigManager::HOUSE_OWNED_BY_ACCOUNT)) {
 		if (ownerAccountId == player->getAccount()) {
 			return HOUSE_OWNER;
 		}

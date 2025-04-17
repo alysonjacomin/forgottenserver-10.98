@@ -8,13 +8,11 @@
 #include "configmanager.h"
 #include "luascript.h"
 
-extern ConfigManager g_config;
-
 bool DatabaseManager::optimizeTables()
 {
 	Database& db = Database::getInstance();
 
-	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `TABLE_NAME` FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA` = {:s} AND `DATA_FREE` > 0", db.escapeString(g_config.getString(ConfigManager::MYSQL_DB))));
+	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `TABLE_NAME` FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA` = {:s} AND `DATA_FREE` > 0", db.escapeString(getString(ConfigManager::MYSQL_DB))));
 	if (!result) {
 		return false;
 	}
@@ -35,13 +33,13 @@ bool DatabaseManager::optimizeTables()
 bool DatabaseManager::tableExists(const std::string& tableName)
 {
 	Database& db = Database::getInstance();
-	return db.storeQuery(fmt::format("SELECT `TABLE_NAME` FROM `information_schema`.`tables` WHERE `TABLE_SCHEMA` = {:s} AND `TABLE_NAME` = {:s} LIMIT 1", db.escapeString(g_config.getString(ConfigManager::MYSQL_DB)), db.escapeString(tableName))).get();
+	return db.storeQuery(fmt::format("SELECT `TABLE_NAME` FROM `information_schema`.`tables` WHERE `TABLE_SCHEMA` = {:s} AND `TABLE_NAME` = {:s} LIMIT 1", db.escapeString(getString(ConfigManager::MYSQL_DB)), db.escapeString(tableName))).get();
 }
 
 bool DatabaseManager::isDatabaseSetup()
 {
 	Database& db = Database::getInstance();
-	return db.storeQuery(fmt::format("SELECT `TABLE_NAME` FROM `information_schema`.`tables` WHERE `TABLE_SCHEMA` = {:s}", db.escapeString(g_config.getString(ConfigManager::MYSQL_DB)))).get();
+	return db.storeQuery(fmt::format("SELECT `TABLE_NAME` FROM `information_schema`.`tables` WHERE `TABLE_SCHEMA` = {:s}", db.escapeString(getString(ConfigManager::MYSQL_DB)))).get();
 }
 
 int32_t DatabaseManager::getDatabaseVersion()
