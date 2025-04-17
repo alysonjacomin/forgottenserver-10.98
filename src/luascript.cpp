@@ -5058,10 +5058,10 @@ int LuaScriptInterface::luaPositionGetDistance(lua_State* L)
 	const Position& position = getPosition(L, 1);
 	lua_pushnumber(L, std::max<int32_t>(
 		std::max<int32_t>(
-			std::abs(Position::getDistanceX(position, positionEx)),
-			std::abs(Position::getDistanceY(position, positionEx))
+			std::abs(position.getDistanceX(positionEx)),
+			std::abs(position.getDistanceY(positionEx))
 		),
-		std::abs(Position::getDistanceZ(position, positionEx))
+		std::abs(position.getDistanceZ(positionEx))
 	));
 	return 1;
 }
@@ -12060,7 +12060,7 @@ int LuaScriptInterface::luaHouseStartTrade(lua_State* L)
 		return 1;
 	}
 
-	if (!Position::areInRange<2, 2, 0>(tradePartner->getPosition(), player->getPosition())) {
+	if (!tradePartner->getPosition().isInRange(player->getPosition(), 2, 2, 0)) {
 		lua_pushnumber(L, RETURNVALUE_TRADEPLAYERFARAWAY);
 		return 1;
 	}

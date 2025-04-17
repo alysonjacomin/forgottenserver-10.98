@@ -25,82 +25,52 @@ struct Position
 	constexpr Position() = default;
 	constexpr Position(uint16_t x, uint16_t y, uint8_t z) : x(x), y(y), z(z) {}
 
-	template<int_fast32_t deltax, int_fast32_t deltay>
-	static bool areInRange(const Position& p1, const Position& p2) {
-		return Position::getDistanceX(p1, p2) <= deltax && Position::getDistanceY(p1, p2) <= deltay;
+	constexpr bool isInRange(const Position& p, int32_t deltax, int32_t deltay) const {
+		return getDistanceX(p) <= deltax && getDistanceY(p) <= deltay;
 	}
 
-	template<int_fast32_t deltax, int_fast32_t deltay, int_fast16_t deltaz>
-	static bool areInRange(const Position& p1, const Position& p2) {
-		return Position::getDistanceX(p1, p2) <= deltax && Position::getDistanceY(p1, p2) <= deltay && Position::getDistanceZ(p1, p2) <= deltaz;
+	constexpr bool isInRange(const Position& p, int32_t deltax, int32_t deltay, int16_t deltaz) const {
+		return getDistanceX(p) <= deltax && getDistanceY(p) <= deltay && getDistanceZ(p) <= deltaz;
 	}
 
-	static bool areInRange(const Position& p1, const Position& p2, int_fast32_t deltax, int_fast32_t deltay) {
-		return Position::getDistanceX(p1, p2) <= deltax && Position::getDistanceY(p1, p2) <= deltay;
+	constexpr int32_t getOffsetX(const Position& p) const {
+		return getX() - p.getX();
+	}
+	constexpr int32_t getOffsetY(const Position& p) const {
+		return getY() - p.getY();
+	}
+	constexpr int16_t getOffsetZ(const Position& p) const {
+		return getZ() - p.getZ();
 	}
 
-	static int_fast32_t getOffsetX(const Position& p1, const Position& p2) {
-		return p1.getX() - p2.getX();
+	constexpr int32_t getDistanceX(const Position& p) const {
+		int32_t offsetX = getOffsetX(p);
+		return offsetX < 0 ? -offsetX : offsetX;
 	}
-	static int_fast32_t getOffsetY(const Position& p1, const Position& p2) {
-		return p1.getY() - p2.getY();
+	constexpr int32_t getDistanceY(const Position& p) const {
+		int32_t offsetY = getOffsetY(p);
+		return offsetY < 0 ? -offsetY : offsetY;
 	}
-	static int_fast16_t getOffsetZ(const Position& p1, const Position& p2) {
-		return p1.getZ() - p2.getZ();
-	}
-
-	static int32_t getDistanceX(const Position& p1, const Position& p2) {
-		return std::abs(Position::getOffsetX(p1, p2));
-	}
-	static int32_t getDistanceY(const Position& p1, const Position& p2) {
-		return std::abs(Position::getOffsetY(p1, p2));
-	}
-	static int16_t getDistanceZ(const Position& p1, const Position& p2) {
-		return static_cast<int16_t>(std::abs(Position::getOffsetZ(p1, p2)));
+	constexpr int16_t getDistanceZ(const Position& p) const {
+		int16_t offsetZ = getOffsetZ(p);
+		return offsetZ < 0 ? -offsetZ : offsetZ;
 	}
 
 	uint16_t x = 0;
 	uint16_t y = 0;
 	uint8_t z = 0;
 
-	bool operator<(const Position& p) const {
-		if (z < p.z) {
-			return true;
-		}
-
-		if (z > p.z) {
-			return false;
-		}
-
-		if (y < p.y) {
-			return true;
-		}
-
-		if (y > p.y) {
-			return false;
-		}
-
-		if (x < p.x) {
-			return true;
-		}
-
-		if (x > p.x) {
-			return false;
-		}
-
-		return false;
+	constexpr bool operator==(const Position& p) const {
+		return std::tie(x, y, z) == std::tie(p.x, p.y, p.z);
 	}
-
-	bool operator>(const Position& p) const {
-		return ! (*this < p);
+	constexpr bool operator!=(const Position& p) const {
+		return std::tie(x, y, z) != std::tie(p.x, p.y, p.z);
 	}
-
-	bool operator==(const Position& p) const {
-		return p.x == x && p.y == y && p.z == z;
+	constexpr bool operator<(const Position& p) const {
+		return std::tie(z, y, x) < std::tie(p.z, p.y, p.x);
 	}
-
-	bool operator!=(const Position& p) const {
-		return p.x != x || p.y != y || p.z != z;
+	constexpr bool operator>(const Position& p) const {
+		return std::tie(z, y, x) > std::tie(p.z, p.y, p.x);
 	}
 
 	Position operator+(const Position& p1) const {
@@ -111,9 +81,9 @@ struct Position
 		return Position(x - p1.x, y - p1.y, z - p1.z);
 	}
 
-	int_fast32_t getX() const { return x; }
-	int_fast32_t getY() const { return y; }
-	int_fast16_t getZ() const { return z; }
+	constexpr int32_t getX() const { return x; }
+	constexpr int32_t getY() const { return y; }
+	constexpr int16_t getZ() const { return z; }
 };
 
 std::ostream& operator<<(std::ostream&, const Position&);
