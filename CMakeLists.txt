@@ -16,6 +16,13 @@ project(tfs CXX)
 add_subdirectory(src)
 add_executable(tfs ${tfs_SRC})
 
+option(USE_LUAJIT "Use LuaJIT" OFF)
+if (USE_LUAJIT)
+    list(APPEND VCPKG_MANIFEST_FEATURES "luajit")
+else()
+    list(APPEND VCPKG_MANIFEST_FEATURES "lua")
+endif()
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 set_target_properties(tfs PROPERTIES CXX_STANDARD 17)
@@ -53,15 +60,9 @@ find_package(Threads REQUIRED)
 find_package(PugiXML CONFIG REQUIRED)
 
 # Selects LuaJIT if user defines or auto-detected
-if (DEFINED USE_LUAJIT AND NOT USE_LUAJIT)
-    set(FORCE_LUAJIT ${USE_LUAJIT})
+if (USE_LUAJIT)
+    find_package(LuaJIT REQUIRED)
 else()
-    find_package(LuaJIT)
-    set(FORCE_LUAJIT ${LuaJIT_FOUND})
-endif()
-option(USE_LUAJIT "Use LuaJIT" ${FORCE_LUAJIT})
-
-if (NOT FORCE_LUAJIT)
     find_package(Lua REQUIRED)
 endif()
 
