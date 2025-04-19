@@ -166,7 +166,7 @@ void dispatchSignalHandler(int signal)
 
 }
 
-Signals::Signals(boost::asio::io_service& service): set(service)
+Signals::Signals(boost::asio::io_context& ioc) : set(ioc)
 {
 	set.add(SIGINT);
 	set.add(SIGTERM);
