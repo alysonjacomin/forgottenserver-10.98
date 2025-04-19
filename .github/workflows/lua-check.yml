@@ -21,7 +21,7 @@ name: Lua syntax check, lint, and format
    luac:
      runs-on: ubuntu-latest
      steps:
-       - uses: actions/checkout@v3
+       - uses: actions/checkout@v4
 
        - uses: leafo/gh-actions-lua@v10
          with:
@@ -33,7 +33,7 @@ name: Lua syntax check, lint, and format
    lint:
      runs-on: ubuntu-latest
      steps:
-       - uses: actions/checkout@v3
+       - uses: actions/checkout@v4
        - uses: leafo/gh-actions-lua@v10
        - uses: leafo/gh-actions-luarocks@v4
  
@@ -46,7 +46,7 @@ name: Lua syntax check, lint, and format
    format:
      runs-on: ubuntu-latest
      steps:
-       - uses: actions/checkout@v3
+       - uses: actions/checkout@v4
        - uses: leafo/gh-actions-lua@v10
        - uses: leafo/gh-actions-luarocks@v4
  
