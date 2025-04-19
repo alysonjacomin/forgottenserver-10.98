@@ -16,9 +16,11 @@ CreatureEvents::CreatureEvents() :
 
 void CreatureEvents::clear(bool fromLua)
 {
-	for (auto it = creatureEvents.begin(); it != creatureEvents.end(); ++it) {
+	for (auto it = creatureEvents.begin(); it != creatureEvents.end();) {
 		if (fromLua == it->second.fromLua) {
-			it->second.clearEvent();
+			it = creatureEvents.erase(it);
+		} else {
+			++it;
 		}
 	}
 
