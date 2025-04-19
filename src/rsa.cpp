@@ -7,61 +7,49 @@
 
 #include "protocol.h"
 
-#include <cryptopp/base64.h>
-#include <cryptopp/osrng.h>
+#include <openssl/err.h>
+#include <openssl/pem.h>
+#include <openssl/rsa.h>
 
-#include <fstream>
+namespace {
 
-static CryptoPP::AutoSeededRandomPool prng;
+	struct Deleter {
+		void operator()(BIO* bio) const { BIO_free(bio); }
+		void operator()(EVP_PKEY* pkey) const { EVP_PKEY_free(pkey); }
+		void operator()(EVP_PKEY_CTX* ctx) const { EVP_PKEY_CTX_free(ctx); }
+	};
 
-void RSA::decrypt(char* msg) const
-{
-	try {
-		CryptoPP::Integer m{reinterpret_cast<uint8_t*>(msg), Protocol::RSA_BUFFER_LENGTH};
-		auto c = pk.CalculateInverse(prng, m);
-		c.Encode(reinterpret_cast<uint8_t*>(msg), Protocol::RSA_BUFFER_LENGTH);
-	} catch (const CryptoPP::Exception& e) {
-		//fmt::print(fg(fmt::color::crimson) | fmt::emphasis::bold, e.what(), "\n");
-		std::cout << e.what() << std::endl;
-	}
-}
+	template <class T>
+	using C_ptr = std::unique_ptr<T, Deleter>;
 
-static const std::string header = "-----BEGIN RSA PRIVATE KEY-----";
-static const std::string footer = "-----END RSA PRIVATE KEY-----";
+	C_ptr<EVP_PKEY> pkey = nullptr;
 
-void RSA::loadPEM(const std::string& filename)
-{
-	std::ifstream file{filename};
+} // namespace
 
-	if (!file.is_open()) {
-		throw std::runtime_error("Missing file " + filename + ".");
-	}
+namespace rsa {
 
-	std::ostringstream oss;
-	for (std::string line; std::getline(file, line); oss << line);
-	std::string key = oss.str();
+	void decrypt(uint8_t* msg, size_t len) {
+		C_ptr<EVP_PKEY_CTX> pctx{EVP_PKEY_CTX_new_from_pkey(nullptr, pkey.get(), nullptr)};
+		EVP_PKEY_decrypt_init(pctx.get());
+		EVP_PKEY_CTX_set_rsa_padding(pctx.get(), RSA_NO_PADDING);
 
-	auto headerIndex = key.find(header);
-	if (headerIndex == std::string::npos) {
-		throw std::runtime_error("Missing RSA private key PEM header.");
+		EVP_PKEY_decrypt(pctx.get(), msg, &len, msg, len);
 	}
 
-	auto footerIndex = key.find(footer, headerIndex + 1);
-	if (footerIndex == std::string::npos) {
-		throw std::runtime_error("Missing RSA private key PEM footer.");
+	EVP_PKEY* loadPEM(std::string_view pem) {
+		C_ptr<BIO> bio{BIO_new(BIO_s_mem())};
+		if (!BIO_write(bio.get(), pem.data(), pem.size())) {
+			throw std::runtime_error(
+				fmt::format("Error while reading PEM data: {}", ERR_error_string(ERR_get_error(), nullptr)));
+		}
+
+		EVP_PKEY* pkey_ = nullptr;
+		if (!PEM_read_bio_PrivateKey(bio.get(), &pkey_, nullptr, nullptr)) {
+			throw std::runtime_error(
+				fmt::format("Error while reading private key: {}", ERR_error_string(ERR_get_error(), nullptr)));
+		}
+		pkey.reset(pkey_);
+		return pkey_;
 	}
 
-	key = key.substr(headerIndex + header.size(), footerIndex - headerIndex - header.size());
-
-	CryptoPP::ByteQueue queue;
-	CryptoPP::Base64Decoder decoder;
-	decoder.Attach(new CryptoPP::Redirector(queue));
-	decoder.Put(reinterpret_cast<const uint8_t*>(key.c_str()), key.size());
-	decoder.MessageEnd();
-
-	pk.BERDecodePrivateKey(queue, false, queue.MaxRetrievable());
-
-	if (!pk.Validate(prng, 3)) {
-		throw std::runtime_error("RSA private key is not valid.");
-	}
-}
+} // namespace rsa
