@@ -530,11 +530,11 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 
 				if (++it != resultList.end()) {
 					const Position& targetPosition = target->getPosition();
-					int32_t minRange = myPos.getDistanceX(targetPosition) + targetPosition.getDistanceY(myPos);
+					int32_t minRange = myPos.getDistanceX(targetPosition) + myPos.getDistanceY(targetPosition);
 					do {
 						const Position& pos = (*it)->getPosition();
 
-						if (int32_t distance = myPos.getDistanceX(pos) + pos.getDistanceY(myPos); distance < minRange) {
+						if (int32_t distance = myPos.getDistanceX(pos) + myPos.getDistanceY(pos); distance < minRange) {
 							target = *it;
 							minRange = distance;
 						}
@@ -548,7 +548,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 					}
 
 					const Position& pos = creature->getPosition();
-					if (int32_t distance = myPos.getDistanceX(pos) + pos.getDistanceY(myPos); distance < minRange) {
+					if (int32_t distance = myPos.getDistanceX(pos) + myPos.getDistanceY(pos); distance < minRange) {
 						target = creature;
 						minRange = distance;
 					}
@@ -855,7 +855,7 @@ bool Monster::canUseAttack(const Position& pos, const Creature* target) const
 {
 	if (isHostile()) {
 		const Position& targetPos = target->getPosition();
-		uint32_t distance = std::max<uint32_t>(pos.getDistanceX(targetPos), targetPos.getDistanceY(pos));
+		uint32_t distance = std::max<uint32_t>(pos.getDistanceX(targetPos), pos.getDistanceY(targetPos));
 		for (const spellBlock_t& spellBlock : mType->info.attackSpells) {
 			if (spellBlock.range != 0 && distance <= spellBlock.range) {
 				return g_game.isSightClear(pos, targetPos, true);
@@ -1047,7 +1047,7 @@ bool Monster::walkToSpawn()
 		return false;
 	}
 
-	int32_t distance = std::max(position.getDistanceX(masterPos), masterPos.getDistanceY(position));
+	int32_t distance = std::max(position.getDistanceX(masterPos), position.getDistanceY(masterPos));
 	if (distance == 0) {
 		return false;
 	}
@@ -1255,8 +1255,8 @@ bool Monster::getDanceStep(const Position& creaturePos, Direction& direction,
 	assert(attackedCreature);
 	const Position& centerPos = attackedCreature->getPosition();
 
-	int32_t offset_x = centerPos.getOffsetX(creaturePos);
- 	int32_t offset_y = centerPos.getOffsetY(creaturePos);
+	int32_t offset_x = creaturePos.getOffsetX(centerPos);
+ 	int32_t offset_y = creaturePos.getOffsetY(centerPos);
 
 	int32_t distance_x = std::abs(offset_x);
  	int32_t distance_y = std::abs(offset_y);
@@ -1349,8 +1349,8 @@ bool Monster::getDistanceStep(const Position& targetPos, Direction& direction, b
 		return true; // we don't really care here, since it's what we wanted to reach (a dance-step will take of dancing in that position)
 	}
 
-	int32_t offsetx = targetPos.getOffsetX(creaturePos);
- 	int32_t offsety = targetPos.getOffsetY(creaturePos);
+	int32_t offsetx = creaturePos.getOffsetX(targetPos);
+ 	int32_t offsety = creaturePos.getOffsetY(targetPos);
 
 	if (dx <= 1 && dy <= 1) {
 		//seems like a target is near, it this case we need to slow down our movements (as a monster)
