@@ -866,6 +866,9 @@ class Player final : public Creature, public Cylinder
 		void onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos,
 		                            const Tile* oldTile, const Position& oldPos, bool teleport) override;
 
+		void onEquipInventory();
+		void onDeEquipInventory();
+
 		void onAttackedCreatureDisappear(bool isLogout) override;
 		void onFollowCreatureDisappear(bool isLogout) override;
 
