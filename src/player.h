@@ -184,10 +184,10 @@ class Player final : public Creature, public Cylinder
 			bankBalance = balance;
 		}
 
-		Guild* getGuild() const {
+		Guild_ptr getGuild() const {
 			return guild;
 		}
-		void setGuild(Guild* guild);
+		void setGuild(Guild_ptr guild);
 
 		GuildRank_ptr getGuildRank() const {
 			return guildRank;
@@ -1259,7 +1259,7 @@ class Player final : public Creature, public Cylinder
 		ProtocolGame_ptr client;
 		Connection::Address lastIP = {};
 		BedItem* bedItem = nullptr;
-		Guild* guild = nullptr;
+		Guild_ptr guild = nullptr;
 		GuildRank_ptr guildRank = nullptr;
 		Group* group = nullptr;
 		Inbox* inbox;

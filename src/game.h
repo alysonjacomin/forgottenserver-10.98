@@ -484,8 +484,8 @@ class Game
 		void addMonster(Monster* monster);
 		void removeMonster(Monster* monster);
 
-		Guild* getGuild(uint32_t id) const;
-		void addGuild(Guild* guild);
+		Guild_ptr getGuild(uint32_t id) const;
+		void addGuild(Guild_ptr guild);
 		void removeGuild(uint32_t guildId);
 		void decreaseBrowseFieldRef(const Position& pos);
 
@@ -537,7 +537,7 @@ class Game
 		std::unordered_map<uint32_t, Player*> players;
 		std::unordered_map<std::string, Player*> mappedPlayerNames;
 		std::unordered_map<uint32_t, Player*> mappedPlayerGuids;
-		std::unordered_map<uint32_t, Guild*> guilds;
+		std::unordered_map<uint32_t, Guild_ptr> guilds;
 		std::unordered_map<uint16_t, Item*> uniqueItems;
 		std::unordered_map<uint32_t, std::unordered_map<uint32_t, int32_t>> accountStorageMap;
 
