@@ -89,10 +89,10 @@ class Events
 		bool eventPartyOnJoin(Party* party, Player* player);
 		bool eventPartyOnLeave(Party* party, Player* player);
 		bool eventPartyOnDisband(Party* party);
-		void eventPartyOnShareExperience(Party* party, uint64_t& exp);
 		bool eventPartyOnInvite(Party* party, Player* player);
 		bool eventPartyOnRevokeInvitation(Party* party, Player* player);
 		bool eventPartyOnPassLeadership(Party* party, Player* player);
+		void eventPartyOnShareExperience(Party* party, uint64_t& exp);
 
 		// Player
 		bool eventPlayerOnBrowseField(Player* player, const Position& position);

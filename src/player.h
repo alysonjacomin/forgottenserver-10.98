@@ -21,6 +21,8 @@ class Npc;
 class Party;
 class SchedulerTask;
 
+struct Mount;
+
 enum skillsid_t {
 	SKILLVALUE_LEVEL = 0,
 	SKILLVALUE_TRIES = 1,

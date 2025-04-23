@@ -232,12 +232,12 @@ class ItemAttributes
 					lua_pushnil(L);
 				}
 
-				void operator()(const std::string& v) const {
-					LuaScriptInterface::pushString(L, v);
+				void operator()(std::string_view v) const {
+					lua::pushString(L, v);
 				}
 
 				void operator()(bool v) const {
-					LuaScriptInterface::pushBoolean(L, v);
+					lua::pushBoolean(L, v);
 				}
 
 				void operator()(const int64_t& v) const {

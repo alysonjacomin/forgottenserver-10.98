@@ -54,7 +54,7 @@ class Database
 		 *
 		 * @return results object (nullptr on error)
 		 */
-		DBResult_ptr storeQuery(const std::string& query);
+		DBResult_ptr storeQuery(std::string_view query);
 
 		/**
 		 * Escapes string for query.
