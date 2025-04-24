@@ -36,6 +36,9 @@ Creature::~Creature()
 
 	for (Condition* condition : conditions) {
 		condition->endCondition(this);
+	}
+
+	for (auto condition : conditions) {
 		delete condition;
 	}
 }
