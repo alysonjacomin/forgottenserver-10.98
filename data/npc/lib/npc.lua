@@ -101,12 +101,15 @@ function doPlayerBuyItemContainer(cid, containerid, itemid, count, cost, charges
 end
 
 function getCount(string)
-	local b, e = string:find("%d+")
-	local count = tonumber(string:sub(b, e))
-	if count > 2 ^ 32 - 1 then
-		print("Warning: Casting value to 32bit to prevent crash\n" .. debug.traceback())
-	end
-	return b and e and math.min(2 ^ 32 - 1, count) or -1
+    local b, e = string:find("%d+")
+    if not b then
+        return -1
+    end
+    local count = tonumber(string:sub(b, e))
+    if count > 2 ^ 32 - 1 then
+        print("Warning: Casting value to 32bit to prevent crash\n" .. debug.traceback())
+    end
+    return b and e and math.min(2 ^ 32 - 1, count) or -1
 end
 
 function isValidMoney(money)
@@ -114,16 +117,19 @@ function isValidMoney(money)
 end
 
 function getMoneyCount(string)
-	local b, e = string:find("%d+")
-	local count = tonumber(string:sub(b, e))
-	if count > 2 ^ 32 - 1 then
-		print("Warning: Casting value to 32bit to prevent crash\n" .. debug.traceback())
-	end
-	local money = b and e and math.min(2 ^ 32 - 1, count) or -1
-	if isValidMoney(money) then
-		return money
-	end
-	return -1
+    local b, e = string:find("%d+")
+    if not b then
+        return -1
+    end
+    local count = tonumber(string:sub(b, e))
+    if count > 2 ^ 32 - 1 then
+        print("Warning: Casting value to 32bit to prevent crash\n" .. debug.traceback())
+    end
+    local money = b and e and math.min(2 ^ 32 - 1, count) or -1
+    if isValidMoney(money) then
+        return money
+    end
+    return -1
 end
 
 function getMoneyWeight(money)
