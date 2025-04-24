@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.19)
 
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
@@ -10,6 +10,8 @@ set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 if (DEFINED ENV{VCPKG_DEFAULT_TRIPLET} AND NOT DEFINED VCPKG_TARGET_TRIPLET)
      set(VCPKG_TARGET_TRIPLET "$ENV{VCPKG_DEFAULT_TRIPLET}" CACHE STRING "The vcpkg triplet")
 endif()
+
+set(BOOST_REQUIRED_VERSION 1.71.0)
 
 project(tfs CXX)
 
@@ -42,9 +44,9 @@ endif()
 
 # Find packages.
 find_package(OpenSSL 3.0.0 REQUIRED COMPONENTS Crypto)
-find_package(fmt CONFIG)
+find_package(fmt 8.1.1 CONFIG)
  if (NOT fmt_FOUND)
-	find_package(fmt 6.1.2 REQUIRED)
+	find_package(fmt 8.1.1 REQUIRED)
  endif()
 
 # Look for vcpkg-provided libmariadb first
@@ -74,7 +76,7 @@ set(BOOST_REQUIRED_COMPONENTS system iostreams locale)
 if (BUILD_TESTING)
     list(APPEND BOOST_REQUIRED_COMPONENTS unit_test_framework)
 endif ()
-find_package(Boost 1.71.0 REQUIRED COMPONENTS ${BOOST_REQUIRED_COMPONENTS})
+find_package(Boost ${BOOST_REQUIRED_VERSION} REQUIRED COMPONENTS ${BOOST_REQUIRED_COMPONENTS})
 
 include_directories(${Boost_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR} ${LUA_INCLUDE_DIR} ${MYSQL_INCLUDE_DIR} ${PUGIXML_INCLUDE_DIR})
 
