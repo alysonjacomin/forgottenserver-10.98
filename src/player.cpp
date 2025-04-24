@@ -1920,7 +1920,7 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 
 			const int16_t& absorbPercent = it.abilities->absorbPercent[combatTypeToIndex(combatType)];
 			if (absorbPercent != 0) {
-				damage -= std::round(damage * (absorbPercent / 100.));
+				damage -= std::ceil(damage * (absorbPercent / 100.));
 
 				uint16_t charges = item->getCharges();
 				if (charges != 0) {
@@ -1931,7 +1931,7 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 			if (field) {
 				const int16_t& fieldAbsorbPercent = it.abilities->fieldAbsorbPercent[combatTypeToIndex(combatType)];
 				if (fieldAbsorbPercent != 0) {
-					damage -= std::round(damage * (fieldAbsorbPercent / 100.));
+					damage -= std::ceil(damage * (fieldAbsorbPercent / 100.));
 
 					uint16_t charges = item->getCharges();
 					if (charges != 0) {
