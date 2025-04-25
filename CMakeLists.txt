@@ -96,14 +96,12 @@ target_link_libraries(tfs PRIVATE
         )
 
 ### INTERPROCEDURAL_OPTIMIZATION ###
-cmake_policy(SET CMP0069 NEW)
 include(CheckIPOSupported)
 check_ipo_supported(RESULT result OUTPUT error)
 if (result)
-    message(STATUS "IPO / LTO enabled")
-    set_target_properties(tfs PROPERTIES INTERPROCEDURAL_OPTIMIZATION True)
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 else()
-    message(STATUS "IPO / LTO not supported: <${error}>")
+    message(STATUS "IPO is not supported: ${error}")
 endif()
 ### END INTERPROCEDURAL_OPTIMIZATION ###
 
