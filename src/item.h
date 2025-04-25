@@ -1020,6 +1020,9 @@ class Item : virtual public Thing
 			}
 		}
 
+		bool hasParent() const override {
+			return getParent();
+		}
 		Cylinder* getParent() const override {
 			return parent;
 		}

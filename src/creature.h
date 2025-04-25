@@ -419,6 +419,9 @@ class Creature : virtual public Thing
 		bool registerCreatureEvent(const std::string& name);
 		bool unregisterCreatureEvent(const std::string& name);
 
+		bool hasParent() const override {
+			return getParent();
+		}
 		Cylinder* getParent() const override final {
 			return tile;
 		}

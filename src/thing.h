@@ -23,6 +23,9 @@ class Thing
 
 		virtual std::string getDescription(int32_t lookDistance) const = 0;
 
+		virtual bool hasParent() const {
+			return false;
+		}
 		virtual Cylinder* getParent() const {
 			return nullptr;
 		}

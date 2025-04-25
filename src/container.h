@@ -64,6 +64,8 @@ class Container : public Item, public Cylinder
 			return nullptr;
 		}
 
+		bool hasParent() const override;
+
 		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
 		bool unserializeItemNode(OTB::Loader& loader, const OTB::Node& node, PropStream& propStream) override;
 		std::string getContentDescription() const;
@@ -93,7 +95,6 @@ class Container : public Item, public Cylinder
 
 		std::string getName(bool addArticle = false) const;
 
-		bool hasParent() const;
 		void addItem(Item* item);
 		Item* getItemByIndex(size_t index) const;
 		bool isHoldingItem(const Item* item) const;

@@ -2425,6 +2425,7 @@ void LuaScriptInterface::registerFunctions()
 
 	registerMethod(L, "Item", "isItem", LuaScriptInterface::luaItemIsItem);
 
+	registerMethod(L, "Item", "hasParent", LuaScriptInterface::luaItemHasParent);
 	registerMethod(L, "Item", "getParent", LuaScriptInterface::luaItemGetParent);
 	registerMethod(L, "Item", "getTopParent", LuaScriptInterface::luaItemGetTopParent);
 
@@ -2519,6 +2520,7 @@ void LuaScriptInterface::registerFunctions()
 	registerMethod(L, "Creature", "canSeeGhostMode", LuaScriptInterface::luaCreatureCanSeeGhostMode);
 	registerMethod(L, "Creature", "canSeeInvisibility", LuaScriptInterface::luaCreatureCanSeeInvisibility);
 
+	registerMethod(L, "Creature", "hasParent", LuaScriptInterface::luaCreatureHasParent);
 	registerMethod(L, "Creature", "getParent", LuaScriptInterface::luaCreatureGetParent);
 
 	registerMethod(L, "Creature", "getId", LuaScriptInterface::luaCreatureGetId);
@@ -3485,7 +3487,7 @@ int LuaScriptInterface::luaDoPlayerAddItem(lua_State* L)
 		}
 
 		if (--itemCount == 0) {
-			if (newItem->getParent()) {
+			if (newItem->hasParent()) {
 				uint32_t uid = lua::getScriptEnv()->addThing(newItem);
 				lua_pushnumber(L, uid);
 				return 1;
@@ -6475,6 +6477,19 @@ int LuaScriptInterface::luaItemIsItem(lua_State* L)
 	return 1;
 }
 
+int LuaScriptInterface::luaItemHasParent(lua_State* L)
+{
+	// item:hasParent()
+	Item* item = lua::getUserdata<Item>(L, 1);
+	if (!item) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua::pushBoolean(L, item->hasParent());
+	return 1;
+}
+
 int LuaScriptInterface::luaItemGetParent(lua_State* L)
 {
 	// item:getParent()
@@ -7720,6 +7735,19 @@ int LuaScriptInterface::luaCreatureCanSeeInvisibility(lua_State* L)
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+int LuaScriptInterface::luaCreatureHasParent(lua_State* L)
+{
+	// creature:hasParent()
+	Creature* creature = lua::getUserdata<Creature>(L, 1);
+	if (!creature) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua::pushBoolean(L, creature->hasParent());
 	return 1;
 }
 
