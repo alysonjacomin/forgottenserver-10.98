@@ -264,9 +264,6 @@ class Monster final : public Creature
 			return mType->info.conditionImmunities;
 		}
 		void getPathSearchParams(const Creature* creature, FindPathParams& fpp) const override;
-		bool useCacheMap() const override {
-			return !randomStepping;
-		}
 
 		friend class LuaScriptInterface;
 };
