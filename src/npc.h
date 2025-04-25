@@ -174,6 +174,8 @@ class Npc final : public Creature
 
 		using Creature::onWalk;
 
+		void goToFollowCreature() override;
+
 	private:
 		explicit Npc(const std::string& name);
 

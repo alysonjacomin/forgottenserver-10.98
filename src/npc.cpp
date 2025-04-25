@@ -231,6 +231,17 @@ std::string Npc::getDescription(int32_t) const
 	return descr;
 }
 
+void Npc::goToFollowCreature()
+{
+	if (!followCreature) {
+		return;
+	}
+
+	FindPathParams fpp;
+	getPathSearchParams(followCreature, fpp);
+	updateFollowCreaturePath(fpp);
+}
+
 void Npc::onCreatureAppear(Creature* creature, bool isLogin)
 {
 	Creature::onCreatureAppear(creature, isLogin);

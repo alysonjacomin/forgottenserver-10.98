@@ -128,7 +128,8 @@ class Monster final : public Creature
 		void onWalk() override;
 		void onWalkComplete() override;
 		bool getNextStep(Direction& direction, uint32_t& flags) override;
-		void onFollowCreatureComplete(const Creature* creature) override;
+		void goToFollowCreature() override;
+		void onFollowCreatureComplete();
 
 		void onThink(uint32_t interval) override;
 
