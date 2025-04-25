@@ -14,6 +14,38 @@
 
 extern Game g_game;
 
+namespace {
+
+	std::string decodeSecret(std::string_view secret) {
+		// simple base32 decoding
+		std::string key;
+		key.reserve(10);
+
+		uint32_t buffer = 0, left = 0;
+		for (const auto& ch : secret) {
+			buffer <<= 5;
+			if (ch >= 'A' && ch <= 'Z') {
+				buffer |= (ch & 0x1F) - 1;
+			} else if (ch >= '2' && ch <= '7') {
+				buffer |= ch - 24;
+			} else {
+				// if a key is broken, return empty and the comparison will always be false since the token must not be
+				// empty
+				return {};
+			}
+
+			left += 5;
+			if (left >= 8) {
+				left -= 8;
+				key.push_back(static_cast<char>(buffer >> left));
+			}
+		}
+
+		return key;
+	}
+
+} // namespace
+
 void ProtocolLogin::disconnectClient(const std::string& message, uint16_t version)
 {
 	auto output = OutputMessagePool::getOutputMessage();
@@ -27,17 +59,34 @@ void ProtocolLogin::disconnectClient(const std::string& message, uint16_t versio
 
 void ProtocolLogin::getCharacterList(const std::string& accountName, const std::string& password, const std::string& token, uint16_t version)
 {
-	Account account;
-	if (!IOLoginData::loginserverAuthentication(accountName, password, account)) {
+	Database& db = Database::getInstance();
+
+	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `id`, UNHEX(`password`) AS `password`, `secret`, `premium_ends_at` FROM `accounts` WHERE `name` = {:s}", db.escapeString(accountName)));
+	if (!result) {
 		disconnectClient("Account name or password is not correct.", version);
-		return;
+	}
+
+	if (transformToSHA1(password) != result->getString("password")) {
+		disconnectClient("Account name or password is not correct.", version);
+	}
+
+	auto id = result->getNumber<uint32_t>("id");
+	auto key = decodeSecret(result->getString("secret"));
+	auto premiumEndsAt = result->getNumber<time_t>("premium_ends_at");
+
+	std::vector<std::string> characters = {};
+	result = db.storeQuery(fmt::format("SELECT `name` FROM `players` WHERE `account_id` = {:d} AND `deletion` = 0 ORDER BY `name` ASC", id));
+	if (result) {
+		do {
+			characters.emplace_back(result->getString("name"));
+		} while (result->next());
 	}
 
 	uint32_t ticks = time(nullptr) / AUTHENTICATOR_PERIOD;
 
 	auto output = OutputMessagePool::getOutputMessage();
-	if (!account.key.empty()) {
-		if (token.empty() || !(token == generateToken(account.key, ticks) || token == generateToken(account.key, ticks - 1) || token == generateToken(account.key, ticks + 1))) {
+	if (!key.empty()) {
+		if (token.empty() || !(token == generateToken(key, ticks) || token == generateToken(key, ticks - 1) || token == generateToken(key, ticks + 1))) {
 			output->addByte(0x0D);
 			output->addByte(0);
 			send(output);
@@ -62,7 +111,7 @@ void ProtocolLogin::getCharacterList(const std::string& accountName, const std::
 	//Add char list
 	output->addByte(0x64);
 
-	uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(), account.characters.size());
+	uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(), characters.size());
 
 	if (getBoolean(ConfigManager::ONLINE_OFFLINE_CHARLIST)) {
 		output->addByte(2); // number of worlds
@@ -85,7 +134,7 @@ void ProtocolLogin::getCharacterList(const std::string& accountName, const std::
 
 	output->addByte(size);
 	for (uint8_t i = 0; i < size; i++) {
-		const std::string& character = account.characters[i];
+		const auto& character = characters[i];
 		if (getBoolean(ConfigManager::ONLINE_OFFLINE_CHARLIST)) {
 			output->addByte(g_game.getPlayerByName(character) ? 1 : 0);
 		} else {
@@ -100,8 +149,8 @@ void ProtocolLogin::getCharacterList(const std::string& accountName, const std::
 		output->addByte(1);
 		output->add<uint32_t>(0);
 	} else {
-		output->addByte(account.premiumEndsAt > time(nullptr) ? 1 : 0);
-		output->add<uint32_t>(account.premiumEndsAt);
+		output->addByte(premiumEndsAt > time(nullptr) ? 1 : 0);
+		output->add<uint32_t>(premiumEndsAt);
 	}
 
 	send(output);

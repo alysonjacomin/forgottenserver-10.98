@@ -15,22 +15,6 @@
 
 extern Game g_game;
 
-Account IOLoginData::loadAccount(uint32_t accno)
-{
-	Account account;
-
-	DBResult_ptr result = Database::getInstance().storeQuery(fmt::format("SELECT `id`, `name`, `type`, `premium_ends_at` FROM `accounts` WHERE `id` = {:d}", accno));
-	if (!result) {
-		return account;
-	}
-
-	account.id = result->getNumber<uint32_t>("id");
-	account.name = result->getString("name");
-	account.accountType = static_cast<AccountType_t>(result->getNumber<int32_t>("type"));
-	account.premiumEndsAt = result->getNumber<time_t>("premium_ends_at");
-	return account;
-}
-
 std::string decodeSecret(std::string_view secret)
 {
 	// simple base32 decoding
@@ -58,34 +42,6 @@ std::string decodeSecret(std::string_view secret)
 	}
 
 	return key;
-}
-
-bool IOLoginData::loginserverAuthentication(const std::string& name, const std::string& password, Account& account)
-{
-	Database& db = Database::getInstance();
-
-	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `id`, `name`, UNHEX(`password`) AS `password`, `secret`, `type`, `premium_ends_at` FROM `accounts` WHERE `name` = {:s}", db.escapeString(name)));
-	if (!result) {
-		return false;
-	}
-
-	if (transformToSHA1(password) != result->getString("password")) {
-		return false;
-	}
-
-	account.id = result->getNumber<uint32_t>("id");
-	account.name = result->getString("name");
-	account.key = decodeSecret(result->getString("secret"));
-	account.accountType = static_cast<AccountType_t>(result->getNumber<int32_t>("type"));
-	account.premiumEndsAt = result->getNumber<time_t>("premium_ends_at");
-
-	result = db.storeQuery(fmt::format("SELECT `name` FROM `players` WHERE `account_id` = {:d} AND `deletion` = 0 ORDER BY `name` ASC", account.id));
-	if (result) {
-		do {
-			account.characters.emplace_back(result->getString("name"));
-		} while (result->next());
-	}
-	return true;
 }
 
 std::pair<uint32_t, std::string_view> IOLoginData::gameworldAuthentication(std::string_view accountName, std::string_view password, std::string_view characterName, std::string_view token, uint32_t tokenTime)
@@ -234,16 +190,20 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
 	Database& db = Database::getInstance();
 
-	uint32_t accno = result->getNumber<uint32_t>("account_id");
-	Account acc = loadAccount(accno);
+	uint32_t accountId = result->getNumber<uint32_t>("account_id");
+
+	auto account =
+	    db.storeQuery(fmt::format("SELECT `type`, `premium_ends_at` FROM `accounts` WHERE `id` = {:d}", accountId));
+	if (!account) {
+		return false;
+	}
 
 	player->setGUID(result->getNumber<uint32_t>("id"));
 	player->name = result->getString("name");
-	player->accountNumber = accno;
+	player->accountNumber = accountId;
 
-	player->accountType = acc.accountType;
-
-	player->premiumEndsAt = acc.premiumEndsAt;
+	player->accountType = static_cast<AccountType_t>(account->getNumber<int32_t>("type"));
+	player->premiumEndsAt = account->getNumber<time_t>("premium_ends_at");
 
 	Group* group = g_game.groups.getGroup(result->getNumber<uint16_t>("group_id"));
 	if (!group) {
