@@ -1803,7 +1803,7 @@ bool ConditionLight::setParam(ConditionParam_t param, int32_t value)
 
 	switch (param) {
 		case CONDITION_PARAM_LIGHT_LEVEL:
-			lightInfo.level = std::max(1, value);
+			lightInfo.level = std::max(1, (value > 0 ? value : 1));
 			return true;
 
 		case CONDITION_PARAM_LIGHT_COLOR:
