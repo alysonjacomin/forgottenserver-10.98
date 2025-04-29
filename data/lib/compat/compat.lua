@@ -146,6 +146,10 @@ do
 			self:type("logout")
 			self:onLogout(value)
 			return
+		elseif key == "onReconnect" then
+			self:type("reconnect")
+			self:onReconnect(value)
+			return
 		elseif key == "onThink" then
 			self:type("think")
 			self:onThink(value)

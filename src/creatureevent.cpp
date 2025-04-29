@@ -144,9 +144,20 @@ bool CreatureEvents::playerLogout(Player* player) const
 	return true;
 }
 
+void CreatureEvents::playerReconnect(Player* player) const
+{
+	// fire global event if is registered
+	for (const auto& it : creatureEvents) {
+		if (it.second.getEventType() == CREATURE_EVENT_RECONNECT) {
+			it.second.executeOnReconnect(player);
+		}
+	}
+}
+
 bool CreatureEvents::playerAdvance(Player* player, skills_t skill, uint32_t oldLevel,
                                        uint32_t newLevel)
 {
+	// fire global event if is registered
 	for (auto& it : creatureEvents) {
 		if (it.second.getEventType() == CREATURE_EVENT_ADVANCE) {
 			if (!it.second.executeAdvance(player, skill, oldLevel, newLevel)) {
@@ -185,6 +196,8 @@ bool CreatureEvent::configureEvent(const pugi::xml_node& node)
 		type = CREATURE_EVENT_LOGIN;
 	} else if (tmpStr == "logout") {
 		type = CREATURE_EVENT_LOGOUT;
+	} else if (tmpStr == "reconnect") {
+		type = CREATURE_EVENT_RECONNECT;
 	} else if (tmpStr == "think") {
 		type = CREATURE_EVENT_THINK;
 	} else if (tmpStr == "preparedeath") {
@@ -223,6 +236,9 @@ std::string_view CreatureEvent::getScriptEventName() const
 
 		case CREATURE_EVENT_LOGOUT:
 			return "onLogout";
+
+		case CREATURE_EVENT_RECONNECT:
+			return "onReconnect";
 
 		case CREATURE_EVENT_THINK:
 			return "onThink";
@@ -314,6 +330,25 @@ bool CreatureEvent::executeOnLogout(Player* player) const
 	lua::setMetatable(L, -1, "Player");
 
 	return scriptInterface->callFunction(1);
+}
+
+void CreatureEvent::executeOnReconnect(Player* player) const
+{
+	// onReconnect(player)
+	if (!lua::reserveScriptEnv()) {
+		std::cout << "[Error - CreatureEvent::executeOnReconnect] Call stack overflow" << std::endl;
+		return;
+	}
+
+	ScriptEnvironment* env = lua::getScriptEnv();
+	env->setScriptId(scriptId, scriptInterface);
+
+	lua_State* L = scriptInterface->getLuaState();
+
+	scriptInterface->pushFunction(scriptId);
+	lua::pushUserdata(L, player);
+	lua::setMetatable(L, -1, "Player");
+	scriptInterface->callFunction(1);
 }
 
 bool CreatureEvent::executeOnThink(Creature* creature, uint32_t interval)
