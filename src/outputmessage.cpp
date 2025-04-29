@@ -16,31 +16,44 @@ namespace {
 const uint16_t OUTPUTMESSAGE_FREE_LIST_CAPACITY = 2048;
 const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY {10};
 
-void sendAll(const std::vector<Protocol_ptr>& bufferedProtocols);
+// NOTE: A vector is used here because this container is mostly read and relatively rarely modified (only when a
+// client connects/disconnects)
+std::vector<Protocol_ptr> bufferedProtocols;
 
-void scheduleSendAll(const std::vector<Protocol_ptr>& bufferedProtocols)
+void sendAll(const std::vector<Protocol_ptr>& bufferedProtocol);
+
+void scheduleSendAll(const std::vector<Protocol_ptr>& bufferedProtocol)
 {
-	g_scheduler.addEvent(createSchedulerTask(OUTPUTMESSAGE_AUTOSEND_DELAY.count(), [&]() { sendAll(bufferedProtocols); }));
+	g_scheduler.addEvent(createSchedulerTask(OUTPUTMESSAGE_AUTOSEND_DELAY.count(), [&]() {
+		sendAll(bufferedProtocol);
+	}));
 }
 
-void sendAll(const std::vector<Protocol_ptr>& bufferedProtocols)
+void sendAll(const std::vector<Protocol_ptr>& bufferedProtocol)
 {
 	//dispatcher thread
-	for (auto& protocol : bufferedProtocols) {
+	for (auto& protocol : bufferedProtocol) {
 		auto& msg = protocol->getCurrentBuffer();
 		if (msg) {
 			protocol->send(std::move(msg));
 		}
 	}
 
-	if (!bufferedProtocols.empty()) {
-		scheduleSendAll(bufferedProtocols);
+	if (!bufferedProtocol.empty()) {
+		scheduleSendAll(bufferedProtocol);
 	}
 }
 
 }
 
-void OutputMessagePool::addProtocolToAutosend(Protocol_ptr protocol)
+OutputMessage_ptr net::make_output_message()
+{
+	// LockfreePoolingAllocator<void,...> will leave (void* allocate) ill-formed because of sizeof(T), so this
+	// guarantees that only one list will be initialized
+	return std::allocate_shared<OutputMessage>(LockfreePoolingAllocator<void, OUTPUTMESSAGE_FREE_LIST_CAPACITY>());
+}
+
+void net::insert_protocol_to_autosend(const Protocol_ptr& protocol)
 {
 	//dispatcher thread
 	if (bufferedProtocols.empty()) {
@@ -49,7 +62,7 @@ void OutputMessagePool::addProtocolToAutosend(Protocol_ptr protocol)
 	bufferedProtocols.emplace_back(protocol);
 }
 
-void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr& protocol)
+void net::remove_protocol_from_autosend(const Protocol_ptr& protocol)
 {
 	//dispatcher thread
 	auto it = std::find(bufferedProtocols.begin(), bufferedProtocols.end(), protocol);
@@ -57,11 +70,4 @@ void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr& protocol)
 		std::swap(*it, bufferedProtocols.back());
 		bufferedProtocols.pop_back();
 	}
-}
-
-OutputMessage_ptr OutputMessagePool::getOutputMessage()
-{
-	// LockfreePoolingAllocator<void,...> will leave (void* allocate) ill-formed because
-	// of sizeof(T), so this guarantees that only one list will be initialized
-	return std::allocate_shared<OutputMessage>(LockfreePoolingAllocator<void, OUTPUTMESSAGE_FREE_LIST_CAPACITY>());
 }

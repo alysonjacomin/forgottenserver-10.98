@@ -48,7 +48,7 @@ namespace {
 
 void ProtocolLogin::disconnectClient(const std::string& message, uint16_t version)
 {
-	auto output = OutputMessagePool::getOutputMessage();
+	auto output = net::make_output_message();
 
 	output->addByte(version >= 1076 ? 0x0B : 0x0A);
 	output->addString(message);
@@ -84,7 +84,7 @@ void ProtocolLogin::getCharacterList(const std::string& accountName, const std::
 
 	uint32_t ticks = time(nullptr) / AUTHENTICATOR_PERIOD;
 
-	auto output = OutputMessagePool::getOutputMessage();
+	auto output = net::make_output_message();
 	if (!key.empty()) {
 		if (token.empty() || !(token == generateToken(key, ticks) || token == generateToken(key, ticks - 1) || token == generateToken(key, ticks + 1))) {
 			output->addByte(0x0D);
