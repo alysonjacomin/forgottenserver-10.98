@@ -37,7 +37,6 @@ extern Weapons* g_weapons;
 extern Game g_game;
 extern CreatureEvents* g_creatureEvents;
 extern GlobalEvents* g_globalEvents;
-extern Events* g_events;
 extern Chat* g_chat;
 extern LuaEnvironment g_luaEnvironment;
 
@@ -97,7 +96,7 @@ void sighupHandler()
 	g_globalEvents->reload();
 	std::cout << "Reloaded globalevents." << std::endl;
 
-	g_events->load();
+	events::reload();
 	std::cout << "Reloaded events." << std::endl;
 
 	g_chat->load();

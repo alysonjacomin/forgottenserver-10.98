@@ -10,7 +10,6 @@
 #include "game.h"
 
 extern Game g_game;
-extern Events* g_events;
 
 Party::Party(Player* leader) : leader(leader)
 {
@@ -19,7 +18,7 @@ Party::Party(Player* leader) : leader(leader)
 
 void Party::disband()
 {
-	if (!g_events->eventPartyOnDisband(this)) {
+	if (!events::party::onDisband(this)) {
 		return;
 	}
 
@@ -70,7 +69,7 @@ bool Party::leaveParty(Player* player, bool forceRemove /* = false */)
 		return false;
 	}
 
-	bool canRemove = g_events->eventPartyOnLeave(this, player);
+	bool canRemove = events::party::onLeave(this, player);
 	if (!forceRemove && !canRemove) {
 		return false;
 	}
@@ -135,7 +134,7 @@ bool Party::passPartyLeadership(Player* player, bool forceRemove /* = false*/)
 		return false;
 	}
 
-	if (!g_events->eventPartyOnPassLeadership(this, player) && !forceRemove) {
+	if (!events::party::onPassLeadership(this, player) && !forceRemove) {
 		return false;
 	}
 
@@ -174,7 +173,7 @@ bool Party::passPartyLeadership(Player* player, bool forceRemove /* = false*/)
 bool Party::joinParty(Player& player)
 {
 	// check if lua scripts allow the player to join
-	if (!g_events->eventPartyOnJoin(this, &player)) {
+	if (!events::party::onJoin(this, &player)) {
 		return false;
 	}
 
@@ -256,7 +255,7 @@ bool Party::removeInvite(Player& player, bool removeFromPlayer/* = true*/)
 
 void Party::revokeInvitation(Player& player)
 {
-	if (!g_events->eventPartyOnRevokeInvitation(this, &player)) {
+	if (!events::party::onRevokeInvitation(this, &player)) {
 		return;
 	}
 
@@ -389,7 +388,7 @@ bool Party::setSharedExperience(Player* player, bool sharedExpActive)
 void Party::shareExperience(uint64_t experience, Creature* source/* = nullptr*/)
 {
 	uint64_t shareExperience = experience;
-	g_events->eventPartyOnShareExperience(this, shareExperience);
+	events::party::onShareExperience(this, shareExperience);
 
 	for (Player* member : memberList) {
 		member->onGainSharedExperience(shareExperience, source);

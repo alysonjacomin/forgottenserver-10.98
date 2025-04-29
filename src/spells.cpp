@@ -13,7 +13,6 @@
 #include "monsters.h"
 #include "pugicast.h"
 
-extern Events* g_events;
 extern Game g_game;
 extern Spells* g_spells;
 extern Monsters g_monsters;
@@ -558,7 +557,7 @@ bool Spell::playerSpellCheck(Player* player) const
 		return false;
 	}
 
-	if (!g_events->eventPlayerOnSpellCheck(player, this)) {
+	if (!events::player::onSpellCheck(player, this)) {
  		return false;
  	}
 
