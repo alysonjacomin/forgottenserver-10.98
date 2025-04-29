@@ -839,9 +839,9 @@ class Player final : public Creature, public Cylinder
 		void sendAddContainerItem(const Container* container, const Item* item);
 		void sendUpdateContainerItem(const Container* container, uint16_t slot, const Item* newItem);
 		void sendRemoveContainerItem(const Container* container, uint16_t slot);
-		void sendContainer(uint8_t cid, const Container* container, bool hasParent, uint16_t firstIndex) {
+		void sendContainer(uint8_t cid, const Container* container, uint16_t firstIndex) {
 			if (client) {
-				client->sendContainer(cid, container, hasParent, firstIndex);
+				client->sendContainer(cid, container, firstIndex);
 			}
 		}
 

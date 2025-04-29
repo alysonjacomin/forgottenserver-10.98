@@ -246,7 +246,7 @@ class ProtocolGame final : public Protocol
 		void sendUpdateContainerItem(uint8_t cid, uint16_t slot, const Item* item);
 		void sendRemoveContainerItem(uint8_t cid, uint16_t slot, const Item* lastItem);
 
-		void sendContainer(uint8_t cid, const Container* container, bool hasParent, uint16_t firstIndex);
+		void sendContainer(uint8_t cid, const Container* container, uint16_t firstIndex);
 		void sendCloseContainer(uint8_t cid);
 
 		//inventory

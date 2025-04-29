@@ -80,9 +80,18 @@ std::string Container::getName(bool addArticle /* = false*/) const {
 	return getNameDescription(it, this, -1, addArticle);
 }
 
-bool Container::hasParent() const
+bool Container::hasContainerParent() const
 {
-	return getID() != ITEM_BROWSEFIELD && !dynamic_cast<const Player*>(getParent());
+	if (getID() == ITEM_BROWSEFIELD) {
+		return false;
+	}
+
+	if (hasParent()) {
+		if (auto creature = getParent()->getCreature()) {
+			return !creature->getPlayer();
+		}
+	}
+	return true;
 }
 
 void Container::addItem(Item* item)
