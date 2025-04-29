@@ -7816,11 +7816,19 @@ int LuaScriptInterface::luaCreatureGetTarget(lua_State* L)
 int LuaScriptInterface::luaCreatureSetTarget(lua_State* L)
 {
 	// creature:setTarget(target)
-	Creature* creature = lua::getUserdata<Creature>(L, 1);
-	if (creature) {
-		lua::pushBoolean(L, creature->setAttackedCreature(lua::getCreature(L, 2)));
-	} else {
+	auto creature = lua::getUserdata<Creature>(L, 1);
+	if (!creature) {
 		lua_pushnil(L);
+		return 1;
+	}
+
+	auto target = lua::getCreature(L, 2);
+	if (target) {
+		creature->setAttackedCreature(target);
+		lua::pushBoolean(L, creature->canAttackCreature(target));
+	} else {
+		creature->removeAttackedCreature();
+		lua::pushBoolean(L, true);
 	}
 	return 1;
 }
@@ -7847,11 +7855,19 @@ int LuaScriptInterface::luaCreatureGetFollowCreature(lua_State* L)
 int LuaScriptInterface::luaCreatureSetFollowCreature(lua_State* L)
 {
 	// creature:setFollowCreature(followedCreature)
-	Creature* creature = lua::getUserdata<Creature>(L, 1);
-	if (creature) {
-		lua::pushBoolean(L, creature->setFollowCreature(lua::getCreature(L, 2)));
-	} else {
+	auto creature = lua::getUserdata<Creature>(L, 1);
+	if (!creature) {
 		lua_pushnil(L);
+		return 1;
+	}
+
+	auto followedCreature = lua::getCreature(L, 2);
+	if (followedCreature) {
+		creature->setFollowCreature(followedCreature);
+		lua::pushBoolean(L, creature->canFollowCreature(followedCreature));
+	} else {
+		creature->removeFollowCreature();
+		lua::pushBoolean(L, true);
 	}
 	return 1;
 }

@@ -695,7 +695,14 @@ int NpcScriptInterface::luaActionFollow(lua_State* L)
 		return 1;
 	}
 
-	lua::pushBoolean(L, npc->setFollowCreature(lua::getPlayer(L, 1)));
+	auto followedPlayer = lua::getPlayer(L, 1);
+	if (followedPlayer) {
+		npc->setFollowCreature(followedPlayer);
+		lua::pushBoolean(L, npc->canFollowCreature(followedPlayer));
+	} else {
+		npc->removeFollowCreature();
+		lua::pushBoolean(L, true);
+	}
 
 	return 1;
 }
