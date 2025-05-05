@@ -5223,12 +5223,12 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 			return;
 		}
 
-		DepotChest* depotChest = player->getDepotChest(player->getLastDepotId(), false);
+		DepotChest_ptr depotChest = player->getDepotChest(player->getLastDepotId(), false);
 		if (!depotChest) {
 			return;
 		}
 
-		std::forward_list<Item*> itemList = getMarketItemList(it.wareId, amount, depotChest, player->getInbox().get());
+		std::forward_list<Item*> itemList = getMarketItemList(it.wareId, amount, depotChest.get(), player->getInbox().get());
 		if (itemList.empty()) {
 			return;
 		}
@@ -5374,12 +5374,12 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	uint64_t totalPrice = static_cast<uint64_t>(offer.price) * amount;
 
 	if (offer.type == MARKETACTION_BUY) {
-		DepotChest* depotChest = player->getDepotChest(player->getLastDepotId(), false);
+		DepotChest_ptr depotChest = player->getDepotChest(player->getLastDepotId(), false);
 		if (!depotChest) {
 			return;
 		}
 
-		std::forward_list<Item*> itemList = getMarketItemList(it.wareId, amount, depotChest, player->getInbox().get());
+		std::forward_list<Item*> itemList = getMarketItemList(it.wareId, amount, depotChest.get(), player->getInbox().get());
 		if (itemList.empty()) {
 			return;
 		}

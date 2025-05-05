@@ -37,6 +37,11 @@ Thing* Cylinder::getThing(size_t) const
 	return nullptr;
 }
 
+void Cylinder::internalRemoveThing(Thing*)
+{
+	//
+}
+
 void Cylinder::internalAddThing(Thing*)
 {
 	//

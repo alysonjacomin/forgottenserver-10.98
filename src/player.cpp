@@ -52,6 +52,14 @@ Player::~Player()
 		}
 	}
 
+	for (const auto& [_, depot] : depotChests) {
+		if (Cylinder* parent = depot->getRealParent()) {
+			// remove chest from depot locker, because of possible double free when shared_ptr decides to free up the
+			// resource
+			parent->internalRemoveThing(depot.get());
+		}
+	}
+
 	for (const auto& it : depotLockerMap) {
 		it.second->removeInbox(inbox.get());
 	}
@@ -769,7 +777,7 @@ bool Player::isNearDepotBox() const
 	return false;
 }
 
-DepotChest* Player::getDepotChest(uint32_t depotId, bool autoCreate)
+DepotChest_ptr Player::getDepotChest(uint32_t depotId, bool autoCreate)
 {
 	auto it = depotChests.find(depotId);
 	if (it != depotChests.end()) {
@@ -780,9 +788,14 @@ DepotChest* Player::getDepotChest(uint32_t depotId, bool autoCreate)
 		return nullptr;
 	}
 
-	it = depotChests.emplace(depotId, new DepotChest(ITEM_DEPOT)).first;
-	it->second->setMaxDepotItems(getMaxDepotItems());
-	return it->second;
+	uint16_t depotItemId = ITEM_DEPOT;
+	if (depotItemId == 0) {
+		return nullptr;
+	}
+
+	const DepotChest_ptr& depotChest = depotChests.emplace(depotId, std::make_shared<DepotChest>(depotItemId)).first->second;
+	depotChest->setMaxDepotItems(getMaxDepotItems());
+	return depotChest;
 }
 
 DepotLocker* Player::getDepotLocker(uint32_t depotId)
@@ -797,7 +810,12 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId)
 	it->second->setDepotId(depotId);
 	it->second->internalAddThing(Item::CreateItem(ITEM_MARKET));
 	it->second->internalAddThing(getInbox().get());
-	it->second->internalAddThing(getDepotChest(depotId, true));
+
+	const auto& box = getDepotChest(depotId, true);
+	if (box) {
+		it->second->internalAddThing(box.get());
+	}
+
 	return it->second.get();
 }
 
@@ -3064,7 +3082,7 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 					bool isOwner = false;
 
 					for (const auto& it : depotChests) {
-						if (it.second == depotChest) {
+						if (it.second.get() == depotChest) {
 							isOwner = true;
 							onSendContainer(container);
 						}

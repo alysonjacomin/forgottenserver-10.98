@@ -8788,11 +8788,11 @@ int LuaScriptInterface::luaPlayerGetDepotChest(lua_State* L)
 
 	uint32_t depotId = lua::getNumber<uint32_t>(L, 2);
 	bool autoCreate = lua::getBoolean(L, 3, false);
-	DepotChest* depotChest = player->getDepotChest(depotId, autoCreate);
+	const auto& depotChest = player->getDepotChest(depotId, autoCreate);
 	if (depotChest) {
 		player->setLastDepotId(depotId); // FIXME: workaround for #2251
-		lua::pushUserdata(L, depotChest);
-		lua::setItemMetatable(L, -1, depotChest);
+		pushSharedPtr(L, depotChest);
+		lua::setItemMetatable(L, -1, depotChest.get());
 	} else {
 		lua::pushBoolean(L, false);
 	}
