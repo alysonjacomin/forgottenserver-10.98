@@ -13,7 +13,6 @@
 #include "depotchest.h"
 #include "events.h"
 #include "game.h"
-#include "inbox.h"
 #include "iologindata.h"
 #include "monster.h"
 #include "movement.h"
@@ -37,9 +36,8 @@ MuteCountMap Player::muteCountMap;
 uint32_t Player::playerAutoID = 0x10000000;
 
 Player::Player(ProtocolGame_ptr p) :
-	Creature(), lastPing(OTSYS_TIME()), lastPong(lastPing), client(std::move(p)), inbox(new Inbox(ITEM_INBOX)), storeInbox(new StoreInbox(ITEM_STORE_INBOX))
+	Creature(), lastPing(OTSYS_TIME()), lastPong(lastPing), client(std::move(p)), storeInbox(new StoreInbox(ITEM_STORE_INBOX))
 {
-	inbox->incrementReferenceCounter();
 
 	storeInbox->setParent(this);
 	storeInbox->incrementReferenceCounter();
@@ -55,10 +53,8 @@ Player::~Player()
 	}
 
 	for (const auto& it : depotLockerMap) {
-		it.second->removeInbox(inbox);
+		it.second->removeInbox(inbox.get());
 	}
-
-	inbox->decrementReferenceCounter();
 
 	storeInbox->setParent(nullptr);
 	storeInbox->decrementReferenceCounter();
@@ -800,7 +796,7 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId)
 	it = depotLockerMap.emplace(depotId, new DepotLocker(ITEM_LOCKER1)).first;
 	it->second->setDepotId(depotId);
 	it->second->internalAddThing(Item::CreateItem(ITEM_MARKET));
-	it->second->internalAddThing(inbox);
+	it->second->internalAddThing(getInbox().get());
 	it->second->internalAddThing(getDepotChest(depotId, true));
 	return it->second.get();
 }
@@ -3078,7 +3074,7 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 						autoCloseContainers(container);
 					}
 				} else if (const Inbox* inboxContainer = dynamic_cast<const Inbox*>(topContainer)) {
- 					if (inboxContainer == inbox) {
+ 					if (inboxContainer == inbox.get()) {
  						onSendContainer(container);
  					} else {
  						autoCloseContainers(container);

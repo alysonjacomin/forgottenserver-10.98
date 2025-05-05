@@ -8808,10 +8808,10 @@ int LuaScriptInterface::luaPlayerGetInbox(lua_State* L)
 		return 1;
 	}
 
-	Inbox* inbox = player->getInbox();
+	const auto& inbox = player->getInbox();
 	if (inbox) {
-		lua::pushUserdata(L, inbox);
-		lua::setItemMetatable(L, -1, inbox);
+		pushSharedPtr(L, inbox);
+		lua::setItemMetatable(L, -1, inbox.get());
 	} else {
 		lua::pushBoolean(L, false);
 	}

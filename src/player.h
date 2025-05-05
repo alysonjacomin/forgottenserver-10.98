@@ -10,6 +10,7 @@
 #include "enums.h"
 #include "groups.h"
 #include "guild.h"
+#include "inbox.h"
 #include "protocolgame.h"
 #include "town.h"
 #include "vocation.h"
@@ -217,7 +218,12 @@ class Player final : public Creature, public Cylinder
 			lastWalkthroughPosition = walkthroughPosition;
 		}
 
-		Inbox* getInbox() const {
+		Inbox_ptr getInbox()
+		{
+			if (!inbox) {
+				inbox = std::make_shared<Inbox>(ITEM_INBOX);
+			}
+
 			return inbox;
 		}
 
@@ -1265,7 +1271,7 @@ class Player final : public Creature, public Cylinder
 		Guild_ptr guild = nullptr;
 		GuildRank_ptr guildRank = nullptr;
 		Group* group = nullptr;
-		Inbox* inbox;
+		Inbox_ptr inbox = nullptr;
 		Item* tradeItem = nullptr;
  		Item* inventory[CONST_SLOT_LAST + 1] = {};
 		Item* writeItem = nullptr;

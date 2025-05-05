@@ -6,6 +6,10 @@
 
 #include "container.h"
 
+class Inbox;
+
+using Inbox_ptr = std::shared_ptr<Inbox>;
+
 class Inbox final : public Container
 {
 	public:

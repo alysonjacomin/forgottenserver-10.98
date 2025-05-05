@@ -1784,7 +1784,7 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 	player->setInMarket(true);
 
 	std::map<uint16_t, uint32_t> depotItems;
-	std::forward_list<Container*> containerList { depotChest, player->getInbox() };
+	std::forward_list<Container*> containerList { depotChest, player->getInbox().get() };
 
 	do {
 		Container* container = containerList.front();
