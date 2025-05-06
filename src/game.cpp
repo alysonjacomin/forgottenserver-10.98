@@ -5696,8 +5696,12 @@ Guild_ptr Game::getGuild(uint32_t id) const
 	return it->second;
 }
 
-void Game::addGuild(Guild_ptr guild)
+void Game::addGuild(Guild_ptr guild) 
 {
+  if (!guild) {
+     return;
+   }
+
 	guilds[guild->getId()] = guild;
 }
 
