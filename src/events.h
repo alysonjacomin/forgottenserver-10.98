@@ -7,10 +7,10 @@
 #include "const.h"
 #include "creature.h"
 #include "luascript.h"
+#include "networkmessage.h"
 
 class Party;
 class ItemType;
-class NetworkMessage;
 class Party;
 class Spell;
 class Tile;
@@ -77,7 +77,7 @@ namespace events::player {
 	void onGainSkillTries(Player* player, skills_t skill, uint64_t& tries);
 	void onWrapItem(Player* player, Item* item);
 	void onInventoryUpdate(Player* player, Item* item, slots_t slot, bool equip);
-	void onNetworkMessage(Player* player, uint8_t recvByte, NetworkMessage* msg);
+	void onNetworkMessage(Player* player, uint8_t recvByte, NetworkMessage_ptr& msg);
 	bool onSpellCheck(Player* player, const Spell* spell);
 
 } // namespace events::player

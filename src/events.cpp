@@ -1234,7 +1234,7 @@ namespace events::player {
 		scriptInterface.callVoidFunction(4);
 	}
 
-	void onNetworkMessage(Player* player, uint8_t recvByte, NetworkMessage* msg) {
+	void onNetworkMessage(Player* player, uint8_t recvByte, NetworkMessage_ptr& msg) {
 		// Player:onNetworkMessage(recvByte, msg)
 		if (playerHandlers.onNetworkMessage == -1) {
 			return;
@@ -1256,7 +1256,7 @@ namespace events::player {
 
 		lua_pushnumber(L, recvByte);
 
-		lua::pushUserdata(L, msg);
+		lua::pushUserdata(L, msg.release());
 		lua::setMetatable(L, -1, "NetworkMessage");
 
 		scriptInterface.callVoidFunction(3);
