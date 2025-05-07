@@ -64,10 +64,12 @@ void ProtocolLogin::getCharacterList(const std::string& accountName, const std::
 	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `id`, UNHEX(`password`) AS `password`, `secret`, `premium_ends_at` FROM `accounts` WHERE `name` = {:s}", db.escapeString(accountName)));
 	if (!result) {
 		disconnectClient("Account name or password is not correct.", version);
+		return;
 	}
 
 	if (transformToSHA1(password) != result->getString("password")) {
 		disconnectClient("Account name or password is not correct.", version);
+		return;
 	}
 
 	auto id = result->getNumber<uint32_t>("id");
