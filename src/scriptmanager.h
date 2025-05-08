@@ -4,8 +4,7 @@
 #ifndef FS_SCRIPTMANAGER_H
 #define FS_SCRIPTMANAGER_H
 
-class ScriptingManager
-{
+class ScriptingManager {
 	public:
 		ScriptingManager() = default;
 		~ScriptingManager();

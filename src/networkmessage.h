@@ -9,15 +9,13 @@
 #include "container.h"
 
 class Item;
-
-struct Position;
-
 class NetworkMessage;
 
 using NetworkMessage_ptr = std::unique_ptr<NetworkMessage>;
 
-class NetworkMessage
-{
+struct Position;
+
+class NetworkMessage {
 	public:
 		using MsgSize_t = uint16_t;
 		// Headers:

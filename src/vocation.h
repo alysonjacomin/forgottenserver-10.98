@@ -6,8 +6,7 @@
 
 #include "enums.h"
 
-class Vocation
-{
+class Vocation {
 	public:
 		explicit Vocation(uint16_t id) : id(id) {}
 
@@ -112,8 +111,7 @@ class Vocation
 		bool allowPvp = true;
 };
 
-class Vocations
-{
+class Vocations {
 	public:
 		bool loadFromXml();
 

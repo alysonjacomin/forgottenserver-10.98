@@ -2,20 +2,20 @@ local deathListEnabled = true
 local maxDeathRecords = 5
 
 local function getKiller(killer)
- 	if not killer then
- 		return false, "field item"
- 	end
+	if not killer then
+		return false, "field item"
+	end
  
- 	if killer:isPlayer() then
- 		return true, killer:getName()
- 	end
+	if killer:isPlayer() then
+		return true, killer:getName()
+	end
  
- 	local master = killer:getMaster()
- 	if master and master ~= killer and master:isPlayer() then
- 		return true, master:getName()
- 	end
+	local master = killer:getMaster()
+	if master and master ~= killer and master:isPlayer() then
+		return true, master:getName()
+	end
  
- 	return false, killer:getName()
+	return false, killer:getName()
  end
 
 function onDeath(player, corpse, killer, mostDamageKiller, lastHitUnjustified, mostDamageUnjustified)
@@ -30,7 +30,7 @@ function onDeath(player, corpse, killer, mostDamageKiller, lastHitUnjustified, m
 	end
 
 	local byPlayer, killerName = getKiller(killer)
- 	local byPlayerMostDamage, killerNameMostDamage = getKiller(mostDamageKiller)
+	local byPlayerMostDamage, killerNameMostDamage = getKiller(mostDamageKiller)
 
 	local playerGuid = player:getGuid()
 	db.query("INSERT INTO `player_deaths` (`player_id`, `time`, `level`, `killed_by`, `is_player`, `mostdamage_by`, `mostdamage_is_player`, `unjustified`, `mostdamage_unjustified`) VALUES (" .. playerGuid .. ", " .. os.time() .. ", " .. player:getLevel() .. ", " .. db.escapeString(killerName) .. ", " .. (byPlayer and 1 or 0) .. ", " .. db.escapeString(killerNameMostDamage) .. ", " .. (byPlayerMostDamage and 1 or 0) .. ", " .. (lastHitUnjustified and 1 or 0) .. ", " .. (mostDamageUnjustified and 1 or 0) .. ")")

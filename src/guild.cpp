@@ -10,16 +10,14 @@
 
 extern Game g_game;
 
-void Guild::addMember(Player* player)
-{
+void Guild::addMember(Player* player) {
 	membersOnline.push_back(player);
 	for (Player* member : membersOnline) {
 		g_game.updatePlayerHelpers(*member);
 	}
 }
 
-void Guild::removeMember(Player* player)
-{
+void Guild::removeMember(Player* player) {
 	membersOnline.remove(player);
 	for (Player* member : membersOnline) {
 		g_game.updatePlayerHelpers(*member);
@@ -31,13 +29,11 @@ void Guild::removeMember(Player* player)
 	}
 }
 
-void Guild::addRank(uint32_t rankId, std::string_view rankName, uint8_t level)
-{
+void Guild::addRank(uint32_t rankId, std::string_view rankName, uint8_t level) {
 	ranks.emplace_back(std::make_shared<GuildRank>(rankId, rankName, level));
 }
 
-GuildRank_ptr Guild::getRankById(uint32_t rankId)
-{
+GuildRank_ptr Guild::getRankById(uint32_t rankId) {
 	for (auto rank : ranks) {
 		if (rank->id == rankId) {
 			return rank;
@@ -46,8 +42,7 @@ GuildRank_ptr Guild::getRankById(uint32_t rankId)
 	return nullptr;
 }
 
-GuildRank_ptr Guild::getRankByName(const std::string& name) const
-{
+GuildRank_ptr Guild::getRankByName(const std::string& name) const {
 	for (auto rank : ranks) {
 		if (caseInsensitiveEqual(rank->name, name)) {
 			return rank;
@@ -56,8 +51,7 @@ GuildRank_ptr Guild::getRankByName(const std::string& name) const
 	return nullptr;
 }
 
-GuildRank_ptr Guild::getRankByLevel(uint8_t level) const
-{
+GuildRank_ptr Guild::getRankByLevel(uint8_t level) const {
 	for (auto rank : ranks) {
 		if (rank->level == level) {
 			return rank;
@@ -66,8 +60,7 @@ GuildRank_ptr Guild::getRankByLevel(uint8_t level) const
 	return nullptr;
 }
 
-Guild_ptr IOGuild::loadGuild(uint32_t guildId)
-{
+Guild_ptr IOGuild::loadGuild(uint32_t guildId) {
 	Database& db = Database::getInstance();
 	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `name` FROM `guilds` WHERE `id` = {:d}", guildId));
 	if (!result) {
@@ -85,8 +78,7 @@ Guild_ptr IOGuild::loadGuild(uint32_t guildId)
 	return guild;
 }
 
-uint32_t IOGuild::getGuildIdByName(const std::string& name)
-{
+uint32_t IOGuild::getGuildIdByName(const std::string& name) {
 	Database& db = Database::getInstance();
 
 	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `id` FROM `guilds` WHERE `name` = {:s}", db.escapeString(name)));

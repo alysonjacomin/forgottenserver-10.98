@@ -16,8 +16,7 @@ using Weapon_ptr = std::unique_ptr<Weapon>;
 
 extern Vocations g_vocations;
 
-class Weapons final : public BaseEvents
-{
+class Weapons final : public BaseEvents {
 	public:
 		Weapons();
 		~Weapons();
@@ -48,8 +47,7 @@ class Weapons final : public BaseEvents
 		LuaScriptInterface scriptInterface { "Weapon Interface" };
 };
 
-class Weapon : public Event
-{
+class Weapon : public Event {
 	public:
 		explicit Weapon(LuaScriptInterface* interface) : Event(interface) {}
 
@@ -227,8 +225,7 @@ class Weapon : public Event
 		friend class Combat;
 };
 
-class WeaponMelee final : public Weapon
-{
+class WeaponMelee final : public Weapon {
 	public:
 		explicit WeaponMelee(LuaScriptInterface* interface);
 
@@ -247,8 +244,7 @@ class WeaponMelee final : public Weapon
 		uint16_t elementDamage = 0;
 };
 
-class WeaponDistance final : public Weapon
-{
+class WeaponDistance final : public Weapon {
 	public:
 		explicit WeaponDistance(LuaScriptInterface* interface);
 
@@ -270,8 +266,7 @@ class WeaponDistance final : public Weapon
 		uint16_t elementDamage = 0;
 };
 
-class WeaponWand final : public Weapon
-{
+class WeaponWand final : public Weapon {
 	public:
 		explicit WeaponWand(LuaScriptInterface* interface) : Weapon(interface) {}
 

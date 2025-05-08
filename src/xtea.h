@@ -5,10 +5,10 @@
 #define FS_XTEA_H
 
 /**
- * @namespace xtea
- * @brief This namespace provides functions to encrypt and decrypt data using the XTEA algorithm
- * (See https://wikipedia.org/wiki/XTEA).
- */
+* @namespace xtea
+* @brief This namespace provides functions to encrypt and decrypt data using the XTEA algorithm
+* (See https://wikipedia.org/wiki/XTEA).
+*/
 namespace xtea {
 
 	/**

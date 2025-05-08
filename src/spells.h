@@ -20,8 +20,7 @@ using RuneSpell_ptr = std::unique_ptr<RuneSpell>;
 
 extern Vocations g_vocations;
 
-class Spells final : public BaseEvents
-{
+class Spells final : public BaseEvents {
 	public:
 		Spells();
 		~Spells();
@@ -65,8 +64,7 @@ class Spells final : public BaseEvents
 		LuaScriptInterface scriptInterface { "Spell Interface" };
 };
 
-class BaseSpell
-{
+class BaseSpell {
 	public:
 		constexpr BaseSpell() = default;
 		virtual ~BaseSpell() = default;
@@ -75,8 +73,7 @@ class BaseSpell
 		virtual bool castSpell(Creature* creature, Creature* target) = 0;
 };
 
-class CombatSpell final : public Event, public BaseSpell
-{
+class CombatSpell final : public Event, public BaseSpell {
 	public:
 		CombatSpell(Combat_ptr combat, bool needTarget, bool needDirection);
 
@@ -108,8 +105,7 @@ class CombatSpell final : public Event, public BaseSpell
 		bool needTarget;
 };
 
-class Spell : public BaseSpell
-{
+class Spell : public BaseSpell {
 	public:
 		Spell() = default;
 
@@ -325,8 +321,7 @@ class Spell : public BaseSpell
 		std::string name;
 };
 
-class InstantSpell final : public TalkAction, public Spell
-{
+class InstantSpell final : public TalkAction, public Spell {
 	public:
 		explicit InstantSpell(LuaScriptInterface* interface) : TalkAction(interface) {}
 
@@ -390,8 +385,7 @@ class InstantSpell final : public TalkAction, public Spell
 		bool casterTargetOrDirection = false;
 };
 
-class RuneSpell final : public Action, public Spell
-{
+class RuneSpell final : public Action, public Spell {
 	public:
 		explicit RuneSpell(LuaScriptInterface* interface) : Action(interface) {}
 

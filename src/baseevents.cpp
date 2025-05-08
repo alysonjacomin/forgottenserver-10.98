@@ -10,8 +10,7 @@
 
 extern LuaEnvironment g_luaEnvironment;
 
-bool BaseEvents::loadFromXml()
-{
+bool BaseEvents::loadFromXml() {
 	if (loaded) {
 		std::cout << "[Error - BaseEvents::loadFromXml] It's already loaded." << std::endl;
 		return false;
@@ -67,15 +66,13 @@ bool BaseEvents::loadFromXml()
 	return true;
 }
 
-bool BaseEvents::reload()
-{
+bool BaseEvents::reload() {
 	loaded = false;
 	clear(false);
 	return loadFromXml();
 }
 
-void BaseEvents::reInitState(bool fromLua)
-{
+void BaseEvents::reInitState(bool fromLua) {
 	if (!fromLua) {
 		getScriptInterface().reInitState();
 	}
@@ -83,8 +80,7 @@ void BaseEvents::reInitState(bool fromLua)
 
 Event::Event(LuaScriptInterface* interface) : scriptInterface(interface) {}
 
-bool Event::checkScript(const std::string& basePath, const std::string& scriptsName, const std::string& scriptFile) const
-{
+bool Event::checkScript(const std::string& basePath, const std::string& scriptsName, const std::string& scriptFile) const {
 	LuaScriptInterface* testInterface = g_luaEnvironment.getTestInterface();
 	testInterface->reInitState();
 
@@ -111,8 +107,7 @@ bool Event::checkScript(const std::string& basePath, const std::string& scriptsN
 	return true;
 }
 
-bool Event::loadScript(const std::string& scriptFile)
-{
+bool Event::loadScript(const std::string& scriptFile) {
 	if (!scriptInterface || scriptId != 0) {
 		std::cout << "Failure: [Event::loadScript] scriptInterface == nullptr. scriptid = " << scriptId << std::endl;
 		return false;
@@ -135,8 +130,7 @@ bool Event::loadScript(const std::string& scriptFile)
 	return true;
 }
 
-bool Event::loadCallback()
-{
+bool Event::loadCallback() {
 	if (!scriptInterface || scriptId != 0) {
 		std::cout << "Failure: [Event::loadCallback] scriptInterface == nullptr. scriptid = " << scriptId << std::endl;
 		return false;
@@ -153,8 +147,7 @@ bool Event::loadCallback()
 	return true;
 }
 
-bool CallBack::loadCallBack(LuaScriptInterface* interface, const std::string& name)
-{
+bool CallBack::loadCallBack(LuaScriptInterface* interface, const std::string& name) {
 	if (!interface) {
 		std::cout << "Failure: [CallBack::loadCallBack] scriptInterface == nullptr" << std::endl;
 		return false;

@@ -50,8 +50,7 @@ const std::unordered_map<std::string, PlayerFlags> ParsePlayerFlagMap = {
 	{"ignoresendprivatecheck", PlayerFlag_IgnoreSendPrivateCheck}
 };
 
-bool Groups::load()
-{
+bool Groups::load() {
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file("data/XML/groups.xml");
 	if (!result) {
@@ -86,8 +85,7 @@ bool Groups::load()
 	return true;
 }
 
-Group* Groups::getGroup(uint16_t id)
-{
+Group* Groups::getGroup(uint16_t id) {
 	for (Group& group : groups) {
 		if (group.id == id) {
 			return &group;

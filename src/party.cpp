@@ -11,13 +11,11 @@
 
 extern Game g_game;
 
-Party::Party(Player* leader) : leader(leader)
-{
+Party::Party(Player* leader) : leader(leader) {
 	leader->setParty(this);
 }
 
-void Party::disband()
-{
+void Party::disband() {
 	if (!events::party::onDisband(this)) {
 		return;
 	}
@@ -59,8 +57,7 @@ void Party::disband()
 	delete this;
 }
 
-bool Party::leaveParty(Player* player, bool forceRemove /* = false */)
-{
+bool Party::leaveParty(Player* player, bool forceRemove /* = false */) {
 	if (!player) {
 		return false;
 	}
@@ -128,8 +125,7 @@ bool Party::leaveParty(Player* player, bool forceRemove /* = false */)
 	return true;
 }
 
-bool Party::passPartyLeadership(Player* player, bool forceRemove /* = false*/)
-{
+bool Party::passPartyLeadership(Player* player, bool forceRemove /* = false*/) {
 	if (!player || leader == player || player->getParty() != this) {
 		return false;
 	}
@@ -170,8 +166,7 @@ bool Party::passPartyLeadership(Player* player, bool forceRemove /* = false*/)
 	return true;
 }
 
-bool Party::joinParty(Player& player)
-{
+bool Party::joinParty(Player& player) {
 	// check if lua scripts allow the player to join
 	if (!events::party::onJoin(this, &player)) {
 		return false;
@@ -224,8 +219,7 @@ bool Party::joinParty(Player& player)
 	return true;
 }
 
-bool Party::removeInvite(Player& player, bool removeFromPlayer/* = true*/)
-{
+bool Party::removeInvite(Player& player, bool removeFromPlayer/* = true*/) {
 	auto it = std::find(inviteList.begin(), inviteList.end(), &player);
 	if (it == inviteList.end()) {
 		return false;
@@ -253,8 +247,7 @@ bool Party::removeInvite(Player& player, bool removeFromPlayer/* = true*/)
 	return true;
 }
 
-void Party::revokeInvitation(Player& player)
-{
+void Party::revokeInvitation(Player& player) {
 	if (!events::party::onRevokeInvitation(this, &player)) {
 		return;
 	}
@@ -264,8 +257,7 @@ void Party::revokeInvitation(Player& player)
 	removeInvite(player);
 }
 
-bool Party::invitePlayer(Player& player)
-{
+bool Party::invitePlayer(Player& player) {
 	if (isPlayerInvited(&player)) {
 		return false;
 	}
@@ -295,13 +287,11 @@ bool Party::invitePlayer(Player& player)
 	return true;
 }
 
-bool Party::isPlayerInvited(const Player* player) const
-{
+bool Party::isPlayerInvited(const Player* player) const {
 	return std::find(inviteList.begin(), inviteList.end(), player) != inviteList.end();
 }
 
-void Party::updateAllPartyIcons()
-{
+void Party::updateAllPartyIcons() {
 	for (Player* member : memberList) {
 		for (Player* otherMember : memberList) {
 			member->sendCreatureShield(otherMember);
@@ -313,8 +303,7 @@ void Party::updateAllPartyIcons()
 	leader->sendCreatureShield(leader);
 }
 
-void Party::broadcastPartyMessage(MessageClasses msgClass, const std::string& msg, bool sendToInvitations /*= false*/)
-{
+void Party::broadcastPartyMessage(MessageClasses msgClass, const std::string& msg, bool sendToInvitations /*= false*/) {
 	for (Player* member : memberList) {
 		member->sendTextMessage(msgClass, msg);
 	}
@@ -328,8 +317,7 @@ void Party::broadcastPartyMessage(MessageClasses msgClass, const std::string& ms
 	}
 }
 
-void Party::updateSharedExperience()
-{
+void Party::updateSharedExperience() {
 	if (sharedExpActive) {
 		bool result = getSharedExperienceStatus() == SHAREDEXP_OK;
 		if (result != sharedExpEnabled) {
@@ -341,28 +329,26 @@ void Party::updateSharedExperience()
 
 namespace {
 
-const char* getSharedExpReturnMessage(SharedExpStatus_t value)
-{
-	switch (value) {
-		case SHAREDEXP_OK:
-			return "Shared Experience is now active.";
-		case SHAREDEXP_TOOFARAWAY:
-			return "Shared Experience has been activated, but some members of your party are too far away.";
-		case SHAREDEXP_LEVELDIFFTOOLARGE:
-			return "Shared Experience has been activated, but the level spread of your party is too wide.";
-		case SHAREDEXP_MEMBERINACTIVE:
-			return "Shared Experience has been activated, but some members of your party are inactive.";
-		case SHAREDEXP_EMPTYPARTY:
-			return "Shared Experience has been activated, but you are alone in your party.";
-		default:
-			return "An error occured. Unable to activate shared experience.";
+	const char* getSharedExpReturnMessage(SharedExpStatus_t value) {
+		switch (value) {
+			case SHAREDEXP_OK:
+				return "Shared Experience is now active.";
+			case SHAREDEXP_TOOFARAWAY:
+				return "Shared Experience has been activated, but some members of your party are too far away.";
+			case SHAREDEXP_LEVELDIFFTOOLARGE:
+				return "Shared Experience has been activated, but the level spread of your party is too wide.";
+			case SHAREDEXP_MEMBERINACTIVE:
+				return "Shared Experience has been activated, but some members of your party are inactive.";
+			case SHAREDEXP_EMPTYPARTY:
+				return "Shared Experience has been activated, but you are alone in your party.";
+			default:
+				return "An error occured. Unable to activate shared experience.";
+		}
 	}
-}
 
 }
 
-bool Party::setSharedExperience(Player* player, bool sharedExpActive)
-{
+bool Party::setSharedExperience(Player* player, bool sharedExpActive) {
 	if (!player || leader != player) {
 		return false;
 	}
@@ -385,8 +371,7 @@ bool Party::setSharedExperience(Player* player, bool sharedExpActive)
 	return true;
 }
 
-void Party::shareExperience(uint64_t experience, Creature* source/* = nullptr*/)
-{
+void Party::shareExperience(uint64_t experience, Creature* source/* = nullptr*/) {
 	uint64_t shareExperience = experience;
 	events::party::onShareExperience(this, shareExperience);
 
@@ -396,13 +381,11 @@ void Party::shareExperience(uint64_t experience, Creature* source/* = nullptr*/)
 	leader->onGainSharedExperience(shareExperience, source);
 }
 
-bool Party::canUseSharedExperience(const Player* player) const
-{
+bool Party::canUseSharedExperience(const Player* player) const {
 	return getMemberSharedExperienceStatus(player) == SHAREDEXP_OK;
 }
 
-SharedExpStatus_t Party::getMemberSharedExperienceStatus(const Player* player) const
-{
+SharedExpStatus_t Party::getMemberSharedExperienceStatus(const Player* player) const {
 	if (memberList.empty()) {
 		return SHAREDEXP_EMPTYPARTY;
 	}
@@ -438,8 +421,7 @@ SharedExpStatus_t Party::getMemberSharedExperienceStatus(const Player* player) c
 	return SHAREDEXP_OK;
 }
 
-SharedExpStatus_t Party::getSharedExperienceStatus()
-{
+SharedExpStatus_t Party::getSharedExperienceStatus() {
 	SharedExpStatus_t leaderStatus = getMemberSharedExperienceStatus(leader);
 	if (leaderStatus != SHAREDEXP_OK) {
 		return leaderStatus;
@@ -454,16 +436,14 @@ SharedExpStatus_t Party::getSharedExperienceStatus()
 	return SHAREDEXP_OK;
 }
 
-void Party::updatePlayerTicks(Player* player, uint32_t points)
-{
+void Party::updatePlayerTicks(Player* player, uint32_t points) {
 	if (points != 0 && !player->hasFlag(PlayerFlag_NotGainInFight)) {
 		ticksMap[player->getID()] = OTSYS_TIME();
 		updateSharedExperience();
 	}
 }
 
-void Party::clearPlayerPoints(Player* player)
-{
+void Party::clearPlayerPoints(Player* player) {
 	auto it = ticksMap.find(player->getID());
 	if (it != ticksMap.end()) {
 		ticksMap.erase(it);
@@ -471,8 +451,7 @@ void Party::clearPlayerPoints(Player* player)
 	}
 }
 
-bool Party::canOpenCorpse(uint32_t ownerId) const
-{
+bool Party::canOpenCorpse(uint32_t ownerId) const {
 	if (Player* player = g_game.getPlayerByID(ownerId)) {
 		return leader->getID() == ownerId || player->getParty() == this;
 	}

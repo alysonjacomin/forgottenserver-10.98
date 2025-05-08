@@ -13,8 +13,7 @@ class PropStream;
 class PropWriteStream;
 class Tile;
 
-class IOMapSerialize
-{
+class IOMapSerialize {
 	public:
 		static void loadHouseItems(Map* map);
 		static bool saveHouseItems();

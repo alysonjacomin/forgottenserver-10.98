@@ -7,10 +7,11 @@
 #include "pugicast.h"
 
 class DBResult;
+
 using DBResult_ptr = std::shared_ptr<DBResult>;
 
 namespace detail {
- 
+
 	struct MysqlDeleter{
 		void operator()(MYSQL* handle) const { mysql_close(handle); }
 		void operator()(MYSQL_RES* handle) const { mysql_free_result(handle); }
@@ -21,16 +22,14 @@ namespace detail {
 
 } // namespace detail
 
-class Database
-{
+class Database {
 	public:
 		/**
 		 * Singleton implementation.
 		 *
 		 * @return database connection handler singleton
 		 */
-		static Database& getInstance()
-		{
+		static Database& getInstance() {
 			static Database instance;
 			return instance;
 		}
@@ -127,8 +126,7 @@ class Database
 	friend class DBTransaction;
 };
 
-class DBResult
-{
+class DBResult {
 	public:
 		explicit DBResult(detail::MysqlResult_ptr&& res);
 
@@ -137,8 +135,7 @@ class DBResult
 		DBResult& operator=(const DBResult&) = delete;
 
 		template<typename T>
-		T getNumber(std::string_view column) const
-		{
+		T getNumber(std::string_view column) const {
 			auto it = listNames.find(column);
 			if (it == listNames.end()) {
 				std::cout << "[Error - DBResult::getNumber] Column '" << column << "' doesn't exist in the result set" << std::endl;
@@ -167,10 +164,9 @@ class DBResult
 };
 
 /**
- * INSERT statement.
- */
-class DBInsert
-{
+* INSERT statement.
+*/
+class DBInsert {
 	public:
 		explicit DBInsert(std::string query);
 		bool addRow(const std::string& row);
@@ -183,8 +179,7 @@ class DBInsert
 		size_t length;
 };
 
-class DBTransaction
-{
+class DBTransaction {
 	public:
 		constexpr DBTransaction() = default;
 

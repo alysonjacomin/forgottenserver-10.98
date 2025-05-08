@@ -5,8 +5,7 @@
 
 #include "scheduler.h"
 
-uint32_t Scheduler::addEvent(SchedulerTask* task)
-{
+uint32_t Scheduler::addEvent(SchedulerTask* task) {
 	// check if the event has a valid id
 	if (task->getEventId() == 0) {
 		task->setEventId(++lastEventId);
@@ -34,8 +33,7 @@ uint32_t Scheduler::addEvent(SchedulerTask* task)
 	return task->getEventId();
 }
 
-void Scheduler::stopEvent(uint32_t eventId)
-{
+void Scheduler::stopEvent(uint32_t eventId) {
 	if (eventId == 0) {
 		return;
 	}
@@ -49,8 +47,7 @@ void Scheduler::stopEvent(uint32_t eventId)
 	});
 }
 
-void Scheduler::shutdown()
-{
+void Scheduler::shutdown() {
 	setState(THREAD_STATE_TERMINATED);
 	boost::asio::post(io_context, [this]() {
 		// cancel all active timers
@@ -62,7 +59,6 @@ void Scheduler::shutdown()
 	});
 }
 
-SchedulerTask* createSchedulerTask(uint32_t delay, TaskFunc&& f)
-{
+SchedulerTask* createSchedulerTask(uint32_t delay, TaskFunc&& f) {
 	return new SchedulerTask(delay, std::move(f));
 }

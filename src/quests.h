@@ -13,8 +13,7 @@ class Quest;
 using MissionsList = std::list<Mission>;
 using QuestsList = std::list<Quest>;
 
-class Mission
-{
+class Mission {
 	public:
 		Mission(std::string name, int32_t storageID, int32_t startValue, int32_t endValue, bool ignoreEndValue) :
 			name(std::move(name)), storageID(storageID), startValue(startValue), endValue(endValue), ignoreEndValue(ignoreEndValue) {}
@@ -44,8 +43,7 @@ class Mission
 		bool ignoreEndValue;
 };
 
-class Quest
-{
+class Quest {
 	public:
 		Quest(std::string name, uint16_t id, int32_t startStorageID, int32_t startStorageValue) :
 			name(std::move(name)), startStorageID(startStorageID), startStorageValue(startStorageValue), id(id) {}
@@ -83,8 +81,7 @@ class Quest
 	friend class Quests;
 };
 
-class Quests
-{
+class Quests {
 	public:
 		const QuestsList& getQuests() const {
 			return quests;

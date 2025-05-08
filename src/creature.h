@@ -53,8 +53,7 @@ static constexpr int32_t EVENT_CREATURECOUNT = 10;
 static constexpr int32_t EVENT_CREATURE_THINK_INTERVAL = 1000;
 static constexpr int32_t EVENT_CHECK_CREATURE_INTERVAL = (EVENT_CREATURE_THINK_INTERVAL / EVENT_CREATURECOUNT);
 
-class FrozenPathingConditionCall
-{
+class FrozenPathingConditionCall {
 	public:
 		explicit FrozenPathingConditionCall(Position targetPos) : targetPos(std::move(targetPos)) {}
 
@@ -72,8 +71,7 @@ class FrozenPathingConditionCall
 // Defines the Base class for all creatures and base functions which
 // every creature has
 
-class Creature : virtual public Thing
-{
+class Creature : virtual public Thing {
 	protected:
 		Creature();
 

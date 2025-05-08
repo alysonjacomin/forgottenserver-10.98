@@ -334,13 +334,13 @@ local function getStaminaBonus(staminaMinutes)
  end
  
  function Player.calculateLowLevelBonus(self, level)
- 	if level > 1 and level <= 50 then
- 		local expBonus = {minlevel = 2, maxlevel = 50, bonus = 1}
- 		local bonusPercentage = (expBonus.maxlevel - level) / (expBonus.maxlevel - expBonus.minlevel)
- 		return expBonus.bonus * 100 * bonusPercentage
- 	else
- 		return 0
- 	end
+	if level > 1 and level <= 50 then
+		local expBonus = {minlevel = 2, maxlevel = 50, bonus = 1}
+		local bonusPercentage = (expBonus.maxlevel - level) / (expBonus.maxlevel - expBonus.minlevel)
+		return expBonus.bonus * 100 * bonusPercentage
+	else
+		return 0
+	end
  end
 
 function Player.updateClientExpDisplay(self)
@@ -351,20 +351,20 @@ function Player.updateClientExpDisplay(self)
 	self:setClientExpDisplay(expGainRate)
 
 	-- Stamina bonus
- 	local staminaMinutes = self:getStamina()
- 	local staminaBonus = getStaminaBonus(staminaMinutes)
- 	self:setClientStaminaBonusDisplay(staminaBonus)
+	local staminaMinutes = self:getStamina()
+	local staminaBonus = getStaminaBonus(staminaMinutes)
+	self:setClientStaminaBonusDisplay(staminaBonus)
 
 	-- Low level bonus
- 	local levelBonus = self:calculateLowLevelBonus(level)
- 	self:setClientLowLevelBonusDisplay(levelBonus)
+	local levelBonus = self:calculateLowLevelBonus(level)
+	self:setClientLowLevelBonusDisplay(levelBonus)
 	return true
 end
  
  function Player.setAccountStorageValue(self, key, value)
- 	return Game.setAccountStorageValue(self:getAccountId(), key, value)
+	return Game.setAccountStorageValue(self:getAccountId(), key, value)
  end
  
  function Player.getAccountStorageValue(self, key)
- 	return Game.getAccountStorageValue(self:getAccountId(), key)
+	return Game.getAccountStorageValue(self:getAccountId(), key)
  end

@@ -8,8 +8,7 @@
 #include "connection.h"
 #include "tools.h"
 
-class OutputMessage : public NetworkMessage
-{
+class OutputMessage : public NetworkMessage {
 	public:
 		OutputMessage() = default;
 
@@ -62,9 +61,9 @@ class OutputMessage : public NetworkMessage
 
 namespace net {
 
-		OutputMessage_ptr make_output_message();
-		void insert_protocol_to_autosend(const Protocol_ptr& protocol);
-		void remove_protocol_from_autosend(const Protocol_ptr& protocol);
+	OutputMessage_ptr make_output_message();
+	void insert_protocol_to_autosend(const Protocol_ptr& protocol);
+	void remove_protocol_from_autosend(const Protocol_ptr& protocol);
 
 } // namespace net
 

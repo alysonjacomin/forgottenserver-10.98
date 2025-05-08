@@ -7,10 +7,10 @@
 #include "container.h"
 
 class DepotChest;
+
 using DepotChest_ptr = std::shared_ptr<DepotChest>;
 
-class DepotChest final : public Container
-{
+class DepotChest final : public Container {
 	public:
 		explicit DepotChest(uint16_t type);
 

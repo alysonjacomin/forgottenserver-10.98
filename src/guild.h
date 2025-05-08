@@ -18,8 +18,7 @@ struct GuildRank {
 
 using GuildRank_ptr = std::shared_ptr<GuildRank>;
 
-class Guild
-{
+class Guild {
 	public:
 		static constexpr uint8_t MEMBER_RANK_LEVEL_DEFAULT = 1;
 
@@ -71,8 +70,7 @@ class Guild
 
 using Guild_ptr = std::shared_ptr<Guild>;
 
-namespace IOGuild
-{
+namespace IOGuild {
 	Guild_ptr loadGuild(uint32_t guildId);
 	uint32_t getGuildIdByName(const std::string& name);
 };

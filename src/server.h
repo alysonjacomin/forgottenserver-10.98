@@ -7,8 +7,7 @@
 #include "connection.h"
 #include "signals.h"
 
-class ServiceBase
-{
+class ServiceBase {
 	public:
 		virtual ~ServiceBase() = default;
 		virtual bool is_single_socket() const = 0;
@@ -20,8 +19,7 @@ class ServiceBase
 };
 
 template <typename ProtocolType>
-class Service final : public ServiceBase
-{
+class Service final : public ServiceBase {
 	public:
 		bool is_single_socket() const override {
 			return ProtocolType::server_sends_first;
@@ -41,8 +39,7 @@ class Service final : public ServiceBase
 		}
 };
 
-class ServicePort : public std::enable_shared_from_this<ServicePort>
-{
+class ServicePort : public std::enable_shared_from_this<ServicePort> {
 	public:
 		explicit ServicePort(boost::asio::io_context& io_context) : io_context(io_context) {}
 		~ServicePort();
@@ -73,8 +70,7 @@ class ServicePort : public std::enable_shared_from_this<ServicePort>
 		bool pendingStart = false;
 };
 
-class ServiceManager
-{
+class ServiceManager {
 	public:
 		ServiceManager() = default;
 		~ServiceManager();
@@ -105,8 +101,7 @@ class ServiceManager
 };
 
 template <typename ProtocolType>
-bool ServiceManager::add(uint16_t port)
-{
+bool ServiceManager::add(uint16_t port) {
 	if (port == 0) {
 		std::cout << "ERROR: No port provided for service " << ProtocolType::protocol_name() << ". Service disabled." << std::endl;
 		return false;

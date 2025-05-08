@@ -19,15 +19,14 @@ inline bool operator==(const Outfit& lhs, const Outfit& rhs) {
 
 struct ProtocolOutfit {
 	ProtocolOutfit(std::string_view name, uint16_t lookType, uint8_t addons) :
- 	    name{name}, lookType{lookType}, addons{addons} {}
+	    name{name}, lookType{lookType}, addons{addons} {}
 
 	std::string name;
 	uint16_t lookType;
 	uint8_t addons;
 };
 
-class Outfits
-{
+class Outfits {
 	public:
 		static Outfits& getInstance() {
 			static Outfits instance;

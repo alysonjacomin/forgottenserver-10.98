@@ -9,8 +9,7 @@
 class House;
 class Player;
 
-class BedItem final : public Item
-{
+class BedItem final : public Item {
 	public:
 		explicit BedItem(uint16_t id);
 

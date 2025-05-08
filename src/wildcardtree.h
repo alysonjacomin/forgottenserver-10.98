@@ -6,8 +6,7 @@
 
 #include "enums.h"
 
-class WildcardTreeNode
-{
+class WildcardTreeNode {
 	public:
 		explicit WildcardTreeNode(bool breakpoint) : breakpoint(breakpoint) {}
 		WildcardTreeNode(WildcardTreeNode&& other) = default;

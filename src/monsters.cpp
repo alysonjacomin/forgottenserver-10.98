@@ -17,15 +17,13 @@ extern Game g_game;
 extern Spells* g_spells;
 extern Monsters g_monsters;
 
-spellBlock_t::~spellBlock_t()
-{
+spellBlock_t::~spellBlock_t() {
 	if (combatSpell) {
 		delete spell;
 	}
 }
 
-void MonsterType::loadLoot(MonsterType* monsterType, LootBlock lootBlock)
-{
+void MonsterType::loadLoot(MonsterType* monsterType, LootBlock lootBlock) {
 	if (lootBlock.childLoot.empty()) {
 		bool isContainer = Item::items[lootBlock.id].isContainer();
 		if (isContainer) {
@@ -39,8 +37,7 @@ void MonsterType::loadLoot(MonsterType* monsterType, LootBlock lootBlock)
 	}
 }
 
-bool Monsters::loadFromXml(bool reloading /*= false*/)
-{
+bool Monsters::loadFromXml(bool reloading /*= false*/) {
 	unloadedMonsters = {};
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file("data/monster/monsters.xml");
@@ -68,8 +65,7 @@ bool Monsters::loadFromXml(bool reloading /*= false*/)
 	return true;
 }
 
-bool Monsters::reload()
-{
+bool Monsters::reload() {
 	loaded = false;
 
 	scriptInterface.reset();
@@ -78,8 +74,7 @@ bool Monsters::reload()
 }
 
 ConditionDamage* Monsters::getDamageCondition(ConditionType_t conditionType,
-        int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval)
-{
+       int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval) {
 	ConditionDamage* condition = static_cast<ConditionDamage*>(Condition::createCondition(CONDITIONID_COMBAT, conditionType, 0, 0));
 	condition->setParam(CONDITION_PARAM_TICKINTERVAL, tickInterval);
 	condition->setParam(CONDITION_PARAM_MINVALUE, minDamage);
@@ -89,8 +84,7 @@ ConditionDamage* Monsters::getDamageCondition(ConditionType_t conditionType,
 	return condition;
 }
 
-bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, const std::string& description)
-{
+bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, const std::string& description) {
 	std::string name;
 	std::string scriptName;
 	bool isScripted;
@@ -527,8 +521,7 @@ bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, co
 	return true;
 }
 
-bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std::string& description)
-{
+bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std::string& description) {
 	if (!spell->scriptName.empty()) {
 		spell->isScripted = true;
 	} else if (!spell->name.empty()) {
@@ -777,8 +770,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 	return true;
 }
 
-MonsterType* Monsters::loadMonster(const std::string& file, const std::string& monsterName, bool reloading /*= false*/)
-{
+MonsterType* Monsters::loadMonster(const std::string& file, const std::string& monsterName, bool reloading /*= false*/) {
 	MonsterType* mType = nullptr;
 
 	pugi::xml_document doc;
@@ -1288,7 +1280,7 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 			int32_t speed = 1000;
 			int32_t max = mType->info.maxSummons;
 			MagicEffectClasses effect = CONST_ME_TELEPORT;
- 			MagicEffectClasses masterEffect = CONST_ME_NONE;
+			MagicEffectClasses masterEffect = CONST_ME_NONE;
 			bool force = false;
 
 			if ((attr = summonNode.attribute("speed")) || (attr = summonNode.attribute("interval"))) {
@@ -1308,33 +1300,33 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 			}
 
 			for (const auto& attributeNode : summonNode.children()) {
- 				if ((attr = attributeNode.attribute("key"))) {
- 					const char* value = attr.value();
- 					if (caseInsensitiveEqual(value, "mastereffect")) {
- 						if ((attr = attributeNode.attribute("value"))) {
- 							masterEffect =
- 							    getMagicEffect(boost::algorithm::to_lower_copy<std::string>(attr.as_string()));
- 							if (masterEffect == CONST_ME_NONE) {
- 								std::cout
- 								    << "[Warning - Monsters::loadMonster] Summon master effect - Unknown masterEffect: "
- 								    << attr.as_string() << std::endl;
- 							}
- 						}
- 					} else if (caseInsensitiveEqual(value, "effect")) {
- 						if ((attr = attributeNode.attribute("value"))) {
- 							effect = getMagicEffect(boost::algorithm::to_lower_copy<std::string>(attr.as_string()));
- 							if (effect == CONST_ME_NONE) {
- 								effect = CONST_ME_TELEPORT;
- 								std::cout << "[Warning - Monsters::loadMonster] Summon effect - Unknown effect: "
- 								          << attr.as_string() << std::endl;
- 							}
- 						}
- 					} else {
- 						std::cout << "[Warning - Monsters::loadMonster] Summon effect type \"" << attr.as_string()
- 						          << "\" does not exist." << std::endl;
- 					}
- 				}
- 			}
+				if ((attr = attributeNode.attribute("key"))) {
+					const char* value = attr.value();
+					if (caseInsensitiveEqual(value, "mastereffect")) {
+						if ((attr = attributeNode.attribute("value"))) {
+							masterEffect =
+							    getMagicEffect(boost::algorithm::to_lower_copy<std::string>(attr.as_string()));
+							if (masterEffect == CONST_ME_NONE) {
+								std::cout
+								    << "[Warning - Monsters::loadMonster] Summon master effect - Unknown masterEffect: "
+								    << attr.as_string() << std::endl;
+							}
+						}
+					} else if (caseInsensitiveEqual(value, "effect")) {
+						if ((attr = attributeNode.attribute("value"))) {
+							effect = getMagicEffect(boost::algorithm::to_lower_copy<std::string>(attr.as_string()));
+							if (effect == CONST_ME_NONE) {
+								effect = CONST_ME_TELEPORT;
+								std::cout << "[Warning - Monsters::loadMonster] Summon effect - Unknown effect: "
+								          << attr.as_string() << std::endl;
+							}
+						}
+					} else {
+						std::cout << "[Warning - Monsters::loadMonster] Summon effect type \"" << attr.as_string()
+						          << "\" does not exist." << std::endl;
+					}
+				}
+			}
 
 			if ((attr = summonNode.attribute("force"))) {
 				force = attr.as_bool();
@@ -1347,7 +1339,7 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				sb.chance = chance;
 				sb.max = max;
 				sb.effect = effect;
- 				sb.masterEffect = masterEffect;
+				sb.masterEffect = masterEffect;
 				sb.force = force;
 				mType->info.summons.emplace_back(sb);
 			} else {
@@ -1375,8 +1367,7 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 	return mType;
 }
 
-bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface)
-{
+bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface) {
 	int32_t id = scriptInterface->getEvent();
 	if (id == -1) {
 		std::cout << "[Warning - MonsterType::loadCallback] Event not found. " << std::endl;
@@ -1398,8 +1389,7 @@ bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface)
 	return true;
 }
 
-bool Monsters::loadLootItem(const pugi::xml_node& node, LootBlock& lootBlock)
-{
+bool Monsters::loadLootItem(const pugi::xml_node& node, LootBlock& lootBlock) {
 	pugi::xml_attribute attr;
 	if ((attr = node.attribute("id"))) {
 		int32_t id = pugi::cast<int32_t>(attr.value());
@@ -1476,8 +1466,7 @@ bool Monsters::loadLootItem(const pugi::xml_node& node, LootBlock& lootBlock)
 	return true;
 }
 
-void Monsters::loadLootContainer(const pugi::xml_node& node, LootBlock& lBlock)
-{
+void Monsters::loadLootContainer(const pugi::xml_node& node, LootBlock& lBlock) {
 	// NOTE: <inside> attribute was left for backwards compatibility with pre 1.x TFS versions.
 	// Please don't use it, if you don't have to.
 	for (auto subNode : node.child("inside") ? node.child("inside").children() : node.children()) {
@@ -1488,8 +1477,7 @@ void Monsters::loadLootContainer(const pugi::xml_node& node, LootBlock& lBlock)
 	}
 }
 
-MonsterType* Monsters::getMonsterType(const std::string& name, bool loadFromFile /*= true */)
-{
+MonsterType* Monsters::getMonsterType(const std::string& name, bool loadFromFile /*= true */) {
 	std::string lowerCaseName = boost::algorithm::to_lower_copy(name);
 
 	auto it = monsters.find(lowerCaseName);

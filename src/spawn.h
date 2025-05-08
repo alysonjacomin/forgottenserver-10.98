@@ -18,8 +18,7 @@ struct spawnBlock_t {
 	Direction direction;
 };
 
-class Spawn
-{
+class Spawn {
 	public:
 		Spawn(Position pos, int32_t radius) : centerPos(std::move(pos)), radius(radius) {}
 		~Spawn();
@@ -63,8 +62,7 @@ class Spawn
 		void checkSpawn();
 };
 
-class Spawns
-{
+class Spawns {
 	public:
 		static bool isInZone(const Position& centerPos, int32_t radius, const Position& pos);
 

@@ -53,8 +53,7 @@ struct IntervalInfo {
 	int32_t interval;
 };
 
-class Condition
-{
+class Condition {
 	public:
 		Condition() = default;
 		Condition(ConditionId_t id, ConditionType_t type, int32_t ticks, bool buff = false, uint32_t subId = 0, bool aggressive = false) :
@@ -117,8 +116,7 @@ class Condition
 		ConditionId_t id;
 };
 
-class ConditionGeneric : public Condition
-{
+class ConditionGeneric : public Condition {
 	public:
 		ConditionGeneric(ConditionId_t id, ConditionType_t type, int32_t ticks, bool buff = false, uint32_t subId = 0, bool aggressive = false):
 			Condition(id, type, ticks, buff, subId, aggressive) {}
@@ -134,8 +132,7 @@ class ConditionGeneric : public Condition
 		}
 };
 
-class ConditionAttributes final : public ConditionGeneric
-{
+class ConditionAttributes final : public ConditionGeneric {
 	public:
 		ConditionAttributes(ConditionId_t id, ConditionType_t type, int32_t ticks, bool buff = false, uint32_t subId = 0, bool aggressive = false) :
 			ConditionGeneric(id, type, ticks, buff, subId, aggressive) {}
@@ -174,8 +171,7 @@ class ConditionAttributes final : public ConditionGeneric
 		void updateSkills(Player* player);
 };
 
-class ConditionRegeneration final : public ConditionGeneric
-{
+class ConditionRegeneration final : public ConditionGeneric {
 	public:
 		ConditionRegeneration(ConditionId_t id, ConditionType_t type, int32_t ticks, bool buff = false, uint32_t subId = 0, bool aggressive = false):
 			ConditionGeneric(id, type, ticks, buff, subId, aggressive) {}
@@ -192,7 +188,7 @@ class ConditionRegeneration final : public ConditionGeneric
 
 		//serialization
 		void serialize(PropWriteStream& propWriteStream) override;
- 		bool unserializeProp(ConditionAttr_t attr, PropStream& propStream) override;
+		bool unserializeProp(ConditionAttr_t attr, PropStream& propStream) override;
 
 	private:
 		uint32_t internalHealthTicks = 0;
@@ -204,8 +200,7 @@ class ConditionRegeneration final : public ConditionGeneric
 		uint32_t manaGain = 0;
 };
 
-class ConditionSoul final : public ConditionGeneric
-{
+class ConditionSoul final : public ConditionGeneric {
 	public:
 		ConditionSoul(ConditionId_t id, ConditionType_t type, int32_t ticks, bool buff = false, uint32_t subId = 0, bool aggressive = false) :
 			ConditionGeneric(id, type, ticks, buff, subId, aggressive) {}
@@ -230,8 +225,7 @@ class ConditionSoul final : public ConditionGeneric
 		uint32_t soulGain = 0;
 };
 
-class ConditionInvisible final : public ConditionGeneric
-{
+class ConditionInvisible final : public ConditionGeneric {
 	public:
 		ConditionInvisible(ConditionId_t id, ConditionType_t type, int32_t ticks, bool buff = false, uint32_t subId = 0, bool aggressive = false) :
 			ConditionGeneric(id, type, ticks, buff, subId, aggressive) {}
@@ -244,8 +238,7 @@ class ConditionInvisible final : public ConditionGeneric
 		}
 };
 
-class ConditionDamage final : public Condition
-{
+class ConditionDamage final : public Condition {
 	public:
 		ConditionDamage() = default;
 		ConditionDamage(ConditionId_t id, ConditionType_t type, bool buff = false, uint32_t subId = 0, bool aggressive = true) :
@@ -304,8 +297,7 @@ class ConditionDamage final : public Condition
 		bool updateCondition(const Condition* addCondition) override;
 };
 
-class ConditionSpeed final : public Condition
-{
+class ConditionSpeed final : public Condition {
 	public:
 		ConditionSpeed(ConditionId_t id, ConditionType_t type, int32_t ticks, bool buff, uint32_t subId, int32_t changeSpeed, bool aggressive = false) :
 			Condition(id, type, ticks, buff, subId, aggressive), speedDelta(changeSpeed) {}
@@ -339,8 +331,7 @@ class ConditionSpeed final : public Condition
 		float maxb = 0.0f;
 };
 
-class ConditionOutfit final : public Condition
-{
+class ConditionOutfit final : public Condition {
 	public:
 		ConditionOutfit(ConditionId_t id, ConditionType_t type, int32_t ticks, bool buff = false, uint32_t subId = 0, bool aggressive = false) :
 			Condition(id, type, ticks, buff, subId, aggressive) {}
@@ -364,8 +355,7 @@ class ConditionOutfit final : public Condition
 		Outfit_t outfit;
 };
 
-class ConditionLight final : public Condition
-{
+class ConditionLight final : public Condition {
 	public:
 		ConditionLight(ConditionId_t id, ConditionType_t type, int32_t ticks, bool buff, uint32_t subId, uint8_t lightlevel, uint8_t lightcolor, bool aggressive = false) :
 			Condition(id, type, ticks, buff, subId, aggressive), lightInfo(lightlevel, lightcolor) {}
@@ -392,8 +382,7 @@ class ConditionLight final : public Condition
 		uint32_t lightChangeInterval = 0;
 };
 
-class ConditionSpellCooldown final : public ConditionGeneric
-{
+class ConditionSpellCooldown final : public ConditionGeneric {
 	public:
 		ConditionSpellCooldown(ConditionId_t id, ConditionType_t type, int32_t ticks, bool buff = false, uint32_t subId = 0, bool aggressive = false) :
 			ConditionGeneric(id, type, ticks, buff, subId, aggressive) {}
@@ -406,8 +395,7 @@ class ConditionSpellCooldown final : public ConditionGeneric
 		}
 };
 
-class ConditionSpellGroupCooldown final : public ConditionGeneric
-{
+class ConditionSpellGroupCooldown final : public ConditionGeneric {
 	public:
 		ConditionSpellGroupCooldown(ConditionId_t id, ConditionType_t type, int32_t ticks, bool buff = false, uint32_t subId = 0, bool aggressive = false) :
 			ConditionGeneric(id, type, ticks, buff, subId, aggressive) {}
@@ -420,8 +408,7 @@ class ConditionSpellGroupCooldown final : public ConditionGeneric
 		}
 };
 
-class ConditionDrunk final : public Condition
-{
+class ConditionDrunk final : public Condition {
 	public:
 		ConditionDrunk(ConditionId_t id, ConditionType_t type, int32_t ticks, bool buff, uint32_t subId, uint8_t drunkenness, bool aggressive = false)
 		    	: Condition(id, type, ticks, buff, subId, aggressive) {

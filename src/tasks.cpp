@@ -10,18 +10,15 @@
 
 extern Game g_game;
 
-Task* createTask(TaskFunc&& f)
-{
+Task* createTask(TaskFunc&& f) {
 	return new Task(std::move(f));
 }
 
-Task* createTask(uint32_t expiration, TaskFunc&& f)
-{
+Task* createTask(uint32_t expiration, TaskFunc&& f) {
 	return new Task(expiration, std::move(f));
 }
 
-void Dispatcher::threadMain()
-{
+void Dispatcher::threadMain() {
 	std::vector<Task*> tmpTaskList;
 	// NOTE: second argument defer_lock is to prevent from immediate locking
 	std::unique_lock<std::mutex> taskLockUnique(taskLock, std::defer_lock);
@@ -48,8 +45,7 @@ void Dispatcher::threadMain()
 	}
 }
 
-void Dispatcher::addTask(Task* task)
-{
+void Dispatcher::addTask(Task* task) {
 	bool do_signal = false;
 
 	taskLock.lock();
@@ -69,8 +65,7 @@ void Dispatcher::addTask(Task* task)
 	}
 }
 
-void Dispatcher::shutdown()
-{
+void Dispatcher::shutdown() {
 	Task* task = createTask([this]() {
 		setState(THREAD_STATE_TERMINATED);
 		taskSignal.notify_one();

@@ -1,6 +1,6 @@
 function Player:onBrowseField(position)
 	if hasEvent.onBrowseField then
- 		return Event.onBrowseField(self, position)
+		return Event.onBrowseField(self, position)
 	end
 	return true
 end
@@ -8,7 +8,7 @@ end
 function Player:onLook(thing, position, distance)
 	local description = ""
 	if hasEvent.onLook then
- 		description = Event.onLook(self, thing, position, distance, description)
+		description = Event.onLook(self, thing, position, distance, description)
 	end
 	if description ~= "" then
 		self:sendTextMessage(MESSAGE_INFO_DESCR, description)
@@ -18,7 +18,7 @@ end
 function Player:onLookInBattleList(creature, distance)
 	local description = ""
 	if hasEvent.onLookInBattleList then
- 		description = Event.onLookInBattleList(self, creature, distance, description)
+		description = Event.onLookInBattleList(self, creature, distance, description)
 	end
 	if description ~= "" then
 		self:sendTextMessage(MESSAGE_INFO_DESCR, description)
@@ -28,7 +28,7 @@ end
 function Player:onLookInTrade(partner, item, distance)
 	local description = "You see " .. item:getDescription(distance)
 	if hasEvent.onLookInTrade then
- 		description = Event.onLookInTrade(self, partner, item, distance, description)
+		description = Event.onLookInTrade(self, partner, item, distance, description)
 	end
 	if description ~= "" then
 		self:sendTextMessage(MESSAGE_INFO_DESCR, description)
@@ -38,7 +38,7 @@ end
 function Player:onLookInShop(itemType, count)
 	local description = "You see "
 	if hasEvent.onLookInShop then
- 		description = Event.onLookInShop(self, itemType, count, description)
+		description = Event.onLookInShop(self, itemType, count, description)
 	end
 	if description ~= "" then
 		self:sendTextMessage(MESSAGE_INFO_DESCR, description)
@@ -47,68 +47,68 @@ end
 
 function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
 	if hasEvent.onMoveItem then
- 		return Event.onMoveItem(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
+		return Event.onMoveItem(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
 	end
 	return RETURNVALUE_NOERROR
 end
 
 function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
 	if hasEvent.onItemMoved then
- 		Event.onItemMoved(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
+		Event.onItemMoved(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
 	end
 end
 
 function Player:onMoveCreature(creature, fromPosition, toPosition)
 	if hasEvent.onMoveCreature then
- 		return Event.onMoveCreature(self, creature, fromPosition, toPosition)
+		return Event.onMoveCreature(self, creature, fromPosition, toPosition)
 	end
 	return true
 end
 
 function Player:onReportRuleViolation(targetName, reportType, reportReason, comment, translation)
 	if hasEvent.onReportRuleViolation then
- 		Event.onReportRuleViolation(self, targetName, reportType, reportReason, comment, translation)
+		Event.onReportRuleViolation(self, targetName, reportType, reportReason, comment, translation)
 	end
 end
 
 function Player:onReportBug(message, position, category)
 	if hasEvent.onReportBug then
- 		return Event.onReportBug(self, message, position, category)
+		return Event.onReportBug(self, message, position, category)
 	end
 	return true
 end
 
 function Player:onRotateItem(item)
 	if hasEvent.onRotateItem then
- 		return Event.onRotateItem(self, item)
+		return Event.onRotateItem(self, item)
 	end
 	return true
 end
 
 function Player:onTurn(direction)
 	if hasEvent.onTurn then
- 		return Event.onTurn(self, direction)
+		return Event.onTurn(self, direction)
 	end
 	return true
 end
 
 function Player:onTradeRequest(target, item)
 	if hasEvent.onTradeRequest then
- 		return Event.onTradeRequest(self, target, item)
+		return Event.onTradeRequest(self, target, item)
 	end
 	return true
 end
 
 function Player:onTradeAccept(target, item, targetItem)
 	if hasEvent.onTradeAccept then
- 		return Event.onTradeAccept(self, target, item, targetItem)
+		return Event.onTradeAccept(self, target, item, targetItem)
 	end
 	return true
 end
 
 function Player:onTradeCompleted(target, item, targetItem, isSuccess)
 	if hasEvent.onTradeCompleted then
- 		Event.onTradeCompleted(self, target, item, targetItem, isSuccess)
+		Event.onTradeCompleted(self, target, item, targetItem, isSuccess)
 	end
 end
 
@@ -172,7 +172,7 @@ end
 
 function Player:onInventoryUpdate(item, slot, equip)
 	if hasEvent.onInventoryUpdate then
- 		Event.onInventoryUpdate(self, item, slot, equip)
+		Event.onInventoryUpdate(self, item, slot, equip)
 	end
 end
 
@@ -187,8 +187,8 @@ function Player:onNetworkMessage(recvByte, msg)
 end
 
 function Player:onSpellCheck(spell)
- 	if hasEvent.onSpellCheck then
- 		Event.onSpellCheck(self, spell)
- 	end
- 	return true
+	if hasEvent.onSpellCheck then
+		Event.onSpellCheck(self, spell)
+	end
+	return true
 end

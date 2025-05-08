@@ -18,8 +18,7 @@ class Tile;
 struct Position;
 
 //for luascript callback
-class ValueCallback final : public CallBack
-{
+class ValueCallback final : public CallBack {
 	public:
 		explicit ValueCallback(formulaType_t type): type(type) {}
 		void getMinMaxValues(Player* player, CombatDamage& damage) const;
@@ -28,14 +27,12 @@ class ValueCallback final : public CallBack
 		formulaType_t type;
 };
 
-class TileCallback final : public CallBack
-{
+class TileCallback final : public CallBack {
 	public:
 		void onTileCombat(Creature* creature, Tile* tile) const;
 };
 
-class TargetCallback final : public CallBack
-{
+class TargetCallback final : public CallBack {
 	public:
 		void onTargetCombat(Creature* creature, Creature* target) const;
 };
@@ -64,8 +61,7 @@ struct CombatParams {
 	bool ignoreResistances = false;
 };
 
-class AreaCombat
-{
+class AreaCombat {
 	public:
 		void setupArea(const std::vector<uint32_t>& vec, uint32_t rows);
 		void setupArea(int32_t length, int32_t spread);
@@ -79,8 +75,7 @@ class AreaCombat
 		bool hasExtArea = false;
 };
 
-class Combat
-{
+class Combat {
 	public:
 		Combat() = default;
 
@@ -148,8 +143,7 @@ class Combat
 		std::unique_ptr<AreaCombat> area;
 };
 
-class MagicField final : public Item
-{
+class MagicField final : public Item {
 	public:
 		explicit MagicField(uint16_t type) : Item(type), createTime(OTSYS_TIME()) {}
 

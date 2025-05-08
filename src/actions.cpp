@@ -18,18 +18,15 @@ extern Spells* g_spells;
 extern Actions* g_actions;
 
 Actions::Actions() :
-	scriptInterface("Action Interface")
-{
+	scriptInterface("Action Interface") {
 	scriptInterface.initState();
 }
 
-Actions::~Actions()
-{
+Actions::~Actions() {
 	clear(false);
 }
 
-void Actions::clearMap(ActionUseMap& map, bool fromLua)
-{
+void Actions::clearMap(ActionUseMap& map, bool fromLua) {
 	for (auto it = map.begin(); it != map.end();) {
 		if (fromLua == it->second.fromLua) {
 			it = map.erase(it);
@@ -39,8 +36,7 @@ void Actions::clearMap(ActionUseMap& map, bool fromLua)
 	}
 }
 
-void Actions::clear(bool fromLua)
-{
+void Actions::clear(bool fromLua) {
 	clearMap(useItemMap, fromLua);
 	clearMap(uniqueItemMap, fromLua);
 	clearMap(actionItemMap, fromLua);
@@ -48,21 +44,18 @@ void Actions::clear(bool fromLua)
 	reInitState(fromLua);
 }
 
-LuaScriptInterface& Actions::getScriptInterface()
-{
+LuaScriptInterface& Actions::getScriptInterface() {
 	return scriptInterface;
 }
 
-Event_ptr Actions::getEvent(const std::string& nodeName)
-{
+Event_ptr Actions::getEvent(const std::string& nodeName) {
 	if (!caseInsensitiveEqual(nodeName, "action")) {
 		return nullptr;
 	}
 	return Event_ptr(new Action(&scriptInterface));
 }
 
-bool Actions::registerEvent(Event_ptr event, const pugi::xml_node& node)
-{
+bool Actions::registerEvent(Event_ptr event, const pugi::xml_node& node) {
 	Action_ptr action{static_cast<Action*>(event.release())}; //event is guaranteed to be an Action
 
 	pugi::xml_attribute attr;
@@ -187,8 +180,7 @@ bool Actions::registerEvent(Event_ptr event, const pugi::xml_node& node)
 	return false;
 }
 
-bool Actions::registerLuaEvent(Action* event)
-{
+bool Actions::registerLuaEvent(Action* event) {
 	Action_ptr action{ event };
 	if (isValid(ids, event)) {
 		const auto& range = getItemIdRange(event);
@@ -223,8 +215,7 @@ bool Actions::registerLuaEvent(Action* event)
 	return false;
 }
 
-ReturnValue Actions::canUse(const Player* player, const Position& pos)
-{
+ReturnValue Actions::canUse(const Player* player, const Position& pos) {
 	if (pos.x != 0xFFFF) {
 		const Position& playerPos = player->getPosition();
 		if (playerPos.z != pos.z) {
@@ -238,8 +229,7 @@ ReturnValue Actions::canUse(const Player* player, const Position& pos)
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue Actions::canUse(const Player* player, const Position& pos, const Item* item)
-{
+ReturnValue Actions::canUse(const Player* player, const Position& pos, const Item* item) {
 	Action* action = getAction(item);
 	if (action) {
 		return action->canExecuteAction(player, pos);
@@ -247,8 +237,7 @@ ReturnValue Actions::canUse(const Player* player, const Position& pos, const Ite
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue Actions::canUseFar(const Creature* creature, const Position& toPos, bool checkLineOfSight, bool checkFloor)
-{
+ReturnValue Actions::canUseFar(const Creature* creature, const Position& toPos, bool checkLineOfSight, bool checkFloor) {
 	if (toPos.x == 0xFFFF) {
 		return RETURNVALUE_NOERROR;
 	}
@@ -269,8 +258,7 @@ ReturnValue Actions::canUseFar(const Creature* creature, const Position& toPos, 
 	return RETURNVALUE_NOERROR;
 }
 
-Action* Actions::getAction(const Item* item)
-{
+Action* Actions::getAction(const Item* item) {
 	if (item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
 		auto it = uniqueItemMap.find(item->getUniqueId());
 		if (it != uniqueItemMap.end()) {
@@ -294,8 +282,7 @@ Action* Actions::getAction(const Item* item)
 	return g_spells->getRuneSpell(item->getID());
 }
 
-ReturnValue Actions::internalUseItem(Player* player, const Position& pos, uint8_t index, Item* item, bool isHotkey)
-{
+ReturnValue Actions::internalUseItem(Player* player, const Position& pos, uint8_t index, Item* item, bool isHotkey) {
 	if (Door* door = item->getDoor()) {
 		if (!door->canUse(player)) {
 			return RETURNVALUE_NOTPOSSIBLE;
@@ -384,8 +371,7 @@ ReturnValue Actions::internalUseItem(Player* player, const Position& pos, uint8_
 	return RETURNVALUE_CANNOTUSETHISOBJECT;
 }
 
-static void showUseHotkeyMessage(Player* player, const Item* item, uint32_t count)
-{
+static void showUseHotkeyMessage(Player* player, const Item* item, uint32_t count) {
 	const ItemType& it = Item::items[item->getID()];
 	if (!it.showCount) {
 		player->sendTextMessage(MESSAGE_INFO_DESCR, fmt::format("Using one of {:s}...", item->getName()));
@@ -396,8 +382,7 @@ static void showUseHotkeyMessage(Player* player, const Item* item, uint32_t coun
 	}
 }
 
-bool Actions::useItem(Player* player, const Position& pos, uint8_t index, Item* item, bool isHotkey)
-{
+bool Actions::useItem(Player* player, const Position& pos, uint8_t index, Item* item, bool isHotkey) {
 	player->setNextAction(OTSYS_TIME() + getNumber(ConfigManager::ACTIONS_DELAY_INTERVAL));
 
 	if (isHotkey) {
@@ -429,8 +414,7 @@ bool Actions::useItem(Player* player, const Position& pos, uint8_t index, Item* 
 }
 
 bool Actions::useItemEx(Player* player, const Position& fromPos, const Position& toPos,
-                        uint8_t toStackPos, Item* item, bool isHotkey, Creature* creature/* = nullptr*/)
-{
+                       uint8_t toStackPos, Item* item, bool isHotkey, Creature* creature/* = nullptr*/) {
 	player->setNextAction(OTSYS_TIME() + getNumber(ConfigManager::EX_ACTIONS_DELAY_INTERVAL));
 
 	Action* action = getAction(item);
@@ -473,8 +457,7 @@ bool Actions::useItemEx(Player* player, const Position& fromPos, const Position&
 Action::Action(LuaScriptInterface* interface) :
 	Event(interface), function(nullptr), allowFarUse(false), checkFloor(true), checkLineOfSight(true) {}
 
-bool Action::configureEvent(const pugi::xml_node& node)
-{
+bool Action::configureEvent(const pugi::xml_node& node) {
 	pugi::xml_attribute allowFarUseAttr = node.attribute("allowfaruse");
 	if (allowFarUseAttr) {
 		allowFarUse = allowFarUseAttr.as_bool();
@@ -495,20 +478,18 @@ bool Action::configureEvent(const pugi::xml_node& node)
 
 namespace {
 
-bool enterMarket(Player* player, Item*, const Position&, Thing*, const Position&, bool)
-{
-	if (player->getLastDepotId() == -1) {
-		return false;
+	bool enterMarket(Player* player, Item*, const Position&, Thing*, const Position&, bool) {
+		if (player->getLastDepotId() == -1) {
+			return false;
+		}
+
+		player->sendMarketEnter(player->getLastDepotId());
+		return true;
 	}
 
-	player->sendMarketEnter(player->getLastDepotId());
-	return true;
 }
 
-}
-
-bool Action::loadFunction(const pugi::xml_attribute& attr, bool isScripted)
-{
+bool Action::loadFunction(const pugi::xml_attribute& attr, bool isScripted) {
 	const char* functionName = attr.as_string();
 	if (caseInsensitiveEqual(functionName, "market")) {
 		function = enterMarket;
@@ -525,24 +506,21 @@ bool Action::loadFunction(const pugi::xml_attribute& attr, bool isScripted)
 	return true;
 }
 
-ReturnValue Action::canExecuteAction(const Player* player, const Position& toPos)
-{
+ReturnValue Action::canExecuteAction(const Player* player, const Position& toPos) {
 	if (allowFarUse) {
 		return g_actions->canUseFar(player, toPos, checkLineOfSight, checkFloor);
 	}
 	return g_actions->canUse(player, toPos);
 }
 
-Thing* Action::getTarget(Player* player, Creature* targetCreature, const Position& toPosition, uint8_t toStackPos) const
-{
+Thing* Action::getTarget(Player* player, Creature* targetCreature, const Position& toPosition, uint8_t toStackPos) const {
 	if (targetCreature) {
 		return targetCreature;
 	}
 	return g_game.internalGetThing(player, toPosition, toStackPos, 0, STACKPOS_USETARGET);
 }
 
-bool Action::executeUse(Player* player, Item* item, const Position& fromPosition, Thing* target, const Position& toPosition, bool isHotkey)
-{
+bool Action::executeUse(Player* player, Item* item, const Position& fromPosition, Thing* target, const Position& toPosition, bool isHotkey) {
 	//onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if (!lua::reserveScriptEnv()) {
 		std::cout << "[Error - Action::executeUse] Call stack overflow" << std::endl;

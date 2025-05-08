@@ -83,8 +83,7 @@ struct OTBM_Tile_coords {
 
 #pragma pack()
 
-class IOMap
-{
+class IOMap {
 	static Tile* createTile(Item*& ground, Item* item, uint16_t x, uint16_t y, uint8_t z);
 
 	public:

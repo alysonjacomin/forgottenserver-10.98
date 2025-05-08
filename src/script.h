@@ -6,8 +6,7 @@
 
 #include "luascript.h"
 
-class Scripts
-{
+class Scripts {
 	public:
 		Scripts();
 		~Scripts();

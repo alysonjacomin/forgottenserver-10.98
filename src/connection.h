@@ -10,20 +10,20 @@ static constexpr int32_t CONNECTION_WRITE_TIMEOUT = 30;
 static constexpr int32_t CONNECTION_READ_TIMEOUT = 30;
 
 class Protocol;
-using Protocol_ptr = std::shared_ptr<Protocol>;
 class OutputMessage;
-using OutputMessage_ptr = std::shared_ptr<OutputMessage>;
 class Connection;
+class ServiceBase;
+class ServicePort;
+
+using Protocol_ptr = std::shared_ptr<Protocol>;
+using OutputMessage_ptr = std::shared_ptr<OutputMessage>;
 using Connection_ptr = std::shared_ptr<Connection>;
 using ConnectionWeak_ptr = std::weak_ptr<Connection>;
-class ServiceBase;
 using Service_ptr = std::shared_ptr<ServiceBase>;
-class ServicePort;
 using ServicePort_ptr = std::shared_ptr<ServicePort>;
 using ConstServicePort_ptr = std::shared_ptr<const ServicePort>;
 
-class ConnectionManager
-{
+class ConnectionManager {
 	public:
 		static ConnectionManager& getInstance() {
 			static ConnectionManager instance;
@@ -41,8 +41,7 @@ class ConnectionManager
 		std::mutex connectionManagerLock;
 };
 
-class Connection : public std::enable_shared_from_this<Connection>
-{
+class Connection : public std::enable_shared_from_this<Connection> {
 	public:
 		using Address = boost::asio::ip::address;
 		// non-copyable

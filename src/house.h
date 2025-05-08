@@ -14,8 +14,7 @@ class House;
 class HouseTile;
 class Player;
 
-class AccessList
-{
+class AccessList {
 	public:
 		void parseList(std::string_view list);
 		void addPlayer(const std::string& name);
@@ -33,8 +32,7 @@ class AccessList
 		bool allowEveryone = false;
 };
 
-class Door final : public Item
-{
+class Door final : public Item {
 	public:
 		explicit Door(uint16_t type);
 
@@ -94,8 +92,7 @@ enum AccessHouseLevel_t {
 using HouseTileList = std::list<HouseTile*>;
 using HouseBedItemList = std::list<BedItem*>;
 
-class HouseTransferItem final : public Item
-{
+class HouseTransferItem final : public Item {
 	public:
 		static HouseTransferItem* createHouseTransferItem(House* house);
 
@@ -110,8 +107,7 @@ class HouseTransferItem final : public Item
 		House* house;
 };
 
-class House
-{
+class House {
 	public:
 		explicit House(uint32_t houseId);
 
@@ -252,8 +248,7 @@ enum RentPeriod_t {
 	RENTPERIOD_NEVER,
 };
 
-class Houses
-{
+class Houses {
 	public:
 		Houses() = default;
 		~Houses() {

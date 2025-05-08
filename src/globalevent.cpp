@@ -11,18 +11,15 @@
 #include "tools.h"
 
 GlobalEvents::GlobalEvents() :
-	scriptInterface("GlobalEvent Interface")
-{
+	scriptInterface("GlobalEvent Interface") {
 	scriptInterface.initState();
 }
 
-GlobalEvents::~GlobalEvents()
-{
+GlobalEvents::~GlobalEvents() {
 	clear(false);
 }
 
-void GlobalEvents::clearMap(GlobalEventMap& map, bool fromLua)
-{
+void GlobalEvents::clearMap(GlobalEventMap& map, bool fromLua) {
 	for (auto it = map.begin(); it != map.end();) {
 		if (fromLua == it->second.fromLua) {
 			it = map.erase(it);
@@ -32,8 +29,7 @@ void GlobalEvents::clearMap(GlobalEventMap& map, bool fromLua)
 	}
 }
 
-void GlobalEvents::clear(bool fromLua)
-{
+void GlobalEvents::clear(bool fromLua) {
 	g_scheduler.stopEvent(thinkEventId);
 	thinkEventId = 0;
 	g_scheduler.stopEvent(timerEventId);
@@ -46,16 +42,14 @@ void GlobalEvents::clear(bool fromLua)
 	reInitState(fromLua);
 }
 
-Event_ptr GlobalEvents::getEvent(const std::string& nodeName)
-{
+Event_ptr GlobalEvents::getEvent(const std::string& nodeName) {
 	if (!caseInsensitiveEqual(nodeName, "globalevent")) {
 		return nullptr;
 	}
 	return Event_ptr(new GlobalEvent(&scriptInterface));
 }
 
-bool GlobalEvents::registerEvent(Event_ptr event, const pugi::xml_node&)
-{
+bool GlobalEvents::registerEvent(Event_ptr event, const pugi::xml_node&) {
 	GlobalEvent_ptr globalEvent{static_cast<GlobalEvent*>(event.release())}; //event is guaranteed to be a GlobalEvent
 	if (globalEvent->getEventType() == GLOBALEVENT_TIMER) {
 		auto result = timerMap.emplace(globalEvent->getName(), std::move(*globalEvent));
@@ -84,8 +78,7 @@ bool GlobalEvents::registerEvent(Event_ptr event, const pugi::xml_node&)
 	return false;
 }
 
-bool GlobalEvents::registerLuaEvent(GlobalEvent* event)
-{
+bool GlobalEvents::registerLuaEvent(GlobalEvent* event) {
 	GlobalEvent_ptr globalEvent{ event };
 	if (globalEvent->getEventType() == GLOBALEVENT_TIMER) {
 		auto result = timerMap.emplace(globalEvent->getName(), std::move(*globalEvent));
@@ -114,8 +107,7 @@ bool GlobalEvents::registerLuaEvent(GlobalEvent* event)
 	return false;
 }
 
-void GlobalEvents::startup() const
-{
+void GlobalEvents::startup() const {
 	execute(GLOBALEVENT_STARTUP);
 }
 
@@ -127,8 +119,7 @@ void GlobalEvents::save() const {
 	execute(GLOBALEVENT_SAVE);
 }
 
-void GlobalEvents::timer()
-{
+void GlobalEvents::timer() {
 	auto now = OTSYS_TIME();
 
 	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
@@ -165,8 +156,7 @@ void GlobalEvents::timer()
 	}
 }
 
-void GlobalEvents::think()
-{
+void GlobalEvents::think() {
 	int64_t now = OTSYS_TIME();
 
 	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
@@ -198,8 +188,7 @@ void GlobalEvents::think()
 	}
 }
 
-void GlobalEvents::execute(GlobalEvent_t type) const
-{
+void GlobalEvents::execute(GlobalEvent_t type) const {
 	for (const auto& it : serverMap) {
 		const GlobalEvent& globalEvent = it.second;
 		if (globalEvent.getEventType() == type) {
@@ -208,8 +197,7 @@ void GlobalEvents::execute(GlobalEvent_t type) const
 	}
 }
 
-GlobalEventMap GlobalEvents::getEventMap(GlobalEvent_t type)
-{
+GlobalEventMap GlobalEvents::getEventMap(GlobalEvent_t type) {
 	// TODO: This should be better implemented. Maybe have a map for every type.
 	switch (type) {
 		case GLOBALEVENT_NONE: return thinkMap;
@@ -217,7 +205,7 @@ GlobalEventMap GlobalEvents::getEventMap(GlobalEvent_t type)
 		case GLOBALEVENT_STARTUP:
 		case GLOBALEVENT_SHUTDOWN:
 		case GLOBALEVENT_RECORD:
- 		case GLOBALEVENT_SAVE: {
+		case GLOBALEVENT_SAVE: {
 			GlobalEventMap retMap;
 			for (const auto& it : serverMap) {
 				if (it.second.getEventType() == type) {
@@ -232,8 +220,7 @@ GlobalEventMap GlobalEvents::getEventMap(GlobalEvent_t type)
 
 GlobalEvent::GlobalEvent(LuaScriptInterface* interface) : Event(interface) {}
 
-bool GlobalEvent::configureEvent(const pugi::xml_node& node)
-{
+bool GlobalEvent::configureEvent(const pugi::xml_node& node) {
 	pugi::xml_attribute nameAttribute = node.attribute("name");
 	if (!nameAttribute) {
 		std::cout << "[Error - GlobalEvent::configureEvent] Missing name for a globalevent" << std::endl;
@@ -295,7 +282,7 @@ bool GlobalEvent::configureEvent(const pugi::xml_node& node)
 		} else if (caseInsensitiveEqual(value, "record")) {
 			eventType = GLOBALEVENT_RECORD;
 		} else if (caseInsensitiveEqual(value, "save")) {
- 			eventType = GLOBALEVENT_SAVE;
+			eventType = GLOBALEVENT_SAVE;
 		} else {
 			std::cout << "[Error - GlobalEvent::configureEvent] No valid type \"" << attr.as_string() << "\" for globalevent with name " << name << std::endl;
 			return false;
@@ -310,8 +297,7 @@ bool GlobalEvent::configureEvent(const pugi::xml_node& node)
 	return true;
 }
 
-std::string_view GlobalEvent::getScriptEventName() const
-{
+std::string_view GlobalEvent::getScriptEventName() const {
 	switch (eventType) {
 		case GLOBALEVENT_STARTUP: return "onStartup";
 		case GLOBALEVENT_SHUTDOWN: return "onShutdown";
@@ -322,8 +308,7 @@ std::string_view GlobalEvent::getScriptEventName() const
 	}
 }
 
-bool GlobalEvent::executeRecord(uint32_t current, uint32_t old)
-{
+bool GlobalEvent::executeRecord(uint32_t current, uint32_t old) {
 	//onRecord(current, old)
 	if (!lua::reserveScriptEnv()) {
 		std::cout << "[Error - GlobalEvent::executeRecord] Call stack overflow" << std::endl;
@@ -341,8 +326,7 @@ bool GlobalEvent::executeRecord(uint32_t current, uint32_t old)
 	return scriptInterface->callFunction(2);
 }
 
-bool GlobalEvent::executeEvent() const
-{
+bool GlobalEvent::executeEvent() const {
 	if (!lua::reserveScriptEnv()) {
 		std::cout << "[Error - GlobalEvent::executeEvent] Call stack overflow" << std::endl;
 		return false;

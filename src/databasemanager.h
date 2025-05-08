@@ -4,8 +4,7 @@
 #ifndef FS_DATABASEMANAGER_H
 #define FS_DATABASEMANAGER_H
 
-class DatabaseManager
-{
+class DatabaseManager {
 	public:
 		static bool tableExists(const std::string& tableName);
 

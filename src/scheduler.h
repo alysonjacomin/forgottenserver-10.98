@@ -10,8 +10,7 @@
 
 static constexpr int32_t SCHEDULER_MINTICKS = 50;
 
-class SchedulerTask : public Task
-{
+class SchedulerTask : public Task {
 	public:
 		void setEventId(uint32_t id) {
 			eventId = id;
@@ -34,8 +33,7 @@ class SchedulerTask : public Task
 
 SchedulerTask* createSchedulerTask(uint32_t delay, TaskFunc&& f);
 
-class Scheduler : public ThreadHolder<Scheduler>
-{
+class Scheduler : public ThreadHolder<Scheduler> {
 	public:
 		uint32_t addEvent(SchedulerTask* task);
 		void stopEvent(uint32_t eventId);

@@ -6,8 +6,7 @@
 
 #include "item.h"
 
-class Teleport final : public Item, public Cylinder
-{
+class Teleport final : public Item, public Cylinder {
 	public:
 		explicit Teleport(uint16_t type) : Item(type) {};
 

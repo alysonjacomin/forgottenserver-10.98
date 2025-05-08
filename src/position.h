@@ -24,10 +24,9 @@ namespace pos {
 
 	inline constexpr auto abs(std::integral auto num) { return num < 0 ? -num : num; }
 
-} // namespace tfs
+} // namespace pos
 
-struct Position
-{
+struct Position {
 	constexpr Position() = default;
 	constexpr Position(uint16_t x, uint16_t y, uint8_t z) : x(x), y(y), z(z) {}
 

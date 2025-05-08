@@ -31,8 +31,7 @@
 	|--- OTBM_ITEM_DEF (not implemented)
 */
 
-Tile* IOMap::createTile(Item*& ground, Item* item, uint16_t x, uint16_t y, uint8_t z)
-{
+Tile* IOMap::createTile(Item*& ground, Item* item, uint16_t x, uint16_t y, uint8_t z) {
 	if (!ground) {
 		return new StaticTile(x, y, z);
 	}
@@ -50,8 +49,7 @@ Tile* IOMap::createTile(Item*& ground, Item* item, uint16_t x, uint16_t y, uint8
 	return tile;
 }
 
-bool IOMap::loadMap(Map* map, const std::filesystem::path& fileName)
-{
+bool IOMap::loadMap(Map* map, const std::filesystem::path& fileName) {
 	int64_t start = OTSYS_TIME();
 	try {
 		OTB::Loader loader{fileName.string(), OTB::Identifier{{'O', 'T', 'B', 'M'}}};
@@ -143,8 +141,7 @@ bool IOMap::loadMap(Map* map, const std::filesystem::path& fileName)
 	return true;
 }
 
-bool IOMap::parseMapDataAttributes(OTB::Loader& loader, const OTB::Node& mapNode, Map& map, const std::filesystem::path& fileName)
-{
+bool IOMap::parseMapDataAttributes(OTB::Loader& loader, const OTB::Node& mapNode, Map& map, const std::filesystem::path& fileName) {
 	PropStream propStream;
 	if (!loader.getProps(mapNode, propStream)) {
 		setLastErrorString("Could not read map data attributes.");
@@ -193,8 +190,7 @@ bool IOMap::parseMapDataAttributes(OTB::Loader& loader, const OTB::Node& mapNode
 	return true;
 }
 
-bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Map& map)
-{
+bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Map& map) {
 	PropStream propStream;
 	if (!loader.getProps(tileAreaNode, propStream)) {
 		setLastErrorString("Invalid map node.");
@@ -377,8 +373,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 	return true;
 }
 
-bool IOMap::parseTowns(OTB::Loader& loader, const OTB::Node& townsNode, Map& map)
-{
+bool IOMap::parseTowns(OTB::Loader& loader, const OTB::Node& townsNode, Map& map) {
 	for (auto& townNode : townsNode.children) {
 		PropStream propStream;
 		if (townNode.type != OTBM_TOWN) {
@@ -422,8 +417,7 @@ bool IOMap::parseTowns(OTB::Loader& loader, const OTB::Node& townsNode, Map& map
 	return true;
 }
 
-bool IOMap::parseWaypoints(OTB::Loader& loader, const OTB::Node& waypointsNode, Map& map)
-{
+bool IOMap::parseWaypoints(OTB::Loader& loader, const OTB::Node& waypointsNode, Map& map) {
 	PropStream propStream;
 	for (auto& node : waypointsNode.children) {
 		if (node.type != OTBM_WAYPOINT) {

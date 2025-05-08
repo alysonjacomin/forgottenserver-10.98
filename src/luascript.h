@@ -31,9 +31,10 @@ class Npc;
 class Player;
 class Spell;
 class Thing;
-struct Outfit;
 
 using Combat_ptr = std::shared_ptr<Combat>;
+
+struct Outfit;
 
 inline constexpr int32_t EVENT_ID_USER = 1000;
 
@@ -47,8 +48,7 @@ struct LuaTimerEventDesc {
 	LuaTimerEventDesc(LuaTimerEventDesc&& other) = default;
 };
 
-class ScriptEnvironment
-{
+class ScriptEnvironment {
 	public:
 		ScriptEnvironment();
 		~ScriptEnvironment();
@@ -128,8 +128,7 @@ enum ErrorCode_t {
 	LUA_ERROR_SPELL_NOT_FOUND,
 };
 
-class LuaScriptInterface
-{
+class LuaScriptInterface {
 	public:
 		explicit LuaScriptInterface(std::string interfaceName);
 		virtual ~LuaScriptInterface();
@@ -1368,8 +1367,7 @@ class LuaScriptInterface
 		std::string loadingFile;
 };
 
-class LuaEnvironment : public LuaScriptInterface
-{
+class LuaEnvironment : public LuaScriptInterface {
 	public:
 		LuaEnvironment();
 		~LuaEnvironment();
@@ -1436,8 +1434,7 @@ namespace lua {
 
 	// Userdata
 	template <class T>
-	void pushUserdata(lua_State* L, T* value)
-	{
+	void pushUserdata(lua_State* L, T* value) {
 		T** userdata = static_cast<T**>(lua_newuserdata(L, sizeof(T*)));
 		*userdata = value;
 	}
@@ -1450,14 +1447,12 @@ namespace lua {
 
 	// Get
 	template <typename T>
-	typename std::enable_if_t<std::is_enum_v<T>, T> getNumber(lua_State* L, int32_t arg)
-	{
+	typename std::enable_if_t<std::is_enum_v<T>, T> getNumber(lua_State* L, int32_t arg) {
 		return static_cast<T>(static_cast<int64_t>(lua_tonumber(L, arg)));
 	}
 
 	template <typename T>
-	typename std::enable_if_t<std::is_integral_v<T> && std::is_unsigned_v<T>, T> getNumber(lua_State* L, int32_t arg)
-	{
+	typename std::enable_if_t<std::is_integral_v<T> && std::is_unsigned_v<T>, T> getNumber(lua_State* L, int32_t arg) {
 		double num = lua_tonumber(L, arg);
 		if (num < static_cast<double>(std::numeric_limits<T>::lowest()) ||
 			num > static_cast<double>(std::numeric_limits<T>::max())) {
@@ -1469,8 +1464,7 @@ namespace lua {
 
 	template <typename T>
 	typename std::enable_if_t<(std::is_integral_v<T> && std::is_signed_v<T>) || std::is_floating_point_v<T>, T> getNumber(
-		lua_State* L, int32_t arg)
-	{
+		lua_State* L, int32_t arg) {
 		double num = lua_tonumber(L, arg);
 		if (num < static_cast<double>(std::numeric_limits<T>::lowest()) ||
 			num > static_cast<double>(std::numeric_limits<T>::max())) {
@@ -1481,8 +1475,7 @@ namespace lua {
 	}
 
 	template <typename T>
-	T getNumber(lua_State* L, int32_t arg, T defaultValue)
-	{
+	T getNumber(lua_State* L, int32_t arg, T defaultValue) {
 		if (lua_isnumber(L, arg) == 0) {
 			return defaultValue;
 		}
@@ -1490,14 +1483,12 @@ namespace lua {
 	}
 
 	template <class T>
-	T** getRawUserdata(lua_State* L, int32_t arg)
-	{
+	T** getRawUserdata(lua_State* L, int32_t arg) {
 		return static_cast<T**>(lua_touserdata(L, arg));
 	}
 
 	template <class T>
-	T* getUserdata(lua_State* L, int32_t arg)
-	{
+	T* getUserdata(lua_State* L, int32_t arg) {
 		T** userdata = getRawUserdata<T>(L, arg);
 		if (!userdata) {
 			return nullptr;
@@ -1516,15 +1507,13 @@ namespace lua {
 	Player* getPlayer(lua_State* L, int32_t arg);
 
 	template <typename T>
-	T getField(lua_State* L, int32_t arg, std::string_view key)
-	{
+	T getField(lua_State* L, int32_t arg, std::string_view key) {
 		lua_getfield(L, arg, key.data());
 		return getNumber<T>(L, -1);
 	}
 
 	template <typename T, typename... Args>
-	T getField(lua_State* L, int32_t arg, std::string_view key, T&& defaultValue)
-	{
+	T getField(lua_State* L, int32_t arg, std::string_view key, T&& defaultValue) {
 		lua_getfield(L, arg, key.data());
 		return getNumber<T>(L, -1, std::forward<T>(defaultValue));
 	}

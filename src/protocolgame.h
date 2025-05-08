@@ -22,8 +22,7 @@ using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 
 extern Game g_game;
 
-struct TextMessage
-{
+struct TextMessage {
 	MessageClasses type = MESSAGE_STATUS_DEFAULT;
 	std::string text;
 	Position position;
@@ -37,8 +36,7 @@ struct TextMessage
 	TextMessage(MessageClasses type, std::string text) : type(type), text(std::move(text)) {}
 };
 
-class ProtocolGame final : public Protocol
-{
+class ProtocolGame final : public Protocol {
 	public:
 		// static protocol information
 		enum {server_sends_first = true};

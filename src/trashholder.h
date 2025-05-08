@@ -6,8 +6,7 @@
 
 #include "item.h"
 
-class TrashHolder final : public Item, public Cylinder
-{
+class TrashHolder final : public Item, public Cylinder {
 	public:
 		explicit TrashHolder(uint16_t itemId) : Item(itemId) {}
 

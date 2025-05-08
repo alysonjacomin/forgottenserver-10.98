@@ -9,6 +9,7 @@
 #include "luascript.h"
 
 class CreatureEvent;
+
 using CreatureEvent_ptr = std::unique_ptr<CreatureEvent>;
 
 enum CreatureEventType_t {
@@ -28,8 +29,7 @@ enum CreatureEventType_t {
 	CREATURE_EVENT_EXTENDED_OPCODE, // otclient additional network opcodes
 };
 
-class CreatureEvent final : public Event
-{
+class CreatureEvent final : public Event {
 	public:
 		explicit CreatureEvent(LuaScriptInterface* interface);
 
@@ -81,8 +81,7 @@ class CreatureEvent final : public Event
 		bool loaded;
 };
 
-class CreatureEvents final : public BaseEvents
-{
+class CreatureEvents final : public BaseEvents {
 	public:
 		CreatureEvents();
 

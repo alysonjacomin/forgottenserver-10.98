@@ -8,6 +8,7 @@
 #include "luascript.h"
 
 class GlobalEvent;
+
 using GlobalEvent_ptr = std::unique_ptr<GlobalEvent>;
 using GlobalEventMap = std::map<std::string, GlobalEvent>;
 
@@ -21,8 +22,7 @@ enum GlobalEvent_t {
 	GLOBALEVENT_SAVE,
 };
 
-class GlobalEvents final : public BaseEvents
-{
+class GlobalEvents final : public BaseEvents {
 	public:
 		GlobalEvents();
 		~GlobalEvents();
@@ -62,8 +62,7 @@ class GlobalEvents final : public BaseEvents
 		int32_t thinkEventId = 0, timerEventId = 0;
 };
 
-class GlobalEvent final : public Event
-{
+class GlobalEvent final : public Event {
 	public:
 		explicit GlobalEvent(LuaScriptInterface* interface);
 

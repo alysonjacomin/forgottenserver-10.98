@@ -7,8 +7,7 @@
 #include "enums.h"
 
 template <typename Derived>
-class ThreadHolder
-{
+class ThreadHolder {
 	public:
 		ThreadHolder() {}
 		void start() {

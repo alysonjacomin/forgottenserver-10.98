@@ -15,8 +15,7 @@
 
 extern Game g_game;
 
-bool Map::loadMap(const std::string& identifier, bool loadHouses, bool isCalledByLua)
-{
+bool Map::loadMap(const std::string& identifier, bool loadHouses, bool isCalledByLua) {
 	IOMap loader;
 	if (!loader.loadMap(this, identifier)) {
 		std::cout << "[Fatal - Map::loadMap] " << loader.getLastErrorString() << std::endl;
@@ -38,8 +37,7 @@ bool Map::loadMap(const std::string& identifier, bool loadHouses, bool isCalledB
 	return true;
 }
 
-bool Map::save()
-{
+bool Map::save() {
 	bool saved = false;
 	for (uint32_t tries = 0; tries < 3; tries++) {
 		if (IOMapSerialize::saveHouseInfo()) {
@@ -62,8 +60,7 @@ bool Map::save()
 	return saved;
 }
 
-Tile* Map::getTile(uint16_t x, uint16_t y, uint8_t z) const
-{
+Tile* Map::getTile(uint16_t x, uint16_t y, uint8_t z) const {
 	if (z >= MAP_MAX_LAYERS) {
 		return nullptr;
 	}
@@ -80,8 +77,7 @@ Tile* Map::getTile(uint16_t x, uint16_t y, uint8_t z) const
 	return floor->tiles[x & FLOOR_MASK][y & FLOOR_MASK];
 }
 
-void Map::setTile(uint16_t x, uint16_t y, uint8_t z, Tile* newTile)
-{
+void Map::setTile(uint16_t x, uint16_t y, uint8_t z, Tile* newTile) {
 	if (z >= MAP_MAX_LAYERS) {
 		std::cout << "ERROR: Attempt to set tile on invalid coordinate " << Position(x, y, z) << "!" << std::endl;
 		return;
@@ -141,8 +137,7 @@ void Map::setTile(uint16_t x, uint16_t y, uint8_t z, Tile* newTile)
 	}
 }
 
-void Map::removeTile(uint16_t x, uint16_t y, uint8_t z)
-{
+void Map::removeTile(uint16_t x, uint16_t y, uint8_t z) {
 	if (z >= MAP_MAX_LAYERS) {
 		return;
 	}
@@ -183,8 +178,7 @@ void Map::removeTile(uint16_t x, uint16_t y, uint8_t z)
 	}
 }
 
-bool Map::placeCreature(const Position& centerPos, Creature* creature, bool extendedPos/* = false*/, bool forceLogin/* = false*/)
-{
+bool Map::placeCreature(const Position& centerPos, Creature* creature, bool extendedPos/* = false*/, bool forceLogin/* = false*/) {
 	bool foundTile;
 	bool placeInPZ;
 
@@ -255,14 +249,13 @@ bool Map::placeCreature(const Position& centerPos, Creature* creature, bool exte
 	return true;
 }
 
-void Map::moveCreature(Creature& creature, Tile& newTile, bool forceTeleport/* = false*/)
-{
+void Map::moveCreature(Creature& creature, Tile& newTile, bool forceTeleport/* = false*/) {
 	Tile& oldTile = *creature.getTile();
 
 	// If the tile does not have the creature it means that the creature is ready for elimination, we skip the move.
- 	if (!oldTile.hasCreature(&creature)) {
- 		return;
- 	}
+	if (!oldTile.hasCreature(&creature)) {
+		return;
+	}
 
 	Position oldPos = oldTile.getPosition();
 	Position newPos = newTile.getPosition();
@@ -335,8 +328,7 @@ void Map::moveCreature(Creature& creature, Tile& newTile, bool forceTeleport/* =
 	newTile.postAddNotification(&creature, &oldTile, 0);
 }
 
-void Map::getSpectatorsInternal(SpectatorVec& spectators, const Position& centerPos, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY, int32_t minRangeZ, int32_t maxRangeZ, bool onlyPlayers) const
-{
+void Map::getSpectatorsInternal(SpectatorVec& spectators, const Position& centerPos, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY, int32_t minRangeZ, int32_t maxRangeZ, bool onlyPlayers) const {
 	auto min_y = centerPos.y + minRangeY;
 	auto min_x = centerPos.x + minRangeX;
 	auto max_y = centerPos.y + maxRangeY;
@@ -391,8 +383,7 @@ void Map::getSpectatorsInternal(SpectatorVec& spectators, const Position& center
 	}
 }
 
-void Map::getSpectators(SpectatorVec& spectators, const Position& centerPos, bool multifloor /*= false*/, bool onlyPlayers /*= false*/, int32_t minRangeX /*= 0*/, int32_t maxRangeX /*= 0*/, int32_t minRangeY /*= 0*/, int32_t maxRangeY /*= 0*/)
-{
+void Map::getSpectators(SpectatorVec& spectators, const Position& centerPos, bool multifloor /*= false*/, bool onlyPlayers /*= false*/, int32_t minRangeX /*= 0*/, int32_t maxRangeX /*= 0*/, int32_t minRangeY /*= 0*/, int32_t maxRangeY /*= 0*/) {
 	if (centerPos.z >= MAP_MAX_LAYERS) {
 		return;
 	}
@@ -453,7 +444,7 @@ void Map::getSpectators(SpectatorVec& spectators, const Position& centerPos, boo
 			if (centerPos.z > 7) {
 				//underground (8->15)
 				minRangeZ = std::max(centerPos.getZ() - 2, 0);
- 				maxRangeZ = std::min(centerPos.getZ() + 2, MAP_MAX_LAYERS - 1);
+				maxRangeZ = std::min(centerPos.getZ() + 2, MAP_MAX_LAYERS - 1);
 			} else if (centerPos.z == 6) {
 				minRangeZ = 0;
 				maxRangeZ = 8;
@@ -481,19 +472,16 @@ void Map::getSpectators(SpectatorVec& spectators, const Position& centerPos, boo
 	}
 }
 
-void Map::clearSpectatorCache()
-{
+void Map::clearSpectatorCache() {
 	spectatorCache.clear();
 }
 
-void Map::clearPlayersSpectatorCache()
-{
+void Map::clearPlayersSpectatorCache() {
 	playersSpectatorCache.clear();
 }
 
 bool Map::canThrowObjectTo(const Position& fromPos, const Position& toPos, bool checkLineOfSight /*= true*/, bool sameFloor /*= false*/,
-                           int32_t rangex /*= Map::maxClientViewportX*/, int32_t rangey /*= Map::maxClientViewportY*/) const
-{
+                          int32_t rangex /*= Map::maxClientViewportX*/, int32_t rangey /*= Map::maxClientViewportY*/) const {
 	if (fromPos.getDistanceX(toPos) > rangex || fromPos.getDistanceY(toPos) > rangey) {
 		return false;
 	}
@@ -501,8 +489,7 @@ bool Map::canThrowObjectTo(const Position& fromPos, const Position& toPos, bool 
 	return !checkLineOfSight || isSightClear(fromPos, toPos, sameFloor);
 }
 
-bool Map::isTileClear(uint16_t x, uint16_t y, uint8_t z, bool blockFloor /*= false*/) const
-{
+bool Map::isTileClear(uint16_t x, uint16_t y, uint8_t z, bool blockFloor /*= false*/) const {
 	const Tile* tile = getTile(x, y, z);
 	if (!tile) {
 		return true;
@@ -517,44 +504,41 @@ bool Map::isTileClear(uint16_t x, uint16_t y, uint8_t z, bool blockFloor /*= fal
 
 namespace {
 
-bool checkSteepLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t z)
-{
-	float dx = x1 - x0;
-	float slope = (dx == 0) ? 1 : (y1 - y0) / dx;
-	float yi = y0 + slope;
+	bool checkSteepLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t z) {
+		float dx = x1 - x0;
+		float slope = (dx == 0) ? 1 : (y1 - y0) / dx;
+		float yi = y0 + slope;
 
-	for (uint16_t x = x0 + 1; x < x1; ++x) {
-		//0.1 is necessary to avoid loss of precision during calculation
-		if (!g_game.map.isTileClear(std::floor(yi + 0.1), x, z)) {
-			return false;
+		for (uint16_t x = x0 + 1; x < x1; ++x) {
+			//0.1 is necessary to avoid loss of precision during calculation
+			if (!g_game.map.isTileClear(std::floor(yi + 0.1), x, z)) {
+				return false;
+			}
+			yi += slope;
 		}
-		yi += slope;
+
+		return true;
 	}
 
-	return true;
-}
+	bool checkSlightLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t z) {
+		float dx = x1 - x0;
+		float slope = (dx == 0) ? 1 : (y1 - y0) / dx;
+		float yi = y0 + slope;
 
-bool checkSlightLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t z)
-{
-	float dx = x1 - x0;
-	float slope = (dx == 0) ? 1 : (y1 - y0) / dx;
-	float yi = y0 + slope;
-
-	for (uint16_t x = x0 + 1; x < x1; ++x) {
-		//0.1 is necessary to avoid loss of precision during calculation
-		if (!g_game.map.isTileClear(x, std::floor(yi + 0.1), z)) {
-			return false;
+		for (uint16_t x = x0 + 1; x < x1; ++x) {
+			//0.1 is necessary to avoid loss of precision during calculation
+			if (!g_game.map.isTileClear(x, std::floor(yi + 0.1), z)) {
+				return false;
+			}
+			yi += slope;
 		}
-		yi += slope;
+
+		return true;
 	}
 
-	return true;
 }
 
-}
-
-bool Map::checkSightLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t z) const
-{
+bool Map::checkSightLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t z) const {
 	if (x0 == x1 && y0 == y1) {
 		return true;
 	}
@@ -573,8 +557,7 @@ bool Map::checkSightLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uin
 	return checkSlightLine(x0, y0, x1, y1, z);
 }
 
-bool Map::isSightClear(const Position& fromPos, const Position& toPos, bool sameFloor /*= false*/) const
-{
+bool Map::isSightClear(const Position& fromPos, const Position& toPos, bool sameFloor /*= false*/) const {
 	//target is on the same floor
 	if (fromPos.z == toPos.z) {
 		//skip checks if toPos is next to us
@@ -631,8 +614,7 @@ bool Map::isSightClear(const Position& fromPos, const Position& toPos, bool same
 	return checkSightLine(fromPos.x, fromPos.y, toPos.x, toPos.y, fromPos.z);
 }
 
-const Tile* Map::canWalkTo(const Creature& creature, const Position& pos) const
-{
+const Tile* Map::canWalkTo(const Creature& creature, const Position& pos) const {
 	Tile* tile = getTile(pos.x, pos.y, pos.z);
 	if (creature.getTile() != tile) {
 		if (!tile) {
@@ -651,8 +633,7 @@ const Tile* Map::canWalkTo(const Creature& creature, const Position& pos) const
 	return tile;
 }
 
-bool Map::getPathMatching(const Creature& creature, std::vector<Direction>& dirList, const FrozenPathingConditionCall& pathCondition, const FindPathParams& fpp) const
-{
+bool Map::getPathMatching(const Creature& creature, std::vector<Direction>& dirList, const FrozenPathingConditionCall& pathCondition, const FindPathParams& fpp) const {
 	Position pos = creature.getPosition();
 	Position endPos;
 
@@ -790,7 +771,7 @@ bool Map::getPathMatching(const Creature& creature, std::vector<Direction>& dirL
 	}
 
 	int32_t prevx = endPos.getX();
- 	int32_t prevy = endPos.getY();
+	int32_t prevy = endPos.getY();
 
 	found = found->parent;
 	while (found) {
@@ -798,7 +779,7 @@ bool Map::getPathMatching(const Creature& creature, std::vector<Direction>& dirL
 		pos.y = found->y;
 
 		int32_t dx = pos.getX() - prevx;
- 		int32_t dy = pos.getY() - prevy;
+		int32_t dy = pos.getY() - prevy;
 
 		prevx = pos.x;
 		prevy = pos.y;
@@ -829,8 +810,7 @@ bool Map::getPathMatching(const Creature& creature, std::vector<Direction>& dirL
 // AStarNodes
 
 AStarNodes::AStarNodes(uint32_t x, uint32_t y)
-	: nodes(), openNodes()
-{
+	: nodes(), openNodes() {
 	curNode = 1;
 	closedNodes = 0;
 	openNodes[0] = true;
@@ -843,8 +823,7 @@ AStarNodes::AStarNodes(uint32_t x, uint32_t y)
 	nodeTable[(x << 16) | y] = nodes;
 }
 
-AStarNode* AStarNodes::createOpenNode(AStarNode* parent, uint32_t x, uint32_t y, int_fast32_t f)
-{
+AStarNode* AStarNodes::createOpenNode(AStarNode* parent, uint32_t x, uint32_t y, int_fast32_t f) {
 	if (curNode >= MAX_NODES) {
 		return nullptr;
 	}
@@ -861,8 +840,7 @@ AStarNode* AStarNodes::createOpenNode(AStarNode* parent, uint32_t x, uint32_t y,
 	return node;
 }
 
-AStarNode* AStarNodes::getBestNode()
-{
+AStarNode* AStarNodes::getBestNode() {
 	if (curNode == 0) {
 		return nullptr;
 	}
@@ -882,16 +860,14 @@ AStarNode* AStarNodes::getBestNode()
 	return nullptr;
 }
 
-void AStarNodes::closeNode(AStarNode* node)
-{
+void AStarNodes::closeNode(AStarNode* node) {
 	size_t index = node - nodes;
 	assert(index < MAX_NODES);
 	openNodes[index] = false;
 	++closedNodes;
 }
 
-void AStarNodes::openNode(AStarNode* node)
-{
+void AStarNodes::openNode(AStarNode* node) {
 	size_t index = node - nodes;
 	assert(index < MAX_NODES);
 	if (!openNodes[index]) {
@@ -900,13 +876,11 @@ void AStarNodes::openNode(AStarNode* node)
 	}
 }
 
-int_fast32_t AStarNodes::getClosedNodes() const
-{
+int_fast32_t AStarNodes::getClosedNodes() const {
 	return closedNodes;
 }
 
-AStarNode* AStarNodes::getNodeByPosition(uint32_t x, uint32_t y)
-{
+AStarNode* AStarNodes::getNodeByPosition(uint32_t x, uint32_t y) {
 	auto it = nodeTable.find((x << 16) | y);
 	if (it == nodeTable.end()) {
 		return nullptr;
@@ -914,8 +888,7 @@ AStarNode* AStarNodes::getNodeByPosition(uint32_t x, uint32_t y)
 	return it->second;
 }
 
-int_fast32_t AStarNodes::getMapWalkCost(AStarNode* node, const Position& neighborPos)
-{
+int_fast32_t AStarNodes::getMapWalkCost(AStarNode* node, const Position& neighborPos) {
 	if (std::abs(node->x - neighborPos.x) == std::abs(node->y - neighborPos.y)) {
 		//diagonal movement extra cost
 		return MAP_DIAGONALWALKCOST;
@@ -923,8 +896,7 @@ int_fast32_t AStarNodes::getMapWalkCost(AStarNode* node, const Position& neighbo
 	return MAP_NORMALWALKCOST;
 }
 
-int_fast32_t AStarNodes::getTileWalkCost(const Creature& creature, const Tile* tile)
-{
+int_fast32_t AStarNodes::getTileWalkCost(const Creature& creature, const Tile* tile) {
 	int_fast32_t cost = 0;
 	if (tile->getTopVisibleCreature(&creature)) {
 		//destroy creature cost
@@ -942,8 +914,7 @@ int_fast32_t AStarNodes::getTileWalkCost(const Creature& creature, const Tile* t
 }
 
 // Floor
-Floor::~Floor()
-{
+Floor::~Floor() {
 	for (auto& row : tiles) {
 		for (auto tile : row) {
 			delete tile;
@@ -952,15 +923,13 @@ Floor::~Floor()
 }
 
 // QTreeNode
-QTreeNode::~QTreeNode()
-{
+QTreeNode::~QTreeNode() {
 	for (auto* ptr : child) {
 		delete ptr;
 	}
 }
 
-QTreeLeafNode* QTreeNode::getLeaf(uint32_t x, uint32_t y)
-{
+QTreeLeafNode* QTreeNode::getLeaf(uint32_t x, uint32_t y) {
 	if (leaf) {
 		return static_cast<QTreeLeafNode*>(this);
 	}
@@ -972,8 +941,7 @@ QTreeLeafNode* QTreeNode::getLeaf(uint32_t x, uint32_t y)
 	return node->getLeaf(x << 1, y << 1);
 }
 
-QTreeLeafNode* QTreeNode::createLeaf(uint32_t x, uint32_t y, uint32_t level)
-{
+QTreeLeafNode* QTreeNode::createLeaf(uint32_t x, uint32_t y, uint32_t level) {
 	if (!isLeaf()) {
 		uint32_t index = ((x & 0x8000) >> 15) | ((y & 0x8000) >> 14);
 		if (!child[index]) {
@@ -992,23 +960,20 @@ QTreeLeafNode* QTreeNode::createLeaf(uint32_t x, uint32_t y, uint32_t level)
 // QTreeLeafNode
 bool QTreeLeafNode::newLeaf = false;
 
-QTreeLeafNode::~QTreeLeafNode()
-{
+QTreeLeafNode::~QTreeLeafNode() {
 	for (auto* ptr : array) {
 		delete ptr;
 	}
 }
 
-Floor* QTreeLeafNode::createFloor(uint32_t z)
-{
+Floor* QTreeLeafNode::createFloor(uint32_t z) {
 	if (!array[z]) {
 		array[z] = new Floor();
 	}
 	return array[z];
 }
 
-void QTreeLeafNode::addCreature(Creature* c)
-{
+void QTreeLeafNode::addCreature(Creature* c) {
 	creature_list.push_back(c);
 
 	if (c->getPlayer()) {
@@ -1016,8 +981,7 @@ void QTreeLeafNode::addCreature(Creature* c)
 	}
 }
 
-void QTreeLeafNode::removeCreature(Creature* c)
-{
+void QTreeLeafNode::removeCreature(Creature* c) {
 	auto iter = std::find(creature_list.begin(), creature_list.end(), c);
 	assert(iter != creature_list.end());
 	*iter = creature_list.back();
@@ -1031,8 +995,7 @@ void QTreeLeafNode::removeCreature(Creature* c)
 	}
 }
 
-uint32_t Map::clean() const
-{
+uint32_t Map::clean() const {
 	uint64_t start = OTSYS_TIME();
 	size_t tiles = 0;
 

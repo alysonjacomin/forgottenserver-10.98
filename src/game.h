@@ -63,12 +63,11 @@ static constexpr uint8_t ITEM_STACK_SIZE = 100;
 static constexpr int32_t MAX_STACKPOS = 10;
 
 /**
-  * Main Game class.
-  * This class is responsible to control everything that happens
-  */
+ * Main Game class.
+ * This class is responsible to control everything that happens
+ */
 
-class Game
-{
+class Game {
 	public:
 		Game();
 		~Game();

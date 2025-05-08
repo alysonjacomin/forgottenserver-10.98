@@ -82,8 +82,7 @@ static constexpr int32_t PLAYER_MIN_SPEED = 10;
 
 static constexpr int32_t NOTIFY_DEPOT_BOX_RANGE = 1;
 
-class Player final : public Creature, public Cylinder
-{
+class Player final : public Creature, public Cylinder {
 	public:
 		explicit Player(ProtocolGame_ptr p);
 		~Player();
@@ -218,8 +217,7 @@ class Player final : public Creature, public Cylinder
 			lastWalkthroughPosition = walkthroughPosition;
 		}
 
-		Inbox_ptr getInbox()
-		{
+		Inbox_ptr getInbox() {
 			if (!inbox) {
 				inbox = std::make_shared<Inbox>(ITEM_INBOX);
 			}
@@ -1273,7 +1271,7 @@ class Player final : public Creature, public Cylinder
 		Group* group = nullptr;
 		Inbox_ptr inbox = nullptr;
 		Item* tradeItem = nullptr;
- 		Item* inventory[CONST_SLOT_LAST + 1] = {};
+		Item* inventory[CONST_SLOT_LAST + 1] = {};
 		Item* writeItem = nullptr;
 		House* editHouse = nullptr;
 		Npc* shopOwner = nullptr;

@@ -4,8 +4,7 @@
 #ifndef FS_MOUNTS_H
 #define FS_MOUNTS_H
 
-struct Mount
-{
+struct Mount {
 	Mount(uint16_t id, uint16_t clientId, std::string name, int32_t speed, bool premium) :
 		name(std::move(name)), speed(speed), clientId(clientId), id(id), premium(premium) {}
 
@@ -16,8 +15,7 @@ struct Mount
 	bool premium;
 };
 
-class Mounts
-{
+class Mounts {
 	public:
 		bool reload();
 		bool loadFromXml();

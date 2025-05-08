@@ -9,8 +9,7 @@
 #include "pugicast.h"
 #include "tools.h"
 
-bool Vocations::loadFromXml()
-{
+bool Vocations::loadFromXml() {
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file("data/XML/vocations.xml");
 	if (!result) {
@@ -108,8 +107,7 @@ bool Vocations::loadFromXml()
 	return true;
 }
 
-Vocation* Vocations::getVocation(uint16_t id)
-{
+Vocation* Vocations::getVocation(uint16_t id) {
 	auto it = vocationsMap.find(id);
 	if (it == vocationsMap.end()) {
 		std::cout << "[Warning - Vocations::getVocation] Vocation " << id << " not found." << std::endl;
@@ -118,16 +116,14 @@ Vocation* Vocations::getVocation(uint16_t id)
 	return &it->second;
 }
 
-int32_t Vocations::getVocationId(std::string_view name) const
-{
+int32_t Vocations::getVocationId(std::string_view name) const {
 	auto it = std::find_if(vocationsMap.begin(), vocationsMap.end(), [=](auto it) {
 		return caseInsensitiveEqual(name, it.second.name);
 	});
 	return it != vocationsMap.end() ? it->first : -1;
 }
 
-uint16_t Vocations::getPromotedVocation(uint16_t id) const
-{
+uint16_t Vocations::getPromotedVocation(uint16_t id) const {
 	auto it = std::find_if(vocationsMap.begin(), vocationsMap.end(), [id](auto it) {
 		return it.second.fromVocation == id && it.first != id;
 	});
@@ -136,16 +132,14 @@ uint16_t Vocations::getPromotedVocation(uint16_t id) const
 
 static const uint32_t skillBase[SKILL_LAST + 1] = {50, 50, 50, 50, 30, 100, 20};
 
-uint64_t Vocation::getReqSkillTries(uint8_t skill, uint16_t level)
-{
+uint64_t Vocation::getReqSkillTries(uint8_t skill, uint16_t level) {
 	if (skill > SKILL_LAST) {
 		return 0;
 	}
 	return skillBase[skill] * std::pow(skillMultipliers[skill], static_cast<int32_t>(level - (MINIMUM_SKILL_LEVEL + 1)));
 }
 
-uint64_t Vocation::getReqMana(uint32_t magLevel)
-{
+uint64_t Vocation::getReqMana(uint32_t magLevel) {
 	if (magLevel == 0) {
 		return 0;
 	}

@@ -28,12 +28,12 @@ local unrealizedDream = Action()
 function unrealizedDream.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local chance = math.random(0, 10000)
 	for _, dreamEntry in ipairs(dreamConfig) do
- 		if chance >= dreamEntry.chanceFrom and chance <= dreamEntry.chanceTo then
- 			if dreamEntry.itemId then
- 				local giftItemId = dreamEntry.itemId
- 				local message = dreamEntry.message
- 				player:addItem(giftItemId, 1)
- 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
+		if chance >= dreamEntry.chanceFrom and chance <= dreamEntry.chanceTo then
+			if dreamEntry.itemId then
+				local giftItemId = dreamEntry.itemId
+				local message = dreamEntry.message
+				player:addItem(giftItemId, 1)
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
 			end
 
 			item:remove(1)

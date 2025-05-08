@@ -22,7 +22,7 @@ function onLogin(player)
 	end
 
 	-- Update client exp display
- 	player:updateClientExpDisplay()
+	player:updateClientExpDisplay()
 
 	-- Events
 	player:registerEvent("PlayerDeath")

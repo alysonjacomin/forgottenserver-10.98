@@ -10,14 +10,12 @@
 class Npc;
 class Player;
 
-class Npcs
-{
+class Npcs {
 	public:
 		static void reload();
 };
 
-class NpcScriptInterface final : public LuaScriptInterface
-{
+class NpcScriptInterface final : public LuaScriptInterface {
 	public:
 		NpcScriptInterface();
 
@@ -53,8 +51,7 @@ class NpcScriptInterface final : public LuaScriptInterface
 		bool libLoaded;
 };
 
-class NpcEventsHandler
-{
+class NpcEventsHandler {
 	public:
 		NpcEventsHandler(const std::string& file, Npc* npc);
 
@@ -83,8 +80,7 @@ class NpcEventsHandler
 		bool loaded = false;
 };
 
-class Npc final : public Creature
-{
+class Npc final : public Creature {
 	public:
 		~Npc();
 

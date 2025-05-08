@@ -8,8 +8,7 @@
 
 class NetworkMessage;
 
-class ProtocolStatus final : public Protocol
-{
+class ProtocolStatus final : public Protocol {
 	public:
 		// static protocol information
 		enum {server_sends_first = false};

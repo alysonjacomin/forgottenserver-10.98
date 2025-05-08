@@ -10,12 +10,12 @@
 class Item;
 class Player;
 class PropWriteStream;
-struct VIPEntry;
 
 using ItemBlockList = std::list<std::pair<int32_t, Item*>>;
 
-class IOLoginData
-{
+struct VIPEntry;
+
+class IOLoginData {
 	public:
 		static std::pair<uint32_t, std::string_view> gameworldAuthentication(std::string_view accountName, std::string_view password, std::string_view characterName, std::string_view token, uint32_t tokenTime);
 		static uint32_t getAccountIdByPlayerName(const std::string& playerName);

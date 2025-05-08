@@ -10,8 +10,7 @@
 #include "server.h"
 #include "tasks.h"
 
-Connection_ptr ConnectionManager::createConnection(boost::asio::io_context& io_context, ConstServicePort_ptr servicePort)
-{
+Connection_ptr ConnectionManager::createConnection(boost::asio::io_context& io_context, ConstServicePort_ptr servicePort) {
 	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
 
 	auto connection = std::make_shared<Connection>(io_context, servicePort);
@@ -19,15 +18,13 @@ Connection_ptr ConnectionManager::createConnection(boost::asio::io_context& io_c
 	return connection;
 }
 
-void ConnectionManager::releaseConnection(const Connection_ptr& connection)
-{
+void ConnectionManager::releaseConnection(const Connection_ptr& connection) {
 	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
 
 	connections.erase(connection);
 }
 
-void ConnectionManager::closeAll()
-{
+void ConnectionManager::closeAll() {
 	std::lock_guard<std::mutex> lockClass(connectionManagerLock);
 
 	for (const auto& connection : connections) {
@@ -43,8 +40,7 @@ void ConnectionManager::closeAll()
 
 // Connection
 
-void Connection::close(bool force)
-{
+void Connection::close(bool force) {
 	//any thread
 	ConnectionManager::getInstance().releaseConnection(shared_from_this());
 
@@ -67,8 +63,7 @@ void Connection::close(bool force)
 	}
 }
 
-void Connection::closeSocket()
-{
+void Connection::closeSocket() {
 	if (socket.is_open()) {
 		try {
 			readTimer.cancel();
@@ -82,13 +77,11 @@ void Connection::closeSocket()
 	}
 }
 
-Connection::~Connection()
-{
+Connection::~Connection() {
 	closeSocket();
 }
 
-void Connection::accept(Protocol_ptr protocol)
-{
+void Connection::accept(Protocol_ptr protocol) {
 	this->protocol = protocol;
 	g_dispatcher.addTask([=]() {
 		protocol->onConnect();
@@ -97,8 +90,7 @@ void Connection::accept(Protocol_ptr protocol)
 	accept();
 }
 
-void Connection::accept()
-{
+void Connection::accept() {
 	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
 
 	boost::system::error_code error;
@@ -120,8 +112,7 @@ void Connection::accept()
 	}
 }
 
-void Connection::parseHeader(const boost::system::error_code& error)
-{
+void Connection::parseHeader(const boost::system::error_code& error) {
 	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
 	readTimer.cancel();
 
@@ -164,8 +155,7 @@ readTimer.async_wait([thisPtr = std::weak_ptr<Connection>(shared_from_this())](c
 	}
 }
 
-void Connection::parsePacket(const boost::system::error_code& error)
-{
+void Connection::parsePacket(const boost::system::error_code& error) {
 	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
 	readTimer.cancel();
 
@@ -224,8 +214,7 @@ void Connection::parsePacket(const boost::system::error_code& error)
 	}
 }
 
-void Connection::send(const OutputMessage_ptr& msg)
-{
+void Connection::send(const OutputMessage_ptr& msg) {
 	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
 	if (closed) {
 		return;
@@ -245,8 +234,7 @@ void Connection::send(const OutputMessage_ptr& msg)
 	}
 }
 
-void Connection::internalSend(const OutputMessage_ptr& msg)
-{
+void Connection::internalSend(const OutputMessage_ptr& msg) {
 	protocol->onSendMessage(msg);
 	try {
 		writeTimer.expires_after(std::chrono::seconds(CONNECTION_WRITE_TIMEOUT));
@@ -261,8 +249,7 @@ void Connection::internalSend(const OutputMessage_ptr& msg)
 	}
 }
 
-void Connection::onWriteOperation(const boost::system::error_code& error)
-{
+void Connection::onWriteOperation(const boost::system::error_code& error) {
 	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
 	writeTimer.cancel();
 	messageQueue.pop_front();
@@ -280,8 +267,7 @@ void Connection::onWriteOperation(const boost::system::error_code& error)
 	}
 }
 
-void Connection::handleTimeout(ConnectionWeak_ptr connectionWeak, const boost::system::error_code& error)
-{
+void Connection::handleTimeout(ConnectionWeak_ptr connectionWeak, const boost::system::error_code& error) {
 	if (error == boost::asio::error::operation_aborted) {
 		//The timer has been manually canceled
 		return;

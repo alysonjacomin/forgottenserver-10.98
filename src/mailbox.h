@@ -7,8 +7,7 @@
 #include "cylinder.h"
 #include "item.h"
 
-class Mailbox final : public Item, public Cylinder
-{
+class Mailbox final : public Item, public Cylinder {
 	public:
 		explicit Mailbox(uint16_t itemId) : Item(itemId) {}
 

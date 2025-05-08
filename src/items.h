@@ -192,8 +192,7 @@ struct Abilities {
 	bool regeneration = false;
 };
 
-class ItemType
-{
+class ItemType {
 	public:
 		ItemType() = default;
 
@@ -376,8 +375,7 @@ class ItemType
 		bool showCount = true;
 };
 
-class Items
-{
+class Items {
 	public:
 		using NameMap = std::unordered_map<std::string, uint16_t>;
 		using InventoryVector = std::vector<uint16_t>;
@@ -425,8 +423,7 @@ class Items
 	private:
 		std::vector<ItemType> items;
 		InventoryVector inventory;
-		class ClientIdToServerIdMap
-		{
+		class ClientIdToServerIdMap {
 			public:
 				ClientIdToServerIdMap() {
 					vec.reserve(30000);

@@ -446,8 +446,7 @@ enum ReturnValue {
 	RETURNVALUE_YOUCANNOTUSETHISBED,
 };
 
-enum SpeechBubble_t
-{
+enum SpeechBubble_t {
 	SPEECHBUBBLE_NONE = 0,
 	SPEECHBUBBLE_NORMAL = 1,
 	SPEECHBUBBLE_TRADE = 2,
@@ -457,8 +456,7 @@ enum SpeechBubble_t
 	SPEECHBUBBLE_LAST = SPEECHBUBBLE_QUESTTRADER
 };
 
-enum MapMark_t
-{
+enum MapMark_t {
 	MAPMARK_TICK = 0,
 	MAPMARK_QUESTION = 1,
 	MAPMARK_EXCLAMATION = 2,
@@ -553,8 +551,7 @@ struct MarketStatistics {
 	uint32_t lowestPrice = 0;
 };
 
-struct ModalWindow
-{
+struct ModalWindow {
 	std::list<std::pair<std::string, uint8_t>> buttons, choices;
 	std::string title, message;
 	uint32_t id;
@@ -564,8 +561,7 @@ struct ModalWindow
 	ModalWindow(uint32_t id, std::string title, std::string message): title(std::move(title)), message(std::move(message)), id(id) {}
 };
 
-enum CombatOrigin
-{
+enum CombatOrigin {
 	ORIGIN_NONE,
 	ORIGIN_CONDITION,
 	ORIGIN_SPELL,
@@ -574,8 +570,7 @@ enum CombatOrigin
 	ORIGIN_WAND,
 };
 
-struct CombatDamage
-{
+struct CombatDamage {
 	struct {
 		CombatType_t type = COMBAT_NONE;
 		int32_t value = 0;

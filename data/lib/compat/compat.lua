@@ -250,9 +250,9 @@ do
 			self:onRecord(value)
 			return
 		elseif key == "onSave" then
- 			self:type("save")
- 			self:onSave(value)
- 			return
+			self:type("save")
+			self:onSave(value)
+			return
 		end
 		rawset(self, key, value)
 	end
@@ -1047,16 +1047,16 @@ function doSetItemText(uid, text, writer, date)
 	end
 
 	if writer then
- 		item:setAttribute(ITEM_ATTRIBUTE_WRITER, tostring(writer))
- 	else
- 		item:removeAttribute(ITEM_ATTRIBUTE_WRITER)
- 	end
+		item:setAttribute(ITEM_ATTRIBUTE_WRITER, tostring(writer))
+	else
+		item:removeAttribute(ITEM_ATTRIBUTE_WRITER)
+	end
  
- 	if date then
- 		item:setAttribute(ITEM_ATTRIBUTE_DATE, tonumber(date))
- 	else
- 		item:removeAttribute(ITEM_ATTRIBUTE_DATE)
- 	end
+	if date then
+		item:setAttribute(ITEM_ATTRIBUTE_DATE, tonumber(date))
+	else
+		item:removeAttribute(ITEM_ATTRIBUTE_DATE)
+	end
 
 	return true
 end
@@ -1599,11 +1599,11 @@ function table.maxn(t)
 end
 
 function getFormattedWorldTime()
- 	return Game.getFormattedWorldTime()
+	return Game.getFormattedWorldTime()
 end
 
 do
- 	local getmetatable = getmetatable
+	local getmetatable = getmetatable
  
- 	function isClass(obj, class) return getmetatable(obj) == class end
+	function isClass(obj, class) return getmetatable(obj) == class end
 end

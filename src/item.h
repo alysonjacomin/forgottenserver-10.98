@@ -96,8 +96,7 @@ enum Attr_ReadValue {
 	ATTR_READ_END,
 };
 
-class ItemAttributes
-{
+class ItemAttributes {
 	public:
 		ItemAttributes() = default;
 
@@ -197,8 +196,7 @@ class ItemAttributes
 			return static_cast<ItemDecayState_t>(getIntAttr(ITEM_ATTRIBUTE_DECAYSTATE));
 		}
 
-		struct CustomAttribute
-		{
+		struct CustomAttribute {
 			typedef boost::variant<boost::blank, std::string, int64_t, double, bool> VariantAttribute;
 			VariantAttribute value;
 
@@ -342,8 +340,7 @@ class ItemAttributes
 
 		typedef std::unordered_map<std::string, CustomAttribute> CustomAttributeMap;
 
-		struct Attribute
-		{
+		struct Attribute {
 			union {
 				int64_t integer;
 				std::string* string;
@@ -515,8 +512,7 @@ class ItemAttributes
 	friend class Item;
 };
 
-class Item : virtual public Thing
-{
+class Item : virtual public Thing {
 	public:
 		//Factory member to create item of right type based on type
 		static Item* CreateItem(const uint16_t type, uint16_t count = 0);

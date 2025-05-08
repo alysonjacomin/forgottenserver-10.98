@@ -6,8 +6,7 @@
 
 #include "position.h"
 
-class Town
-{
+class Town {
 	public:
 		explicit Town(uint32_t id) : id(id) {}
 
@@ -36,8 +35,7 @@ class Town
 
 using TownMap = std::map<uint32_t, Town*>;
 
-class Towns
-{
+class Towns {
 	public:
 		Towns() = default;
 		~Towns() {

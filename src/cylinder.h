@@ -30,8 +30,7 @@ enum cylinderlink_t {
 	LINK_NEAR,
 };
 
-class Cylinder : virtual public Thing
-{
+class Cylinder : virtual public Thing {
 	public:
 		/**
 		  * Query if the cylinder can add an object
@@ -195,8 +194,7 @@ class Cylinder : virtual public Thing
 		virtual void startDecaying();
 };
 
-class VirtualCylinder final : public Cylinder
-{
+class VirtualCylinder final : public Cylinder {
 	public:
 		static VirtualCylinder* virtualCylinder;
 

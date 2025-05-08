@@ -33,8 +33,7 @@ struct MoveEventList {
 	std::list<MoveEvent> moveEvent[MOVE_EVENT_LAST];
 };
 
-class MoveEvents final : public BaseEvents
-{
+class MoveEvents final : public BaseEvents {
 	public:
 		MoveEvents();
 		~MoveEvents();
@@ -138,8 +137,7 @@ using StepFunction = std::function<uint32_t(Creature* creature, Item* item, cons
 using MoveFunction = std::function<uint32_t(Item* item, Item* tileItem, const Position& pos)>;
 using EquipFunction = std::function<ReturnValue(MoveEvent* moveEvent, Player* player, Item* item, slots_t slot, bool boolean)>;
 
-class MoveEvent final : public Event
-{
+class MoveEvent final : public Event {
 	public:
 		explicit MoveEvent(LuaScriptInterface* interface);
 

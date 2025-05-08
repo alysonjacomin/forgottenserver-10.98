@@ -50,7 +50,7 @@ struct summonBlock_t {
 	uint32_t speed;
 	uint32_t max;
 	MagicEffectClasses effect = CONST_ME_TELEPORT;
- 	MagicEffectClasses masterEffect = CONST_ME_NONE;
+	MagicEffectClasses masterEffect = CONST_ME_NONE;
 	bool force = false;
 };
 
@@ -87,8 +87,7 @@ struct voiceBlock_t {
 	bool yellText;
 };
 
-class MonsterType
-{
+class MonsterType {
 	struct MonsterInfo {
 		LuaScriptInterface* scriptInterface;
 
@@ -170,8 +169,7 @@ class MonsterType
 		void loadLoot(MonsterType* monsterType, LootBlock lootBlock);
 };
 
-class MonsterSpell
-{
+class MonsterSpell {
 	public:
 		MonsterSpell() = default;
 
@@ -216,8 +214,7 @@ class MonsterSpell
 		CombatType_t combatType = COMBAT_UNDEFINEDDAMAGE;
 };
 
-class Monsters
-{
+class Monsters {
 	public:
 		Monsters() = default;
 		// non-copyable

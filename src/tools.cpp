@@ -11,8 +11,7 @@
 #include <fmt/chrono.h>
 #include <openssl/evp.h>
 
-void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
-{
+void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result) {
 	std::cout << '[' << where << "] Failed to load " << fileName << ": " << result.description() << std::endl;
 
 	FILE* file = fopen(fileName.c_str(), "rb");
@@ -60,8 +59,7 @@ void printXMLError(const std::string& where, const std::string& fileName, const 
 	std::cout << '^' << std::endl;
 }
 
-std::string transformToSHA1(std::string_view input)
-{
+std::string transformToSHA1(std::string_view input) {
 	std::unique_ptr<EVP_MD_CTX, decltype(&EVP_MD_CTX_free)> ctx{EVP_MD_CTX_new(), EVP_MD_CTX_free};
 	if (!ctx) {
 		throw std::runtime_error("Failed to create EVP context");
@@ -89,8 +87,7 @@ std::string transformToSHA1(std::string_view input)
 	return digest;
 }
 
-std::string generateToken(const std::string& key, uint32_t ticks)
-{
+std::string generateToken(const std::string& key, uint32_t ticks) {
 	// generate message from ticks
 	std::string message(8, 0);
 	for (uint8_t i = 8; --i; ticks >>= 8) {
@@ -134,22 +131,19 @@ std::string generateToken(const std::string& key, uint32_t ticks)
 	return message;
 }
 
-bool caseInsensitiveEqual(std::string_view str1, std::string_view str2)
-{
+bool caseInsensitiveEqual(std::string_view str1, std::string_view str2) {
 	return str1.size() == str2.size() && std::equal(str1.begin(), str1.end(), str2.begin(), [](char a, char b) {
 		return tolower(a) == tolower(b);
 	});
 }
 
-bool caseInsensitiveStartsWith(std::string_view str, std::string_view prefix)
-{
+bool caseInsensitiveStartsWith(std::string_view str, std::string_view prefix) {
 	return str.size() >= prefix.size() && std::equal(prefix.begin(), prefix.end(), str.begin(), [](char a, char b) {
 		return tolower(a) == tolower(b);
 	});
 }
 
-std::vector<std::string_view> explodeString(std::string_view inString, const std::string& separator, int32_t limit /* = -1*/)
-{
+std::vector<std::string_view> explodeString(std::string_view inString, const std::string& separator, int32_t limit /* = -1*/) {
 	std::vector<std::string_view> returnVector;
 	std::string_view::size_type start = 0, end = 0;
 
@@ -162,8 +156,7 @@ std::vector<std::string_view> explodeString(std::string_view inString, const std
 	return returnVector;
 }
 
-IntegerVector vectorAtoi(const std::vector<std::string_view>& stringVector)
-{
+IntegerVector vectorAtoi(const std::vector<std::string_view>& stringVector) {
 	IntegerVector returnVector;
 	for (const auto& string : stringVector) {
 		returnVector.push_back(std::stoi(string.data()));
@@ -171,15 +164,13 @@ IntegerVector vectorAtoi(const std::vector<std::string_view>& stringVector)
 	return returnVector;
 }
 
-std::mt19937& getRandomGenerator()
-{
+std::mt19937& getRandomGenerator() {
 	static std::random_device rd;
 	static std::mt19937 generator(rd());
 	return generator;
 }
 
-int32_t uniform_random(int32_t minNumber, int32_t maxNumber)
-{
+int32_t uniform_random(int32_t minNumber, int32_t maxNumber) {
 	static std::uniform_int_distribution<int32_t> uniformRand;
 	if (minNumber == maxNumber) {
 		return minNumber;
@@ -189,8 +180,7 @@ int32_t uniform_random(int32_t minNumber, int32_t maxNumber)
 	return uniformRand(getRandomGenerator(), std::uniform_int_distribution<int32_t>::param_type(minNumber, maxNumber));
 }
 
-int32_t normal_random(int32_t minNumber, int32_t maxNumber)
-{
+int32_t normal_random(int32_t minNumber, int32_t maxNumber) {
 	static std::normal_distribution<float> normalRand(0.5f, 0.25f);
 	float v;
 	do {
@@ -201,24 +191,20 @@ int32_t normal_random(int32_t minNumber, int32_t maxNumber)
 	return a + std::lround(v * (b - a));
 }
 
-bool boolean_random(double probability/* = 0.5*/)
-{
+bool boolean_random(double probability/* = 0.5*/) {
 	static std::bernoulli_distribution booleanRand;
 	return booleanRand(getRandomGenerator(), std::bernoulli_distribution::param_type(probability));
 }
 
-std::string formatDate(time_t time)
-{
+std::string formatDate(time_t time) {
 	return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));
 }
 
-std::string formatDateShort(time_t time)
-{
+std::string formatDateShort(time_t time) {
 	return fmt::format("{:%d %b %Y}", fmt::localtime(time));
 }
 
-Position getNextPosition(Direction direction, Position pos)
-{
+Position getNextPosition(Direction direction, Position pos) {
 	switch (direction) {
 		case DIRECTION_NORTH:
 			pos.y--;
@@ -263,8 +249,7 @@ Position getNextPosition(Direction direction, Position pos)
 	return pos;
 }
 
-Direction getDirectionTo(const Position& from, const Position& to)
-{
+Direction getDirectionTo(const Position& from, const Position& to) {
 	if (from == to) {
 		return DIRECTION_NONE;
 	}
@@ -506,8 +491,7 @@ SkullNames skullNames = {
 	{"orange",	SKULL_ORANGE},
 };
 
-MagicEffectClasses getMagicEffect(const std::string& strValue)
-{
+MagicEffectClasses getMagicEffect(const std::string& strValue) {
 	auto magicEffect = magicEffectNames.find(strValue);
 	if (magicEffect != magicEffectNames.end()) {
 		return magicEffect->second;
@@ -515,8 +499,7 @@ MagicEffectClasses getMagicEffect(const std::string& strValue)
 	return CONST_ME_NONE;
 }
 
-ShootType_t getShootType(const std::string& strValue)
-{
+ShootType_t getShootType(const std::string& strValue) {
 	auto shootType = shootTypeNames.find(strValue);
 	if (shootType != shootTypeNames.end()) {
 		return shootType->second;
@@ -524,8 +507,7 @@ ShootType_t getShootType(const std::string& strValue)
 	return CONST_ANI_NONE;
 }
 
-std::string getCombatName(CombatType_t combatType)
-{
+std::string getCombatName(CombatType_t combatType) {
 	auto combatName = combatTypeNames.find(combatType);
 	if (combatName != combatTypeNames.end()) {
 		return combatName->second;
@@ -533,8 +515,7 @@ std::string getCombatName(CombatType_t combatType)
 	return "unknown";
 }
 
-Ammo_t getAmmoType(const std::string& strValue)
-{
+Ammo_t getAmmoType(const std::string& strValue) {
 	auto ammoType = ammoTypeNames.find(strValue);
 	if (ammoType != ammoTypeNames.end()) {
 		return ammoType->second;
@@ -542,8 +523,7 @@ Ammo_t getAmmoType(const std::string& strValue)
 	return AMMO_NONE;
 }
 
-WeaponAction_t getWeaponAction(const std::string& strValue)
-{
+WeaponAction_t getWeaponAction(const std::string& strValue) {
 	auto weaponAction = weaponActionNames.find(strValue);
 	if (weaponAction != weaponActionNames.end()) {
 		return weaponAction->second;
@@ -551,8 +531,7 @@ WeaponAction_t getWeaponAction(const std::string& strValue)
 	return WEAPONACTION_NONE;
 }
 
-Skulls_t getSkullType(const std::string& strValue)
-{
+Skulls_t getSkullType(const std::string& strValue) {
 	auto skullType = skullNames.find(strValue);
 	if (skullType != skullNames.end()) {
 		return skullType->second;
@@ -560,8 +539,7 @@ Skulls_t getSkullType(const std::string& strValue)
 	return SKULL_NONE;
 }
 
-std::string getSpecialSkillName(uint8_t skillid)
-{
+std::string getSpecialSkillName(uint8_t skillid) {
 	switch (skillid) {
 		case SPECIALSKILL_CRITICALHITCHANCE:
 			return "critical hit chance";
@@ -586,8 +564,7 @@ std::string getSpecialSkillName(uint8_t skillid)
 	}
 }
 
-std::string getSkillName(uint8_t skillid)
-{
+std::string getSkillName(uint8_t skillid) {
 	switch (skillid) {
 		case SKILL_FIST:
 			return "fist fighting";
@@ -621,8 +598,7 @@ std::string getSkillName(uint8_t skillid)
 	}
 }
 
-uint32_t adlerChecksum(const uint8_t* data, size_t length)
-{
+uint32_t adlerChecksum(const uint8_t* data, size_t length) {
 	if (length > NETWORKMESSAGE_MAXSIZE) {
 		return 0;
 	}
@@ -647,8 +623,7 @@ uint32_t adlerChecksum(const uint8_t* data, size_t length)
 	return (b << 16) | a;
 }
 
-std::string ucfirst(std::string str)
-{
+std::string ucfirst(std::string str) {
 	for (char& i : str) {
 		if (i != ' ') {
 			i = toupper(i);
@@ -658,8 +633,7 @@ std::string ucfirst(std::string str)
 	return str;
 }
 
-std::string ucwords(std::string str)
-{
+std::string ucwords(std::string str) {
 	size_t strLength = str.length();
 	if (strLength == 0) {
 		return str;
@@ -675,8 +649,7 @@ std::string ucwords(std::string str)
 	return str;
 }
 
-bool booleanString(std::string_view str)
-{
+bool booleanString(std::string_view str) {
 	if (str.empty()) {
 		return false;
 	}
@@ -685,8 +658,7 @@ bool booleanString(std::string_view str)
 	return ch != 'f' && ch != 'n' && ch != '0';
 }
 
-std::string getWeaponName(WeaponType_t weaponType)
-{
+std::string getWeaponName(WeaponType_t weaponType) {
 	switch (weaponType) {
 		case WEAPON_SWORD: return "sword";
 		case WEAPON_CLUB: return "club";
@@ -698,8 +670,7 @@ std::string getWeaponName(WeaponType_t weaponType)
 	}
 }
 
-size_t combatTypeToIndex(CombatType_t combatType)
-{
+size_t combatTypeToIndex(CombatType_t combatType) {
 	switch (combatType) {
 		case COMBAT_PHYSICALDAMAGE:
 			return 0;
@@ -730,13 +701,11 @@ size_t combatTypeToIndex(CombatType_t combatType)
 	}
 }
 
-CombatType_t indexToCombatType(size_t v)
-{
+CombatType_t indexToCombatType(size_t v) {
 	return static_cast<CombatType_t>(1 << v);
 }
 
-uint8_t serverFluidToClient(uint8_t serverFluid)
-{
+uint8_t serverFluidToClient(uint8_t serverFluid) {
 	uint8_t size = sizeof(clientToServerFluidMap) / sizeof(uint8_t);
 	for (uint8_t i = 0; i < size; ++i) {
 		if (clientToServerFluidMap[i] == serverFluid) {
@@ -746,8 +715,7 @@ uint8_t serverFluidToClient(uint8_t serverFluid)
 	return 0;
 }
 
-uint8_t clientFluidToServer(uint8_t clientFluid)
-{
+uint8_t clientFluidToServer(uint8_t clientFluid) {
 	uint8_t size = sizeof(clientToServerFluidMap) / sizeof(uint8_t);
 	if (clientFluid >= size) {
 		return 0;
@@ -755,8 +723,7 @@ uint8_t clientFluidToServer(uint8_t clientFluid)
 	return clientToServerFluidMap[clientFluid];
 }
 
-itemAttrTypes stringToItemAttribute(const std::string& str)
-{
+itemAttrTypes stringToItemAttribute(const std::string& str) {
 	if (str == "aid") {
 		return ITEM_ATTRIBUTE_ACTIONID;
 	} else if (str == "uid") {
@@ -815,8 +782,7 @@ itemAttrTypes stringToItemAttribute(const std::string& str)
 	return ITEM_ATTRIBUTE_NONE;
 }
 
-std::string getFirstLine(const std::string& str)
-{
+std::string getFirstLine(const std::string& str) {
 	std::string firstLine;
 	firstLine.reserve(str.length());
 	for (const char c : str) {
@@ -828,8 +794,7 @@ std::string getFirstLine(const std::string& str)
 	return firstLine;
 }
 
-const char* getReturnMessage(ReturnValue value)
-{
+const char* getReturnMessage(ReturnValue value) {
 	switch (value) {
 		case RETURNVALUE_DESTINATIONOUTOFREACH:
 			return "Destination is out of range.";
@@ -1038,13 +1003,11 @@ const char* getReturnMessage(ReturnValue value)
 	}
 }
 
-int64_t OTSYS_TIME()
-{
+int64_t OTSYS_TIME() {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
-SpellGroup_t stringToSpellGroup(const std::string& value)
-{
+SpellGroup_t stringToSpellGroup(const std::string& value) {
 	std::string tmpStr = boost::algorithm::to_lower_copy(value);
 	if (tmpStr == "attack" || tmpStr == "1") {
 		return SPELLGROUP_ATTACK;
@@ -1059,9 +1022,8 @@ SpellGroup_t stringToSpellGroup(const std::string& value)
 	return SPELLGROUP_NONE;
 }
 
-const std::vector<Direction>& getShuffleDirections()
-{
- 	static std::vector<Direction> dirList{DIRECTION_NORTH, DIRECTION_WEST, DIRECTION_EAST, DIRECTION_SOUTH};
- 	std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
- 	return dirList;
+const std::vector<Direction>& getShuffleDirections() {
+	static std::vector<Direction> dirList{DIRECTION_NORTH, DIRECTION_WEST, DIRECTION_EAST, DIRECTION_SOUTH};
+	std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
+	return dirList;
 }

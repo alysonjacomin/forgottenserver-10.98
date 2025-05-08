@@ -6,8 +6,7 @@
 
 #include "container.h"
 
-class StoreInbox final : public Container
-{
+class StoreInbox final : public Container {
 	public:
 		explicit StoreInbox(uint16_t type);
 

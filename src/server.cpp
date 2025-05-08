@@ -68,25 +68,21 @@ namespace {
 
 } // namespace
 
-ServiceManager::~ServiceManager()
-{
+ServiceManager::~ServiceManager() {
 	stop();
 }
 
-void ServiceManager::die()
-{
+void ServiceManager::die() {
 	io_context.stop();
 }
 
-void ServiceManager::run()
-{
+void ServiceManager::run() {
 	assert(!running);
 	running = true;
 	io_context.run();
 }
 
-void ServiceManager::stop()
-{
+void ServiceManager::stop() {
 	if (!running) {
 		return;
 	}
@@ -107,18 +103,15 @@ void ServiceManager::stop()
 	death_timer.async_wait([this](const boost::system::error_code&) { die(); });
 }
 
-ServicePort::~ServicePort()
-{
+ServicePort::~ServicePort() {
 	close();
 }
 
-bool ServicePort::is_single_socket() const
-{
+bool ServicePort::is_single_socket() const {
 	return !services.empty() && services.front()->is_single_socket();
 }
 
-std::string ServicePort::get_protocol_names() const
-{
+std::string ServicePort::get_protocol_names() const {
 	if (services.empty()) {
 		return std::string();
 	}
@@ -132,8 +125,7 @@ std::string ServicePort::get_protocol_names() const
 	return str;
 }
 
-void ServicePort::accept()
-{
+void ServicePort::accept() {
 	if (!acceptor) {
 		return;
 	}
@@ -142,8 +134,7 @@ void ServicePort::accept()
 	acceptor->async_accept(connection->getSocket(), [=, thisPtr = shared_from_this()](const boost::system::error_code &error) { thisPtr->onAccept(connection, error); });
 }
 
-void ServicePort::onAccept(Connection_ptr connection, const boost::system::error_code& error)
-{
+void ServicePort::onAccept(Connection_ptr connection, const boost::system::error_code& error) {
 	if (!error) {
 		if (services.empty()) {
 			return;
@@ -173,8 +164,7 @@ void ServicePort::onAccept(Connection_ptr connection, const boost::system::error
 	}
 }
 
-Protocol_ptr ServicePort::make_protocol(bool checksummed, NetworkMessage& msg, const Connection_ptr& connection) const
-{
+Protocol_ptr ServicePort::make_protocol(bool checksummed, NetworkMessage& msg, const Connection_ptr& connection) const {
 	uint8_t protocolID = msg.getByte();
 	for (auto& service : services) {
 		if (protocolID != service->get_protocol_identifier()) {
@@ -188,13 +178,11 @@ Protocol_ptr ServicePort::make_protocol(bool checksummed, NetworkMessage& msg, c
 	return nullptr;
 }
 
-void ServicePort::onStopServer()
-{
+void ServicePort::onStopServer() {
 	close();
 }
 
-void ServicePort::open(uint16_t port)
-{
+void ServicePort::open(uint16_t port) {
 	namespace ip = boost::asio::ip;
 
 	close();
@@ -232,16 +220,14 @@ void ServicePort::open(uint16_t port)
 	}
 }
 
-void ServicePort::close()
-{
+void ServicePort::close() {
 	if (acceptor && acceptor->is_open()) {
 		boost::system::error_code error;
 		acceptor->close(error);
 	}
 }
 
-bool ServicePort::add_service(const Service_ptr& new_svc)
-{
+bool ServicePort::add_service(const Service_ptr& new_svc) {
 	if (std::any_of(services.begin(), services.end(), [](const Service_ptr& svc) {return svc->is_single_socket();})) {
 		return false;
 	}

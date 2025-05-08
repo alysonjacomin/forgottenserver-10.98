@@ -25,8 +25,7 @@ enum RequestedInfo_t : uint16_t {
 	REQUEST_SERVER_SOFTWARE_INFO = 1 << 7,
 };
 
-void ProtocolStatus::onRecvFirstMessage(NetworkMessage& msg)
-{
+void ProtocolStatus::onRecvFirstMessage(NetworkMessage& msg) {
 	const static auto acceptorAddress = boost::asio::ip::make_address(getString(ConfigManager::IP));
 
 	const auto& ip = getIP();
@@ -73,8 +72,7 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage& msg)
 	disconnect();
 }
 
-void ProtocolStatus::sendStatusString()
-{
+void ProtocolStatus::sendStatusString() {
 	auto output = net::make_output_message();
 
 	setRawMessages(true);
@@ -142,8 +140,7 @@ void ProtocolStatus::sendStatusString()
 	disconnect();
 }
 
-void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string& characterName)
-{
+void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string& characterName) {
 	auto output = net::make_output_message();
 
 	if (requestedInfo & REQUEST_BASIC_SERVER_INFO) {

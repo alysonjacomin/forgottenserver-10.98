@@ -170,15 +170,15 @@ set(tfs_MAIN ${CMAKE_CURRENT_LIST_DIR}/main.cpp PARENT_SCOPE)
 
 add_library(tfslib ${tfs_SRC})
 target_link_libraries(tfslib PRIVATE
- 	Boost::iostreams
+	Boost::iostreams
 	Boost::locale
- 	Boost::system
- 	fmt::fmt
+	Boost::system
+	fmt::fmt
 	OpenSSL::Crypto
- 	pugixml::pugixml
- 	${CMAKE_THREAD_LIBS_INIT}
- 	${LUA_LIBRARIES}
- 	${MYSQL_CLIENT_LIBS}
+	pugixml::pugixml
+	${CMAKE_THREAD_LIBS_INIT}
+	${LUA_LIBRARIES}
+	${MYSQL_CLIENT_LIBS}
 )
 
 if (APPLE)

@@ -12,8 +12,7 @@ class Container;
 class DepotLocker;
 class StoreInbox;
 
-class ContainerIterator
-{
+class ContainerIterator {
 	public:
 		bool hasNext() const {
 			return !over.empty();
@@ -29,8 +28,7 @@ class ContainerIterator
 		friend class Container;
 };
 
-class Container : public Item, public Cylinder
-{
+class Container : public Item, public Cylinder {
 	public:
 		explicit Container(uint16_t type);
 		Container(uint16_t type, uint16_t size, bool unlocked = true, bool pagination = false);

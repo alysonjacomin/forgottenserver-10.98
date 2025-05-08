@@ -10,7 +10,6 @@
 #include "databasetasks.h"
 
 namespace IOBan {
- 
 	const std::optional<BanInfo> getAccountBanInfo(uint32_t accountId) {
 		Database& db = Database::getInstance();
 

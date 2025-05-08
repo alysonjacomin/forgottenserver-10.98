@@ -9,11 +9,11 @@
 #include "luascript.h"
 
 class Action;
+
 using Action_ptr = std::unique_ptr<Action>;
 using ActionFunction = std::function<bool(Player* player, Item* item, const Position& fromPosition, Thing* target, const Position& toPosition, bool isHotkey)>;
 
-class Action : public Event
-{
+class Action : public Event {
 	public:
 		explicit Action(LuaScriptInterface* interface);
 
@@ -63,8 +63,7 @@ class Action : public Event
 		bool checkLineOfSight = true;
 };
 
-class Actions final : public BaseEvents
-{
+class Actions final : public BaseEvents {
 	public:
 		Actions();
 		~Actions();

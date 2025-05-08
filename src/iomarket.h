@@ -7,8 +7,7 @@
 #include "database.h"
 #include "enums.h"
 
-class IOMarket
-{
+class IOMarket {
 	public:
 		static IOMarket& getInstance() {
 			static IOMarket instance;

@@ -58,8 +58,7 @@ enum ZoneType_t {
 	ZONE_NORMAL,
 };
 
-class TileItemVector : private ItemVector
-{
+class TileItemVector : private ItemVector {
 	public:
 		using ItemVector::begin;
 		using ItemVector::end;
@@ -129,8 +128,7 @@ class TileItemVector : private ItemVector
 		uint16_t downItemCount = 0;
 };
 
-class Tile : public Cylinder
-{
+class Tile : public Cylinder {
 	public:
 		static Tile& nullptr_tile;
 		Tile(uint16_t x, uint16_t y, uint8_t z) : tilePos(x, y, z) {}
@@ -284,8 +282,7 @@ class Tile : public Cylinder
 
 // Used for walkable tiles, where there is high likeliness of
 // items being added/removed
-class DynamicTile : public Tile
-{
+class DynamicTile : public Tile {
 		// By allocating the vectors in-house, we avoid some memory fragmentation
 		TileItemVector items;
 		CreatureVector creatures;
@@ -326,8 +323,7 @@ class DynamicTile : public Tile
 };
 
 // For blocking tiles, where we very rarely actually have items
-class StaticTile final : public Tile
-{
+class StaticTile final : public Tile {
 	// We very rarely even need the vectors, so don't keep them in memory
 	std::unique_ptr<TileItemVector> items;
 	std::unique_ptr<CreatureVector> creatures;

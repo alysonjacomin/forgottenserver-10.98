@@ -10,18 +10,15 @@
 extern LuaEnvironment g_luaEnvironment;
 
 Scripts::Scripts() :
-	scriptInterface("Scripts Interface")
-{
+	scriptInterface("Scripts Interface") {
 	scriptInterface.initState();
 }
 
-Scripts::~Scripts()
-{
+Scripts::~Scripts() {
 	scriptInterface.reInitState();
 }
 
-bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload)
-{
+bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload) {
 	namespace fs = std::filesystem;
 
 	const auto dir = fs::current_path() / "data" / folderName;

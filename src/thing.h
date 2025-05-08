@@ -9,10 +9,10 @@ class Creature;
 class Cylinder;
 class Item;
 class Tile;
+
 struct Position;
 
-class Thing
-{
+class Thing {
 	public:
 		constexpr Thing() = default;
 		virtual ~Thing() = default;

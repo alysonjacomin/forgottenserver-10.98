@@ -20,8 +20,7 @@ extern Game g_game;
 static constexpr int32_t MINSPAWN_INTERVAL = 10 * 1000; // 10 seconds to match RME
 static constexpr int32_t MAXSPAWN_INTERVAL = 24 * 60 * 60 * 1000; // 1 day
 
-bool Spawns::loadFromXml(const std::string& filename, bool isCalledByLua)
-{
+bool Spawns::loadFromXml(const std::string& filename, bool isCalledByLua) {
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(filename.c_str());
 	if (!result) {
@@ -192,8 +191,7 @@ bool Spawns::loadFromXml(const std::string& filename, bool isCalledByLua)
 	return true;
 }
 
-void Spawns::startup()
-{
+void Spawns::startup() {
 	if (!loaded || isStarted()) {
 		return;
 	}
@@ -213,8 +211,7 @@ void Spawns::startup()
 	started = true;
 }
 
-void Spawns::clear()
-{
+void Spawns::clear() {
 	for (Spawn& spawn : spawnList) {
 		spawn.stopEvent();
 	}
@@ -225,8 +222,7 @@ void Spawns::clear()
 	filename.clear();
 }
 
-bool Spawns::isInZone(const Position& centerPos, int32_t radius, const Position& pos)
-{
+bool Spawns::isInZone(const Position& centerPos, int32_t radius, const Position& pos) {
 	if (radius == -1) {
 		return true;
 	}
@@ -235,15 +231,13 @@ bool Spawns::isInZone(const Position& centerPos, int32_t radius, const Position&
 			(pos.getY() >= centerPos.getY() - radius) && (pos.getY() <= centerPos.getY() + radius));
 }
 
-void Spawn::startSpawnCheck()
-{
+void Spawn::startSpawnCheck() {
 	if (checkSpawnEvent == 0) {
 		checkSpawnEvent = g_scheduler.addEvent(createSchedulerTask(getInterval(), [this]() { checkSpawn(); }));
 	}
 }
 
-Spawn::~Spawn()
-{
+Spawn::~Spawn() {
 	for (const auto& it : spawnedMap) {
 		Monster* monster = it.second;
 		monster->setSpawn(nullptr);
@@ -251,8 +245,7 @@ Spawn::~Spawn()
 	}
 }
 
-bool Spawn::findPlayer(const Position& pos)
-{
+bool Spawn::findPlayer(const Position& pos) {
 	SpectatorVec spectators;
 	g_game.map.getSpectators(spectators, pos, false, true);
 	for (Creature* spectator : spectators) {
@@ -265,8 +258,7 @@ bool Spawn::findPlayer(const Position& pos)
 	return false;
 }
 
-bool Spawn::spawnMonster(uint32_t spawnId, spawnBlock_t sb, bool startup/* = false*/)
-{
+bool Spawn::spawnMonster(uint32_t spawnId, spawnBlock_t sb, bool startup/* = false*/) {
 	bool isBlocked = !startup && findPlayer(sb.pos);
 	size_t monstersCount = sb.mTypes.size(), blockedMonsters = 0;
 
@@ -303,8 +295,7 @@ bool Spawn::spawnMonster(uint32_t spawnId, spawnBlock_t sb, bool startup/* = fal
 	return spawnFunc(false);
 }
 
-bool Spawn::spawnMonster(uint32_t spawnId, MonsterType* mType, const Position& pos, Direction dir, bool startup/*= false*/)
-{
+bool Spawn::spawnMonster(uint32_t spawnId, MonsterType* mType, const Position& pos, Direction dir, bool startup/*= false*/) {
 	std::unique_ptr<Monster> monster_ptr(new Monster(mType));
 	if (!events::monster::onSpawn(monster_ptr.get(), pos, startup, false)) {
 		return false;
@@ -333,8 +324,7 @@ bool Spawn::spawnMonster(uint32_t spawnId, MonsterType* mType, const Position& p
 	return true;
 }
 
-void Spawn::startup()
-{
+void Spawn::startup() {
 	for (const auto& it : spawnMap) {
 		uint32_t spawnId = it.first;
 		const spawnBlock_t& sb = it.second;
@@ -342,8 +332,7 @@ void Spawn::startup()
 	}
 }
 
-void Spawn::checkSpawn()
-{
+void Spawn::checkSpawn() {
 	checkSpawnEvent = 0;
 
 	cleanup();
@@ -374,8 +363,7 @@ void Spawn::checkSpawn()
 	}
 }
 
-void Spawn::cleanup()
-{
+void Spawn::cleanup() {
 	auto it = spawnedMap.begin();
 	while (it != spawnedMap.end()) {
 		Monster* monster = it->second;
@@ -388,16 +376,14 @@ void Spawn::cleanup()
 	}
 }
 
-bool Spawn::addBlock(spawnBlock_t sb)
-{
+bool Spawn::addBlock(spawnBlock_t sb) {
 	interval = std::min(interval, sb.interval);
 	spawnMap[spawnMap.size() + 1] = sb;
 
 	return true;
 }
 
-bool Spawn::addMonster(const std::string& name, const Position& pos, Direction dir, uint32_t interval)
-{
+bool Spawn::addMonster(const std::string& name, const Position& pos, Direction dir, uint32_t interval) {
 	MonsterType* mType = g_monsters.getMonsterType(name);
 	if (!mType) {
 		std::cout << "[Warning - Spawn::addMonster] Can not find " << name << std::endl;
@@ -414,8 +400,7 @@ bool Spawn::addMonster(const std::string& name, const Position& pos, Direction d
 	return addBlock(sb);
 }
 
-void Spawn::removeMonster(Monster* monster)
-{
+void Spawn::removeMonster(Monster* monster) {
 	for (auto it = spawnedMap.begin(), end = spawnedMap.end(); it != end; ++it) {
 		if (it->second == monster) {
 			monster->decrementReferenceCounter();
@@ -425,8 +410,7 @@ void Spawn::removeMonster(Monster* monster)
 	}
 }
 
-void Spawn::stopEvent()
-{
+void Spawn::stopEvent() {
 	if (checkSpawnEvent != 0) {
 		g_scheduler.stopEvent(checkSpawnEvent);
 		checkSpawnEvent = 0;

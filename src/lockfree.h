@@ -9,30 +9,27 @@
 #endif
 
 /*
- * we use this to avoid instantiating multiple free lists for objects of the
- * same size and it can be replaced by a variable template in C++14
- *
- * template <size_t TSize, size_t Capacity>
- * boost::lockfree::stack<void*, boost::lockfree::capacity<Capacity> lockfreeFreeList;
- */
+* we use this to avoid instantiating multiple free lists for objects of the
+* same size and it can be replaced by a variable template in C++14
+*
+* template <size_t TSize, size_t Capacity>
+* boost::lockfree::stack<void*, boost::lockfree::capacity<Capacity> lockfreeFreeList;
+*/
 template <size_t TSize, size_t Capacity>
-struct LockfreeFreeList
-{
+struct LockfreeFreeList {
 	using FreeList = boost::lockfree::stack<void*, boost::lockfree::capacity<Capacity>>;
-	static FreeList& get()
-	{
+
+	static FreeList& get() {
 		static FreeList freeList;
 		return freeList;
 	}
 };
 
 template <typename T, size_t Capacity>
-class LockfreePoolingAllocator
-{
+class LockfreePoolingAllocator {
 	public:
 		template <class U>
-		struct rebind
-		{
+		struct rebind {
 			using other = LockfreePoolingAllocator<U, Capacity>;
 		};
 

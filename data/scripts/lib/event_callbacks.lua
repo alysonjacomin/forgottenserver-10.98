@@ -84,40 +84,40 @@ local EventMeta = {
  }
  
 local function register(self, triggerIndex)
- 	if not isScriptsInterface() then
- 		return
- 	end
+	if not isScriptsInterface() then
+		return
+	end
  
- 	local eventType = rawget(self, 'eventType')
- 	local callback = rawget(self, 'callback')
- 	if not eventType or not callback then
- 		debugPrint("[Warning - Event::register] need to setup a callback before you can register.")
- 		return false
- 	end
+	local eventType = rawget(self, 'eventType')
+	local callback = rawget(self, 'callback')
+	if not eventType or not callback then
+		debugPrint("[Warning - Event::register] need to setup a callback before you can register.")
+		return false
+	end
  
- 	local events = EventData[eventType]
- 	events.maxn = #events + 1
- 	events[events.maxn] = {
- 		callback = callback,
- 		triggerIndex = tonumber(triggerIndex) or 0
- 	}
+	local events = EventData[eventType]
+	events.maxn = #events + 1
+	events[events.maxn] = {
+		callback = callback,
+		triggerIndex = tonumber(triggerIndex) or 0
+	}
  
- 	table.sort(events, function(ecl, ecr) return ecl.triggerIndex < ecr.triggerIndex end)
- 	self.eventType = nil
- 	self.callback = nil
- 	return true
+	table.sort(events, function(ecl, ecr) return ecl.triggerIndex < ecr.triggerIndex end)
+	self.eventType = nil
+	self.callback = nil
+	return true
 end
  
 Event = setmetatable({
- 	clear = function(self)
- 		EventData = {}
- 		for i = 1, autoID do
- 			EventData[i] = {maxn = 0}
- 		end
- 	end
+	clear = function(self)
+		EventData = {}
+		for i = 1, autoID do
+			EventData[i] = {maxn = 0}
+		end
+	end
 }, {
- 	__call = function(self)
- 		return setmetatable({register = register}, EventMeta)
+	__call = function(self)
+		return setmetatable({register = register}, EventMeta)
 	end,
 
 	__index = function(self, key)
@@ -127,8 +127,8 @@ Event = setmetatable({
 		end
 
 		local events = EventData[callback]
- 		local eventsCount = events.maxn
- 		local updateableParams = updateableParameters[callback]
+		local eventsCount = events.maxn
+		local updateableParams = updateableParameters[callback]
 
 		return function(...)
 			local results, args, info = {}, pack(...), callbacks[callback]
@@ -158,7 +158,7 @@ Event = setmetatable({
 				until true
 				-- Update the results for the next call
 				for i, value in pairs(updateableParams) do
- 					args[i] = results[value]
+					args[i] = results[value]
 				end
 			end
 		end
@@ -166,12 +166,12 @@ Event = setmetatable({
 })
 
 hasEvent = setmetatable({}, {
- 	__index = function(self, key)
- 		local callback = callbacks[key]
- 		if callback then
- 			return EventData[callback].maxn > 0
- 		end
- 	end
+	__index = function(self, key)
+		local callback = callbacks[key]
+		if callback then
+			return EventData[callback].maxn > 0
+		end
+	end
  })
  
  -- For compatibility with the previous version.

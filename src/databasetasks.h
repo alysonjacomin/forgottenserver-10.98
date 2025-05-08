@@ -17,8 +17,7 @@ struct DatabaseTask {
 	bool store;
 };
 
-class DatabaseTasks : public ThreadHolder<DatabaseTasks>
-{
+class DatabaseTasks : public ThreadHolder<DatabaseTasks> {
 	public:
 		DatabaseTasks() = default;
 		void start();

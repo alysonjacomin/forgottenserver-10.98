@@ -10,8 +10,7 @@ class Inbox;
 
 using Inbox_ptr = std::shared_ptr<Inbox>;
 
-class Inbox final : public Container
-{
+class Inbox final : public Container {
 	public:
 		explicit Inbox(uint16_t type);
 

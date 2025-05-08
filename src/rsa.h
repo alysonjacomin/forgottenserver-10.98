@@ -5,7 +5,9 @@
 #define FS_RSA_H
 
 struct evp_pkey_st;
+
 typedef struct evp_pkey_st EVP_PKEY;
+
 namespace rsa {
 
 	EVP_PKEY* loadPEM(std::string_view pem);

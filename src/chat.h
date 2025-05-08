@@ -13,8 +13,7 @@ class Player;
 using UsersMap = std::map<uint32_t, Player*>;
 using InvitedMap = std::map<uint32_t, const Player*>;
 
-class ChatChannel
-{
+class ChatChannel {
 	public:
 		ChatChannel() = default;
 		ChatChannel(uint16_t channelId, std::string channelName):
@@ -71,8 +70,7 @@ class ChatChannel
 	friend class Chat;
 };
 
-class PrivateChatChannel final : public ChatChannel
-{
+class PrivateChatChannel final : public ChatChannel {
 	public:
 		PrivateChatChannel(uint16_t channelId, std::string channelName) : ChatChannel(channelId, channelName) {}
 
@@ -103,8 +101,7 @@ class PrivateChatChannel final : public ChatChannel
 
 using ChannelList = std::list<ChatChannel*>;
 
-class Chat
-{
+class Chat {
 	public:
 		Chat();
 

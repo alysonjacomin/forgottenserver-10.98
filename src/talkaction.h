@@ -9,6 +9,7 @@
 #include "luascript.h"
 
 class TalkAction;
+
 using TalkAction_ptr = std::unique_ptr<TalkAction>;
 
 enum TalkActionResult_t {
@@ -17,8 +18,7 @@ enum TalkActionResult_t {
 	TALKACTION_FAILED,
 };
 
-class TalkAction : public Event
-{
+class TalkAction : public Event {
 	public:
 		explicit TalkAction(LuaScriptInterface* interface) : Event(interface) {}
 
@@ -72,8 +72,7 @@ class TalkAction : public Event
 		AccountType_t requiredAccountType = ACCOUNT_TYPE_NORMAL;
 };
 
-class TalkActions final : public BaseEvents
-{
+class TalkActions final : public BaseEvents {
 	public:
 		TalkActions();
 		~TalkActions();

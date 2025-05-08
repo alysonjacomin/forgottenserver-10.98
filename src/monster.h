@@ -23,8 +23,7 @@ enum TargetSearchType_t {
 	TARGETSEARCH_NEAREST,
 };
 
-class Monster final : public Creature
-{
+class Monster final : public Creature {
 	public:
 		static Monster* createMonster(const std::string& name);
 		static int32_t despawnRange;

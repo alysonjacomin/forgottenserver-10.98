@@ -10,8 +10,7 @@
 
 extern Game g_game;
 
-void ProtocolOld::disconnectClient(const std::string& message)
-{
+void ProtocolOld::disconnectClient(const std::string& message) {
 	auto output = net::make_output_message();
 	output->addByte(0x0A);
 	output->addString(message);
@@ -20,8 +19,7 @@ void ProtocolOld::disconnectClient(const std::string& message)
 	disconnect();
 }
 
-void ProtocolOld::onRecvFirstMessage(NetworkMessage& msg)
-{
+void ProtocolOld::onRecvFirstMessage(NetworkMessage& msg) {
 	if (g_game.getGameState() == GAME_STATE_SHUTDOWN) {
 		disconnect();
 		return;

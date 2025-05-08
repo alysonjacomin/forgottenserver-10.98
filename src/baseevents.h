@@ -5,12 +5,11 @@
 #define FS_BASEEVENTS_H
 
 class LuaScriptInterface;
-
 class Event;
+
 using Event_ptr = std::unique_ptr<Event>;
 
-class Event
-{
+class Event {
 	public:
 		explicit Event(LuaScriptInterface* interface);
 		virtual ~Event() = default;
@@ -42,10 +41,9 @@ class Event
 		LuaScriptInterface* scriptInterface = nullptr;
 };
 
-class BaseEvents
-{
+class BaseEvents {
 	public:
- 		constexpr BaseEvents() = default;
+		constexpr BaseEvents() = default;
 		virtual ~BaseEvents() = default;
 
 		bool loadFromXml();
@@ -65,8 +63,7 @@ class BaseEvents
 		bool loaded = false;
 };
 
-class CallBack
-{
+class CallBack {
 	public:
 		CallBack() = default;
 

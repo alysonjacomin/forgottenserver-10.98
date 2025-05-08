@@ -2,8 +2,7 @@
 
 #include "matrixarea.h"
 
-MatrixArea MatrixArea::rotate90() const
-{
+MatrixArea MatrixArea::rotate90() const {
 	Container newArr(arr.size());
 	for (uint32_t i = 0; i < rows; ++i) {
 		// assign rows, top to bottom, to the current cols, right to left
@@ -13,16 +12,14 @@ MatrixArea MatrixArea::rotate90() const
 	return {{rows - centerY - 1, centerX}, cols, rows, std::move(newArr)};
 }
 
-MatrixArea MatrixArea::rotate180() const
-{
+MatrixArea MatrixArea::rotate180() const {
 	Container newArr(arr.size());
 	std::reverse_copy(std::begin(arr), std::end(arr), std::begin(newArr));
 	auto &&[centerX, centerY] = center;
 	return {{cols - centerX - 1, rows - centerY - 1}, rows, cols, std::move(newArr)};
 }
 
-MatrixArea MatrixArea::rotate270() const
-{
+MatrixArea MatrixArea::rotate270() const {
 	Container newArr(arr.size());
 	for (uint32_t i = 0; i < cols; ++i) {
 		// assign cols, left to right, to the current rows, bottom to top
@@ -32,8 +29,7 @@ MatrixArea MatrixArea::rotate270() const
 	return {{centerY, cols - centerX - 1}, cols, rows, std::move(newArr)};
 }
 
-MatrixArea createArea(const std::vector<uint32_t> &vec, uint32_t rows)
-{
+MatrixArea createArea(const std::vector<uint32_t> &vec, uint32_t rows) {
 	uint32_t cols;
 	if (rows == 0) {
 		cols = 0;

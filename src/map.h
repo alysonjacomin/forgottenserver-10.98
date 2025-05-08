@@ -15,6 +15,7 @@ class Creature;
 static constexpr int32_t MAP_MAX_LAYERS = 16;
 
 struct FindPathParams;
+
 struct AStarNode {
 	AStarNode* parent;
 	int_fast32_t f;
@@ -26,8 +27,7 @@ static constexpr int32_t MAX_NODES = 512;
 static constexpr int32_t MAP_NORMALWALKCOST = 10;
 static constexpr int32_t MAP_DIAGONALWALKCOST = 25;
 
-class AStarNodes
-{
+class AStarNodes {
 	public:
 		AStarNodes(uint32_t x, uint32_t y);
 
@@ -69,8 +69,7 @@ struct Floor {
 class FrozenPathingConditionCall;
 class QTreeLeafNode;
 
-class QTreeNode
-{
+class QTreeNode {
 	public:
 		constexpr QTreeNode() = default;
 		virtual ~QTreeNode();
@@ -86,8 +85,7 @@ class QTreeNode
 		QTreeLeafNode* getLeaf(uint32_t x, uint32_t y);
 
 		template<typename Leaf, typename Node>
-		static Leaf getLeafStatic(Node node, uint32_t x, uint32_t y)
-		{
+		static Leaf getLeafStatic(Node node, uint32_t x, uint32_t y) {
 			do {
 				node = node->child[((x & 0x8000) >> 15) | ((y & 0x8000) >> 14)];
 				if (!node) {
@@ -111,8 +109,7 @@ class QTreeNode
 		friend class Map;
 };
 
-class QTreeLeafNode final : public QTreeNode
-{
+class QTreeLeafNode final : public QTreeNode {
 	public:
 		QTreeLeafNode() { leaf = true; newLeaf = true; }
 		~QTreeLeafNode();
@@ -142,12 +139,11 @@ class QTreeLeafNode final : public QTreeNode
 };
 
 /**
-  * Map class.
-  * Holds all the actual map-data
-  */
+ * Map class.
+ * Holds all the actual map-data
+ */
 
-class Map
-{
+class Map {
 	public:
 		static constexpr int32_t maxViewportX = 11; //min value: maxClientViewportX + 1
 		static constexpr int32_t maxViewportY = 11; //min value: maxClientViewportY + 1
