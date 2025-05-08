@@ -14,38 +14,25 @@
    ],
 
    "features": {
-    "lua": {
-      "description": "Use Lua instead of LuaJIT",
-      "dependencies": [
-        "lua"
-      ]
-    },
-    "luajit": {
-      "description": "Use LuaJIT instead of Lua",
-      "dependencies": [
-        "luajit"
-      ]
-    },
-    "libmariadb": {
-      "description": "Use libmariadb instead of libmysql",
-      "dependencies": ["libmariadb"]
-    },
-    "libmysql": {
-      "description": "Use libmysql instead of libmariadb",
-      "dependencies": ["libmysql"]
-    },
-    "unit-tests": {
-      "description": "Build unit tests",
-      "dependencies": [
-        "boost-test"
-      ]
-    }
+     "lua": {
+       "description": "Use Lua instead of LuaJIT",
+       "dependencies": ["lua"]
+     },
+     "luajit": {
+       "description": "Use LuaJIT instead of Lua",
+       "dependencies": ["luajit"]
+     },
+     "libmariadb": {
+       "description": "Use libmariadb instead of libmysql",
+       "dependencies": ["libmariadb"]
+     },
+     "libmysql": {
+       "description": "Use libmysql instead of libmariadb",
+       "dependencies": ["libmysql"]
+     }
    },
 
-  "default-features": [
-    "lua",
-    "libmariadb"
-  ],
+   "default-features": ["lua","libmariadb"],
 
-  "builtin-baseline": "215a2535590f1f63788ac9bd2ed58ad15e6afdff"
- }
+   "builtin-baseline": "215a2535590f1f63788ac9bd2ed58ad15e6afdff"
+}

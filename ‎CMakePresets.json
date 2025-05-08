@@ -25,15 +25,5 @@
        "name": "vcpkg",
        "configurePreset": "vcpkg"
      }
-   ],
-   "testPresets": [
-     {
-       "name": "default",
-       "configurePreset": "default"
-     },
-     {
-       "name": "vcpkg",
-       "configurePreset": "vcpkg"
-     }
    ]
- }
+}
