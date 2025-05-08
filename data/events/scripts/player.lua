@@ -113,7 +113,7 @@ function Player:onTradeCompleted(target, item, targetItem, isSuccess)
 end
 
 function Player:onGainExperience(source, exp, rawExp)
-	return hasEvent.onGainExperience and Event.onGainExperience(self, exp, rawExp) or exp
+	return hasEvent.onGainExperience and Event.onGainExperience(self, source, exp, rawExp) or exp
 end
 
 function Player:onLoseExperience(exp)
@@ -188,7 +188,7 @@ end
 
 function Player:onSpellCheck(spell)
  	if hasEvent.onSpellCheck then
- 		Event.onSpellCheck(self, item, slot, equip)
+ 		Event.onSpellCheck(self, spell)
  	end
  	return true
 end
