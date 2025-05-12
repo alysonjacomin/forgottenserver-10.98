@@ -21,10 +21,6 @@ static detail::Mysql_ptr connectToDatabase(const bool retryIfError) {
 	// connection handle initialization
 	detail::Mysql_ptr handle{mysql_init(nullptr)};
 
-	// disable SSL connection verification
-   uint8_t ssl_disabled = 0;
-   mysql_options(handle.get(), MYSQL_OPT_SSL_VERIFY_SERVER_CERT, &ssl_disabled);
-
 	// cant connection handle
 	if (!handle) {
 		std::cout << std::endl << "Failed to initialize MySQL connection handle." << std::endl;
