@@ -45,9 +45,9 @@ endif()
 # Find packages.
 find_package(OpenSSL 3.0.0 REQUIRED COMPONENTS Crypto)
 find_package(fmt 8.1.1 CONFIG)
- if (NOT fmt_FOUND)
+if (NOT fmt_FOUND)
 	find_package(fmt 8.1.1 REQUIRED)
- endif()
+endif()
 
 # Look for vcpkg-provided libmariadb first
 # If we link to the file directly, we might miss its dependencies from vcpkg
@@ -71,7 +71,7 @@ endif()
 if (APPLE)
 	find_package(Iconv REQUIRED)
 endif()
- 
+
 set(BOOST_REQUIRED_COMPONENTS system iostreams locale)
 find_package(Boost ${BOOST_REQUIRED_VERSION} REQUIRED COMPONENTS ${BOOST_REQUIRED_COMPONENTS})
 
@@ -79,18 +79,6 @@ include_directories(${Boost_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR} ${LUA_INCLUDE_D
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-target_link_libraries(tfs PRIVATE
-		Boost::date_time
-		Boost::system
-		Boost::iostreams
-		fmt::fmt
-		${CMAKE_THREAD_LIBS_INIT}
-		${Crypto++_LIBRARIES}
-		${LUA_LIBRARIES}
-		${MYSQL_CLIENT_LIBS}
-		${PUGIXML_LIBRARIES}
-		)
 
 ### INTERPROCEDURAL_OPTIMIZATION ###
 include(CheckIPOSupported)
