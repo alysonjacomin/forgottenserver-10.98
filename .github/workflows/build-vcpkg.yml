@@ -1,4 +1,4 @@
-name: Build with vcpkg
+name: Build - VCPKG
 
 on:
   push:

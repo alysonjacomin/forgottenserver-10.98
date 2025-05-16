@@ -75,7 +75,7 @@ set(tfs_SRC
 	${CMAKE_CURRENT_LIST_DIR}/weapons.cpp
 	${CMAKE_CURRENT_LIST_DIR}/wildcardtree.cpp
 	${CMAKE_CURRENT_LIST_DIR}/xtea.cpp
-PARENT_SCOPE)
+)
 
 set(tfs_HDR
 	${CMAKE_CURRENT_LIST_DIR}/otpch.h
@@ -181,7 +181,7 @@ target_link_libraries(tfslib PRIVATE
 	${MYSQL_CLIENT_LIBS}
 )
 
-if (APPLE)
+if(APPLE)
 	target_link_libraries(tfslib PRIVATE Iconv::Iconv)
 endif()
 

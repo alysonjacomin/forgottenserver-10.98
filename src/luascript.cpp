@@ -3494,29 +3494,6 @@ int LuaScriptInterface::luaGetSubTypeName(lua_State* L) {
 	return 1;
 }
 
-bool LuaScriptInterface::getArea(lua_State* L, std::vector<uint32_t>& vec, uint32_t& rows) {
-	lua_pushnil(L);
-	for (rows = 0; lua_next(L, -2) != 0; ++rows) {
-		if (!lua_istable(L, -1)) {
-			return false;
-		}
-
-		lua_pushnil(L);
-		while (lua_next(L, -2) != 0) {
-			if (!isNumber(L, -1)) {
-				return false;
-			}
-			vec.push_back(lua::getNumber<uint32_t>(L, -1));
-			lua_pop(L, 1);
-		}
-
-		lua_pop(L, 1);
-	}
-
-	lua_pop(L, 1);
-	return (rows != 0);
-}
-
 int LuaScriptInterface::luaCreateCombatArea(lua_State* L) {
 	//createCombatArea({area}, <optional> {extArea})
 	ScriptEnvironment* env = lua::getScriptEnv();

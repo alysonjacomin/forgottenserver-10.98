@@ -7,7 +7,7 @@ set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 # driving the vcpkg triplet in the same way either when starting vcpkg directly,
 # or when letting CMake start vcpkg at configure/generate time.
 # Note: this logic must happen before PROJECT command.
-if (DEFINED ENV{VCPKG_DEFAULT_TRIPLET} AND NOT DEFINED VCPKG_TARGET_TRIPLET)
+if(DEFINED ENV{VCPKG_DEFAULT_TRIPLET} AND NOT DEFINED VCPKG_TARGET_TRIPLET)
 	 set(VCPKG_TARGET_TRIPLET "$ENV{VCPKG_DEFAULT_TRIPLET}" CACHE STRING "The vcpkg triplet")
 endif()
 
@@ -15,44 +15,31 @@ set(BOOST_REQUIRED_VERSION 1.71.0)
 
 project(tfs CXX)
 
-add_subdirectory(src)
-add_executable(tfs ${tfs_SRC})
-
-option(USE_LUAJIT "Use LuaJIT" OFF)
-if (USE_LUAJIT)
-	list(APPEND VCPKG_MANIFEST_FEATURES "luajit")
-else()
-	list(APPEND VCPKG_MANIFEST_FEATURES "lua")
-endif()
-
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-set_target_properties(tfs PROPERTIES CXX_STANDARD 17)
-set_target_properties(tfs PROPERTIES CXX_STANDARD_REQUIRED ON)
-
-if (NOT WIN32)
+if(NOT WIN32)
 	add_compile_options(-Wall -Wextra -Wnon-virtual-dtor -Wold-style-cast -pedantic -Werror -pipe -fvisibility=hidden)
 endif()
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	add_compile_options(-fno-strict-aliasing)
 endif()
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 	add_compile_options(-Wimplicit-fallthrough -Wmove)
 endif()
 
 # Find packages.
 find_package(OpenSSL 3.0.0 REQUIRED COMPONENTS Crypto)
 find_package(fmt 8.1.1 CONFIG)
-if (NOT fmt_FOUND)
+if(NOT fmt_FOUND)
 	find_package(fmt 8.1.1 REQUIRED)
 endif()
 
 # Look for vcpkg-provided libmariadb first
 # If we link to the file directly, we might miss its dependencies from vcpkg
 find_package(unofficial-libmariadb CONFIG)
-if (unofficial-libmariadb_FOUND)
+if(unofficial-libmariadb_FOUND)
 	set(MYSQL_CLIENT_LIBS "unofficial::libmariadb")
 else()
 	find_package(MySQL REQUIRED)
@@ -62,14 +49,20 @@ find_package(Threads REQUIRED)
 find_package(PugiXML CONFIG REQUIRED)
 
 # Selects LuaJIT if user defines or auto-detected
-if (USE_LUAJIT)
-	find_package(LuaJIT REQUIRED)
+if(DEFINED USE_LUAJIT AND NOT USE_LUAJIT)
+	set(FORCE_LUAJIT ${USE_LUAJIT})
+else()
+	find_package(LuaJIT)
+	set(FORCE_LUAJIT ${LuaJIT_FOUND})
+endif()
+option(USE_LUAJIT "Use LuaJIT" ${FORCE_LUAJIT})
+
+if(FORCE_LUAJIT)
+	if(APPLE)
+		find_package(Iconv REQUIRED)
+	endif()
 else()
 	find_package(Lua REQUIRED)
-endif()
-
-if (APPLE)
-	find_package(Iconv REQUIRED)
 endif()
 
 set(BOOST_REQUIRED_COMPONENTS system iostreams locale)
@@ -80,10 +73,14 @@ include_directories(${Boost_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR} ${LUA_INCLUDE_D
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+add_subdirectory(src)
+add_executable(tfs ${tfs_MAIN})
+target_link_libraries(tfs tfslib)
+
 ### INTERPROCEDURAL_OPTIMIZATION ###
 include(CheckIPOSupported)
 check_ipo_supported(RESULT result OUTPUT error)
-if (result)
+if(result)
 	set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 else()
 	message(STATUS "IPO is not supported: ${error}")
@@ -104,11 +101,5 @@ if(NOT SKIP_GIT)
 	endif()
 endif()
 ### END  Git Version ###
-
-# Option to disable unity builds
-option(ENABLE_UNITY_BUILD "Enable unity build" ON)
-if(ENABLE_UNITY_BUILD)
-	set_target_properties(tfslib PROPERTIES UNITY_BUILD ON)
-endif()
 
 target_precompile_headers(tfs PUBLIC src/otpch.h)

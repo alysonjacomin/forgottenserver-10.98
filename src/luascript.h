@@ -186,8 +186,6 @@ class LuaScriptInterface {
 		std::map<int32_t, std::string> cacheFiles;
 
 	private:
-		static bool getArea(lua_State* L, std::vector<uint32_t>& vec, uint32_t& rows);
-
 		//lua functions
 		static int luaDoPlayerAddItem(lua_State* L);
 
