@@ -324,9 +324,9 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage& msg) {
 	msg.skipBytes(1); // gamemaster flag
 
 	// acc name, password, token, tokentime
-	std::string session = msg.getString();
+	auto session = msg.getString();
 
-	auto sessionArgs = explodeString(session, "\n", 4);
+	auto sessionArgs = explodeString(session.data(), "\n", 4);
 
 	if (sessionArgs.size() != 4) {
 		disconnect();
@@ -381,15 +381,14 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage& msg) {
 		return;
 	}
 
-	uint32_t accountId;
-	std::tie(accountId, characterName) = IOLoginData::gameworldAuthentication(accountName, password, characterName, token, tokenTime);
+	auto[accountId, charName] = IOLoginData::gameworldAuthentication(accountName, password, characterName, token, tokenTime);
 	if (accountId == 0) {
 		disconnectClient("Account name or password is not correct.");
 		return;
 	}
 
-	g_dispatcher.addTask([=, thisPtr = getThis(), characterName = std::string{characterName}]() {
-		thisPtr->login(characterName, accountId, operatingSystem);
+	g_dispatcher.addTask([=, thisPtr = getThis()]() {
+		thisPtr->login(charName, accountId, operatingSystem);
 	});
 }
 

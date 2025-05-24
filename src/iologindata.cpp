@@ -43,38 +43,38 @@ std::string decodeSecret(std::string_view secret) {
 	return key;
 }
 
-std::pair<uint32_t, std::string_view> IOLoginData::gameworldAuthentication(std::string_view accountName, std::string_view password, std::string_view characterName, std::string_view token, uint32_t tokenTime) {
+std::pair<uint32_t, std::string> IOLoginData::gameworldAuthentication(std::string_view accountName, std::string_view password, std::string_view characterName, std::string_view token, uint32_t tokenTime) {
 	Database& db = Database::getInstance();
 
 	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `id`, UNHEX(`password`) AS `password`, `secret` FROM `accounts` WHERE `name` = {:s}", db.escapeString(accountName)));
 	if (!result) {
-		return std::make_pair(0, characterName);
+		return std::make_pair(0, std::string{characterName});
 	}
 
 	std::string secret = decodeSecret(result->getString("secret"));
 	if (!secret.empty()) {
 		if (token.empty()) {
-			return std::make_pair(0, characterName);
+			return std::make_pair(0, std::string{characterName});
 		}
 
 		bool tokenValid = token == generateToken(secret, tokenTime) || token == generateToken(secret, tokenTime - 1) || token == generateToken(secret, tokenTime + 1);
 		if (!tokenValid) {
-			return std::make_pair(0, characterName);
+			return std::make_pair(0, std::string{characterName});
 		}
 	}
 
 	if (transformToSHA1(password) != result->getString("password")) {
-		return std::make_pair(0, characterName);
+		return std::make_pair(0, std::string{characterName});
 	}
 
 	uint32_t accountId = result->getNumber<uint32_t>("id");
 
 	result = db.storeQuery(fmt::format("SELECT `name` FROM `players` WHERE `name` = {:s} AND `account_id` = {:d} AND `deletion` = 0", db.escapeString(characterName), accountId));
 	if (!result) {
-		return std::make_pair(0, characterName);
+		return std::make_pair(0, std::string{characterName});
 	}
 
-	return std::make_pair(accountId, result->getString("name"));
+	return std::make_pair(accountId, std::string{result->getString("name")});
 }
 
 uint32_t IOLoginData::getAccountIdByPlayerName(const std::string& playerName) {
