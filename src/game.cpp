@@ -71,12 +71,19 @@ void Game::start(ServiceManager* manager) {
 			checkLight();
 		}));
 	}
+
 	g_scheduler.addEvent(createSchedulerTask(EVENT_CREATURE_THINK_INTERVAL, [this]() {
 		checkCreatures(0);
 	}));
+
+	g_scheduler.addEvent(createSchedulerTask(getNumber(ConfigManager::PATHFINDING_INTERVAL), [this]() {
+		updateCreaturesPath(0);
+	}));
+
 	g_scheduler.addEvent(createSchedulerTask(EVENT_DECAYINTERVAL, [this]() {
 		checkDecay();
 	}));
+
 }
 
 GameState_t Game::getGameState() const {
@@ -3688,6 +3695,19 @@ void Game::checkCreatures(size_t index) {
 	}
 
 	cleanup();
+}
+
+void Game::updateCreaturesPath(size_t index) {
+	g_scheduler.addEvent(createSchedulerTask(getNumber(ConfigManager::PATHFINDING_INTERVAL), [=, this]() {
+		updateCreaturesPath((index + 1) % EVENT_CREATURECOUNT);
+	}));
+
+	auto& checkCreatureList = checkCreatureLists[index];
+	for (Creature* creature : checkCreatureList) {
+		if (!creature->isDead()) {
+			creature->forceUpdatePath();
+		}
+	}
 }
 
 void Game::changeSpeed(Creature* creature, int32_t varSpeedDelta) {

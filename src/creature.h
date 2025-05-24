@@ -264,6 +264,14 @@ class Creature : virtual public Thing {
 		virtual void onFollowCreature(const Creature*);
 		virtual void onUnfollowCreature();
 
+		// Pathfinding functions
+		bool isFollower(Creature* creature);
+		void addFollower(Creature* creature);
+		void removeFollowers();
+
+		// Pathfinding events
+		void updateFollowersPaths();
+
 		//combat functions
 		Creature* getAttackedCreature() {
 			return attackedCreature;
@@ -378,6 +386,7 @@ class Creature : virtual public Thing {
 		void setCreatureLight(LightInfo lightInfo);
 
 		virtual void onThink(uint32_t interval);
+		virtual void forceUpdatePath();
 		void onAttacking(uint32_t interval);
 		virtual void onWalk();
 		virtual bool getNextStep(Direction& dir, uint32_t& flags);
@@ -498,8 +507,10 @@ class Creature : virtual public Thing {
 		Creature* attackedCreature = nullptr;
 		Creature* master = nullptr;
 		Creature* followCreature = nullptr;
+		std::vector<Creature*> followers;
 
 		uint64_t lastStep = 0;
+		int64_t lastPathUpdate = 0;
 		uint32_t referenceCounter = 0;
 		uint32_t id = 0;
 		uint32_t scriptEventsBitField = 0;
@@ -526,14 +537,12 @@ class Creature : virtual public Thing {
 		Skulls_t skull = SKULL_NONE;
 
 		bool isInternalRemoved = false;
-		bool isUpdatingPath = false;
 		bool creatureCheck = false;
 		bool inCheckCreaturesVector = false;
 		bool skillLoss = true;
 		bool lootDrop = true;
 		bool cancelNextWalk = false;
 		bool hasFollowPath = false;
-		bool forceUpdateFollowPath = false;
 		bool hiddenHealth = false;
 		bool canUseDefense = true;
 		bool movementBlocked = false;

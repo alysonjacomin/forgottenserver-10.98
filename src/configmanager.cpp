@@ -273,6 +273,8 @@ bool ConfigManager::load() {
 	integer[DEPOT_PREMIUM_LIMIT] = getGlobalNumber(L, "depotPremiumLimit", 10000);
 	integer[STAMINA_REGEN_MINUTE] = getGlobalNumber(L, "timeToRegenMinuteStamina", 3 * 60);
 	integer[STAMINA_REGEN_PREMIUM] = getGlobalNumber(L, "timeToRegenMinutePremiumStamina", 10 * 60);
+	integer[PATHFINDING_INTERVAL] = getGlobalNumber(L, "pathfindingInterval", 200);
+	integer[PATHFINDING_DELAY] = getGlobalNumber(L, "pathfindingDelay", 300);
 
 	expStages = loadXMLStages();
 	if (expStages.empty()) {
