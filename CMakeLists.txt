@@ -8,7 +8,7 @@ set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 # or when letting CMake start vcpkg at configure/generate time.
 # Note: this logic must happen before PROJECT command.
 if(DEFINED ENV{VCPKG_DEFAULT_TRIPLET} AND NOT DEFINED VCPKG_TARGET_TRIPLET)
-	 set(VCPKG_TARGET_TRIPLET "$ENV{VCPKG_DEFAULT_TRIPLET}" CACHE STRING "The vcpkg triplet")
+	set(VCPKG_TARGET_TRIPLET "$ENV{VCPKG_DEFAULT_TRIPLET}" CACHE STRING "The vcpkg triplet")
 endif()
 
 set(BOOST_REQUIRED_VERSION 1.71.0)
@@ -28,6 +28,8 @@ endif()
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 	add_compile_options(-Wimplicit-fallthrough -Wmove)
 endif()
+
+add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 
 # Find packages.
 find_package(OpenSSL 3.0.0 REQUIRED COMPONENTS Crypto)
