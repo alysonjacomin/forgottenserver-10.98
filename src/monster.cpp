@@ -1061,7 +1061,7 @@ void Monster::onWalk() {
 	Creature::onWalk();
 
 	if ((attackedCreature || followCreature) && isFleeing()) {
-		if (lastPathUpdate > OTSYS_TIME()) {
+		if (lastPathUpdate < OTSYS_TIME()) {
 			g_dispatcher.addTask(createTask([id = getID()]() { g_game.updateCreatureWalk(id); }));
 			lastPathUpdate = OTSYS_TIME() + getNumber(ConfigManager::PATHFINDING_DELAY);
 		}
@@ -1980,6 +1980,9 @@ void Monster::getPathSearchParams(const Creature* creature, FindPathParams& fpp)
 	fpp.maxTargetDist = mType->info.targetDistance;
 
 	if (isSummon()) {
+		if (followCreature && followCreature == getMaster()) {
+			fpp.summonTargetMaster = true;
+		}
 		if (getMaster() == creature) {
 			fpp.maxTargetDist = 2;
 			fpp.fullPathSearch = true;
