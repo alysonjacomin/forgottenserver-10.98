@@ -1172,6 +1172,15 @@ void LuaScriptInterface::registerFunctions() {
 	//debugPrint(text)
 	lua_register(L, "debugPrint", LuaScriptInterface::luaDebugPrint);
 
+	//logInfo(text)
+	lua_register(L, "logInfo", LuaScriptInterface::luaLogInfo);
+
+	//logWarning(text)
+	lua_register(L, "logWarning", LuaScriptInterface::luaLogWarning);
+
+	//logError(text)
+	lua_register(L, "logError", LuaScriptInterface::luaLogError);
+
 	//isInWar(cid, target)
 	lua_register(L, "isInWar", LuaScriptInterface::luaIsInWar);
 
@@ -3442,6 +3451,24 @@ int LuaScriptInterface::luaDoPlayerAddItem(lua_State* L) {
 int LuaScriptInterface::luaDebugPrint(lua_State* L) {
 	//debugPrint(text)
 	reportErrorFunc(L, lua::getString(L, -1));
+	return 0;
+}
+
+int LuaScriptInterface::luaLogInfo(lua_State* L)
+{
+	g_logger().info(lua::getString(L, 1));
+	return 0;
+}
+
+int LuaScriptInterface::luaLogWarning(lua_State* L)
+{
+	g_logger().warn(lua::getString(L, 1));
+	return 0;
+}
+
+int LuaScriptInterface::luaLogError(lua_State* L)
+{
+	g_logger().error(lua::getString(L, 1));
 	return 0;
 }
 

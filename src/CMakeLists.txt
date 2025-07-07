@@ -8,6 +8,7 @@ set(tfs_SRC
 	${CMAKE_CURRENT_LIST_DIR}/combat.cpp
 	${CMAKE_CURRENT_LIST_DIR}/condition.cpp
 	${CMAKE_CURRENT_LIST_DIR}/configmanager.cpp
+	${CMAKE_CURRENT_LIST_DIR}/logger.cpp
 	${CMAKE_CURRENT_LIST_DIR}/connection.cpp
 	${CMAKE_CURRENT_LIST_DIR}/container.cpp
 	${CMAKE_CURRENT_LIST_DIR}/creature.cpp
@@ -87,6 +88,7 @@ set(tfs_HDR
 	${CMAKE_CURRENT_LIST_DIR}/combat.h
 	${CMAKE_CURRENT_LIST_DIR}/condition.h
 	${CMAKE_CURRENT_LIST_DIR}/configmanager.h
+	${CMAKE_CURRENT_LIST_DIR}/logger.h
 	${CMAKE_CURRENT_LIST_DIR}/connection.h
 	${CMAKE_CURRENT_LIST_DIR}/const.h
 	${CMAKE_CURRENT_LIST_DIR}/container.h
@@ -174,6 +176,7 @@ target_link_libraries(tfslib PRIVATE
 	Boost::locale
 	Boost::system
 	fmt::fmt
+	spdlog::spdlog
 	OpenSSL::Crypto
 	pugixml::pugixml
 	${CMAKE_THREAD_LIBS_INIT}

@@ -43,13 +43,20 @@ std::unique_lock<std::mutex> g_loaderUniqueLock(g_loaderLock);
 namespace {
 
 	void startupErrorMessage(const std::string& errorStr) {
-		fmt::print(fg(fmt::color::crimson) | fmt::emphasis::bold, "> ERROR: {:s}\n", errorStr);
+		g_logger().error("[{}] > ERROR:  {}", __FUNCTION__, errorStr);
 		g_loaderSignal.notify_all();
 	}
 
 	void mainLoader(ServiceManager* services) {
 		//dispatcher thread
 		g_game.setGameState(GAME_STATE_STARTUP);
+		if (!initLogger(LogLevel::INFO)){
+			startupErrorMessage("Failed to initialize logger!");
+			return;
+		}
+
+		setupLoggerSignalHandlers();
+		std::string msg = "fmt test";
 
 		srand(static_cast<unsigned int>(OTSYS_TIME()));
 	#ifdef _WIN32
@@ -65,7 +72,6 @@ namespace {
 
 		printServerVersion();
 
-		// check if config.lua or config.lua.dist exist
 		const std::string& configFile = getString(ConfigManager::CONFIG_FILE);
 		std::ifstream c_test("./" + configFile);
 		if (!c_test.is_open()) {
@@ -82,12 +88,12 @@ namespace {
 		}
 
 		// read global config
-		std::cout << ">> Loading config" << std::endl;
+		g_logger().info("Loading config");
 		if (!ConfigManager::load()) {
 			startupErrorMessage("Unable to load " + configFile + "!");
 			return;
 		}
-
+		g_logger().setLevel(parseLogLevel(getString(ConfigManager::LOG_LEVEL)));
 	#ifdef _WIN32
 		const std::string& defaultPriority = getString(ConfigManager::DEFAULT_PRIORITY);
 		if (caseInsensitiveEqual(defaultPriority, "high")) {
@@ -273,11 +279,10 @@ void startServer() {
 	g_loaderSignal.wait(g_loaderUniqueLock);
 
 	if (serviceManager.is_running()) {
-		std::cout << ">> " << getString(ConfigManager::SERVER_NAME) << " Server Online!" << std::endl
-		          << std::endl;
+		g_logger().info("{}  Server Online!", getString(ConfigManager::SERVER_NAME));
 		serviceManager.run();
 	} else {
-		std::cout << ">> No services running. The server is NOT online." << std::endl;
+		g_logger().info("No services running. The server is NOT online.");
 		g_scheduler.shutdown();
 		g_databaseTasks.shutdown();
 		g_dispatcher.shutdown();
@@ -296,14 +301,14 @@ void printServerVersion() {
 	std::cout << "*** DIRTY - NOT OFFICIAL RELEASE ***" << std::endl;
 #endif
 #else
-	std::cout << STATUS_SERVER_NAME << " - Version " << STATUS_SERVER_VERSION << std::endl;
+	g_logger().info("{}  - Version  {}", STATUS_SERVER_NAME, STATUS_SERVER_VERSION);
 #endif
 	std::cout << std::endl;
 
-	std::cout << "Compiled with " << BOOST_COMPILER << std::endl;
-	std::cout << "Compiled on " << __DATE__ << ' ' << __TIME__ << " for platform ";
+	g_logger().info("Compiled with  {}", BOOST_COMPILER);
+	g_logger().info("Compiled on  {} {}", __DATE__, __TIME__);
 #if defined(__amd64__) || defined(_M_X64)
-	std::cout << "x64" << std::endl;
+	g_logger().info("for platform: x64");
 #elif defined(__i386__) || defined(_M_IX86) || defined(_X86_)
 	std::cout << "x86" << std::endl;
 #elif defined(__arm__)
@@ -314,11 +319,8 @@ void printServerVersion() {
 #if defined(LUAJIT_VERSION)
 	std::cout << "Linked with " << LUAJIT_VERSION << " for Lua support" << std::endl;
 #else
-	std::cout << "Linked with " << LUA_RELEASE << " for Lua support" << std::endl;
+	g_logger().info("Linked with {} for Lua support", LUA_RELEASE);
 #endif
-	std::cout << std::endl;
-
-	std::cout << "A server developed by " << STATUS_SERVER_DEVELOPERS << std::endl;
-	std::cout << "Visit our forum for updates, support, and resources: https://otland.net/." << std::endl;
-	std::cout << std::endl;
+	g_logger().info("A server developed by {}", STATUS_SERVER_DEVELOPERS);
+	g_logger().info("Visit our forum for updates, support, and resources: https://otland.net/.", STATUS_SERVER_DEVELOPERS);
 }

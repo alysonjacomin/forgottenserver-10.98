@@ -152,7 +152,7 @@ bool ConfigManager::load() {
 	}
 
 	if (luaL_dofile(L, string[CONFIG_FILE].data())) {
-		std::cout << "[Error - ConfigManager::load] " << lua_tostring(L, -1) << std::endl;
+		g_logger().error("[{}] {}", __FUNCTION__, lua_tostring(L, -1));
 		lua_close(L);
 		return false;
 	}
@@ -236,6 +236,7 @@ bool ConfigManager::load() {
 	string[LOCATION] = getGlobalString(L, "location", "");
 	string[MOTD] = getGlobalString(L, "motd", "");
 	string[WORLD_TYPE] = getGlobalString(L, "worldType", "pvp");
+	string[LOG_LEVEL] = getGlobalString(L, "logLevel", "info");
 
 	integer[MAX_PLAYERS] = getGlobalNumber(L, "maxPlayers");
 	integer[PZ_LOCKED] = getGlobalNumber(L, "pzLocked", 60000);

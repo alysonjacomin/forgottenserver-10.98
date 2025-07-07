@@ -37,6 +37,7 @@ find_package(fmt 8.1.1 CONFIG)
 if(NOT fmt_FOUND)
 	find_package(fmt 8.1.1 REQUIRED)
 endif()
+find_package(spdlog CONFIG REQUIRED)
 
 # Look for vcpkg-provided libmariadb first
 # If we link to the file directly, we might miss its dependencies from vcpkg

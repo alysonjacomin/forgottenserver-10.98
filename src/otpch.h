@@ -25,6 +25,9 @@
 #include <deque>
 #include <filesystem>
 #include <fmt/color.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include "logger.h"
+#include <spdlog/spdlog.h>
 #include <forward_list>
 #include <functional>
 #include <iostream>
