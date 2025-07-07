@@ -56,7 +56,6 @@ namespace {
 		}
 
 		setupLoggerSignalHandlers();
-		std::string msg = "fmt test";
 
 		srand(static_cast<unsigned int>(OTSYS_TIME()));
 	#ifdef _WIN32
@@ -72,6 +71,7 @@ namespace {
 
 		printServerVersion();
 
+		// check if config.lua or config.lua.dist exist
 		const std::string& configFile = getString(ConfigManager::CONFIG_FILE);
 		std::ifstream c_test("./" + configFile);
 		if (!c_test.is_open()) {
