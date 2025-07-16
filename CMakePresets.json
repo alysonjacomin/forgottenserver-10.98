@@ -1,0 +1,13 @@
+{
+	"version": 3,
+
+	"configurePresets": [
+		{"name": "default", "description": "Generate project files", "binaryDir": "${sourceDir}/build"},
+		{"name": "vcpkg", "inherits": ["default"], "description": "Configure with vcpkg toolchain and generate project files", "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"}
+	],
+
+	"buildPresets": [
+		{"name": "default", "configurePreset": "default"},
+		{"name": "vcpkg", "configurePreset": "vcpkg"}
+	]
+}

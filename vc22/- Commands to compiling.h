@@ -7,10 +7,16 @@ cd vcpkg
 ./vcpkg.exe integrate install
 
 Open Visual Studio Solution
+
 BUILD the project
 
 // ATTENTION: if Visual Studio Solution does not automatically install the LIBs:
+
+/* for x64: */
 ./vcpkg install --triplet x64-windows boost-asio boost-iostreams boost-locale boost-lockfree boost-system boost-variant luajit libmariadb pugixml openssl fmt
+
+/* for x86: */
+./vcpkg install --triplet x86-windows boost-asio boost-iostreams boost-locale boost-lockfree boost-system boost-variant luajit libmariadb pugixml openssl fmt
 
 
 
@@ -29,6 +35,11 @@ make
 
 
 /** FOR MACOS **/
+
+// need git
+// need cmake
+// need pkg-config
+// need build-essential
 
 git clone https://github.com/microsoft/vcpkg.git "$HOME/vcpkg"
 cd "$HOME/vcpkg"
