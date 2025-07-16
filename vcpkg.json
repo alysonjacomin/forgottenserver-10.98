@@ -1,38 +1,39 @@
 {
-    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
-    "dependencies": [
-	{"name": "libiconv", "platform": "osx"},
-	 "boost-asio",
-     "boost-iostreams",
-	 "boost-locale",
-     "boost-lockfree",
-     "boost-system",
-     "boost-variant",
-     "fmt",
-	 "openssl",
-     "pugixml"
-   ],
+	"$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
 
-   "features": {
-     "lua": {
-       "description": "Use Lua instead of LuaJIT",
-       "dependencies": ["lua"]
-     },
-     "luajit": {
-       "description": "Use LuaJIT instead of Lua",
-       "dependencies": ["luajit"]
-     },
-     "libmariadb": {
-       "description": "Use libmariadb instead of libmysql",
-       "dependencies": ["libmariadb"]
-     },
-     "libmysql": {
-       "description": "Use libmysql instead of libmariadb",
-       "dependencies": ["libmysql"]
-     }
-   },
+	"dependencies": [
+		{"name": "libiconv", "platform": "osx"},
+		"boost-asio",
+		"boost-iostreams",
+		"boost-locale",
+		"boost-lockfree",
+		"boost-system",
+		"boost-variant",
+		"fmt",
+		"openssl",
+		"pugixml"
+	],
 
-   "default-features": ["lua","libmariadb"],
+	"features": {
+		"lua": {
+			"description": "Use Lua instead of LuaJIT",
+			"dependencies": ["lua"]
+		},
+		"luajit": {
+			"description": "Use LuaJIT instead of Lua",
+			"dependencies": ["luajit"]
+		},
+		"libmariadb": {
+			"description": "Use libmariadb instead of libmysql",
+			"dependencies": ["libmariadb"]
+		},
+		"libmysql": {
+			"description": "Use libmysql instead of libmariadb",
+			"dependencies": ["libmysql"]
+		}
+	},
 
-   "builtin-baseline": "0cf34c184ce990471435b5b9c92edcf7424930b1"
+	"default-features": ["lua", "libmariadb"],
+
+	"builtin-baseline": "0cf34c184ce990471435b5b9c92edcf7424930b1"
 }

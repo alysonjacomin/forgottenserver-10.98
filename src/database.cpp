@@ -21,11 +21,24 @@ static detail::Mysql_ptr connectToDatabase(const bool retryIfError) {
 	// connection handle initialization
 	detail::Mysql_ptr handle{mysql_init(nullptr)};
 
+	// config to disable ssl
+#ifdef MARIADB_VERSION_ID
+	bool ssl_enforce = false;
+	bool ssl_verify = false;
+#endif
+
 	// cant connection handle
 	if (!handle) {
 		std::cout << std::endl << "Failed to initialize MySQL connection handle." << std::endl;
 		goto error;
 	}
+
+	// disable ssl
+#ifdef MARIADB_VERSION_ID
+	mysql_options(handle.get(), MYSQL_OPT_SSL_ENFORCE, &ssl_enforce);
+	mysql_options(handle.get(), MYSQL_OPT_SSL_VERIFY_SERVER_CERT, &ssl_verify);
+	mysql_ssl_set(handle.get(), nullptr, nullptr, nullptr, nullptr, nullptr);
+#endif
 
 	// connects to database
 	if (!mysql_real_connect(handle.get(), getString(ConfigManager::MYSQL_HOST).c_str(), getString(ConfigManager::MYSQL_USER).c_str(), getString(ConfigManager::MYSQL_PASS).c_str(), getString(ConfigManager::MYSQL_DB).c_str(), getNumber(ConfigManager::SQL_PORT), getString(ConfigManager::MYSQL_SOCK).c_str(), 0)) {
