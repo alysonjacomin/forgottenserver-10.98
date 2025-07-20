@@ -114,6 +114,11 @@ void Game::setGameState(GameState_t newState) {
 			quests.loadFromXml();
 			mounts.loadFromXml();
 
+			wings.loadFromXml();
+			auras.loadFromXml();
+			effects.loadFromXml();
+			shaders.loadFromXml();
+
 			loadMotdNum();
 			loadPlayersRecord();
 			loadAccountStorageValues();
@@ -3327,6 +3332,99 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit) {
 		player->wasMounted = false;
 	}
 
+	// @  wings
+	if (outfit.lookWing != 0) {
+		Wing* wing = wings.getWingByID(outfit.lookWing);
+		if (!wing) {
+			return;
+		}
+
+		if (!player->hasWing(wing)) {
+			return;
+		}
+
+		player->detachEffectById(player->getCurrentWing());
+		player->setCurrentWing(wing->id);
+		player->attachEffectById(wing->id);
+	}
+	else {
+		if (player->isWinged()) {
+			player->diswing();
+		}
+		player->detachEffectById(player->getCurrentWing());
+		player->wasWinged = false;
+	}
+	// @ 
+	// @  Effect
+	if (outfit.lookEffect != 0) {
+		Effect* effect = effects.getEffectByID(outfit.lookEffect);
+		if (!effect) {
+			return;
+		}
+
+		if (!player->hasEffect(effect)) {
+			return;
+		}
+
+		player->detachEffectById(player->getCurrentEffect());
+		player->setCurrentEffect(effect->id);
+		player->attachEffectById(effect->id);
+	}
+	else {
+		if (player->isEffected()) {
+			player->diseffect();
+		}
+		player->detachEffectById(player->getCurrentEffect());
+		player->wasEffected = false;
+	}
+	// @ 
+	// @  Aura
+	if (outfit.lookAura != 0) {
+		Aura* aura = auras.getAuraByID(outfit.lookAura);
+		if (!aura) {
+			return;
+		}
+
+		if (!player->hasAura(aura)) {
+			return;
+		}
+
+		player->detachEffectById(player->getCurrentAura());
+		player->setCurrentAura(aura->id);
+		player->attachEffectById(aura->id);
+	}
+	else {
+		if (player->isAuraed()) {
+			player->disaura();
+		}
+		player->detachEffectById(player->getCurrentAura());
+		player->wasAuraed = false;
+	}
+	// @
+	/// shaders
+	if (outfit.lookShader != 0) {
+		Shader* shader = shaders.getShaderByID(outfit.lookShader);
+		if (!shader) {
+			return;
+		}
+
+		if (!player->hasShader(shader)) {
+			return;
+		}
+
+		player->setCurrentShader(shader->id);
+		player->sendShader(player, shader->name);
+
+
+	}
+	else {
+		if (player->isShadered()) {
+			player->disshader();
+		}
+		player->sendShader(player, "Outfit - Default");
+		player->wasShadered = false;
+	}
+
 	if (player->canWear(outfit.lookType, outfit.lookAddons)) {
 		player->defaultOutfit = outfit;
 
@@ -5723,4 +5821,93 @@ bool Game::reload(ReloadTypes_t reloadType) {
 		}
 	}
 	return true;
+}
+
+void Game::sendAttachedEffect(const Creature* creature, uint16_t effectId)
+{
+	SpectatorVec spectators;
+	map.getSpectators(spectators, creature->getPosition(), false, true, 8, 8, 6, 6);
+	for (Creature* spectator : spectators) {
+		if (Player* spectatorPlayer = spectator->getPlayer()) {
+			spectatorPlayer->sendAttachedEffect(creature, effectId);
+
+		}
+		else {
+			spectator->attachEffectById(effectId);
+		}
+	}
+}
+
+void Game::sendDetachEffect(const Creature* creature, uint16_t effectId)
+{
+	SpectatorVec spectators;
+	map.getSpectators(spectators, creature->getPosition(), false, true, 8, 8, 6, 6);
+	for (Creature* spectator : spectators) {
+		if (Player* spectatorPlayer = spectator->getPlayer()) {
+			spectatorPlayer->sendDetachEffect(creature, effectId);
+
+		}
+		else {
+			spectator->detachEffectById(effectId);
+		}
+	}
+}
+
+void Game::updateCreatureShader(const Creature* creature)
+{
+	SpectatorVec spectators;
+	map.getSpectators(spectators, creature->getPosition(), false, true, 8, 8, 6, 6);
+	for (Creature* spectator : spectators) {
+		if (Player* spectatorPlayer = spectator->getPlayer()) {
+			spectatorPlayer->sendShader(creature, creature->getShader());
+
+		}
+		else {
+			spectator->setShader(creature->getShader());
+		}
+	}
+}
+
+void Game::refreshItem(const Item* item)
+{
+	if (!item || !item->getParent()) return;
+
+	const auto parent = item->getParent();
+
+	if (const auto creature = parent->getCreature()) {
+		if (const auto player = creature->getPlayer()) {
+			int32_t index = creature->getPlayer()->getThingIndex(item);
+			if (index > -1) player->sendInventoryItem(static_cast<slots_t>(index), item);
+		}
+
+		return;
+	}
+
+	if (const auto container = parent->getContainer()) {
+		int32_t index = container->getThingIndex(item);
+		if (index > -1 && index <= std::numeric_limits<uint16_t>::max()) {
+			SpectatorVec spectators;
+			g_game.map.getSpectators(spectators, container->getPosition(), false, true, 2, 2, 2, 2);
+
+			// send to client
+			for (auto spectator : spectators) {
+				spectator->getPlayer()->sendUpdateContainerItem(container, static_cast<uint16_t>(index), item);
+			}
+		}
+
+		return;
+	}
+
+	if (const auto tile = parent->getTile()) {
+		SpectatorVec spectators;
+		g_game.map.getSpectators(spectators, tile->getPosition(), true, true);
+
+		// send to client
+		for (Creature* spectator : spectators) {
+			if (Player* tmpPlayer = spectator->getPlayer()) {
+				tmpPlayer->sendUpdateTileItem(tile, tile->getPosition(), item);
+			}
+		}
+		return;
+	}
 }
