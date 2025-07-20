@@ -91,6 +91,9 @@ void NetworkMessage::addItem(uint16_t id, uint8_t count) {
 	if (it.isAnimation) {
 		addByte(0xFE); // random phase (0xFF for async)
 	}
+
+	addString(""); // g_game.enableFeature(GameItemShader)
+	addString(""); // g_game.enableFeature(GameItemTooltipV8);
 }
 
 void NetworkMessage::addItem(const Item* item) {
@@ -108,6 +111,9 @@ void NetworkMessage::addItem(const Item* item) {
 	if (it.isAnimation) {
 		addByte(0xFE); // random phase (0xFF for async)
 	}
+
+	addString(item->getShader()); // g_game.enableFeature(GameItemShader)
+	addString(item->getDescription(0)); // g_game.enableFeature(GameItemTooltipV8);
 }
 
 void NetworkMessage::addItemId(uint16_t itemId) {

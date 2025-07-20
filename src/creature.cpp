@@ -1400,6 +1400,23 @@ bool Creature::getPathTo(const Position& targetPos, std::vector<Direction>& dirL
 	return getPathTo(targetPos, dirList, fpp);
 }
 
+void Creature::attachEffectById(uint16_t id)
+{
+	auto it = std::find(attachedEffectList.begin(), attachedEffectList.end(), id);
+	if (it != attachedEffectList.end()) return;
+
+	attachedEffectList.push_back(id);
+	g_game.sendAttachedEffect(this, id);
+}
+void Creature::detachEffectById(uint16_t id)
+{
+	auto it = std::find(attachedEffectList.begin(), attachedEffectList.end(), id);
+	if (it == attachedEffectList.end()) return;
+
+	attachedEffectList.erase(it);
+	g_game.sendDetachEffect(this, id);
+}
+
 void Creature::setStorageValue(uint32_t key, std::optional<int32_t> value, bool isSpawn) {
 	auto oldValue = getStorageValue(key);
 	if (value) {

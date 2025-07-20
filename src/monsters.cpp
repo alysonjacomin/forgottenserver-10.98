@@ -843,6 +843,19 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 		mType->info.manaCost = pugi::cast<uint32_t>(attr.value());
 	}
 
+	if ((attr = monsterNode.attribute("rayosEffect"))) {
+		mType->info.rayosEffect = pugi::cast<uint16_t>(attr.value());
+	}
+	if ((attr = monsterNode.attribute("wignsEffect"))) {
+		mType->info.wignsEffect = pugi::cast<uint16_t>(attr.value());
+	}
+	if ((attr = monsterNode.attribute("auraEffect"))) {
+		mType->info.auraEffect = pugi::cast<uint16_t>(attr.value());
+	}
+	if ((attr = monsterNode.attribute("shaderEffect"))) {
+		mType->info.shaderEffect = (attr.as_string());
+	}
+
 	if ((attr = monsterNode.attribute("skull"))) {
 		mType->info.skull = getSkullType(boost::algorithm::to_lower_copy<std::string>(attr.as_string()));
 	}

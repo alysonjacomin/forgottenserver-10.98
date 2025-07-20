@@ -12,6 +12,11 @@
 #include "quests.h"
 #include "wildcardtree.h"
 
+#include "wings.h"
+#include "auras.h"
+#include "effects.h"
+#include "shaders.h"
+
 class Monster;
 class Npc;
 class ServiceManager;
@@ -453,6 +458,11 @@ class Game {
 		void addDistanceEffect(const Position& fromPos, const Position& toPos, uint8_t effect);
 		static void addDistanceEffect(const SpectatorVec& spectators, const Position& fromPos, const Position& toPos, uint8_t effect);
 
+		void sendAttachedEffect(const Creature* creature, uint16_t effectId);
+		void sendDetachEffect(const Creature* creature, uint16_t effectId);
+		void updateCreatureShader(const Creature* creature);
+		void refreshItem(const Item* item);
+
 		void setAccountStorageValue(const uint32_t accountId, const uint32_t key, const int32_t value);
 		int32_t getAccountStorageValue(const uint32_t accountId, const uint32_t key) const;
 		void loadAccountStorageValues();
@@ -507,6 +517,11 @@ class Game {
 		Map map;
 		Mounts mounts;
 		Quests quests;
+
+		Wings wings;
+		Auras auras;
+		Effects effects;
+		Shaders shaders;
 
 		std::forward_list<Item*> toDecayItems;
 

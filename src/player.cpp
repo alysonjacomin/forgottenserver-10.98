@@ -4107,6 +4107,613 @@ void Player::dismount() {
 	defaultOutfit.lookMount = 0;
 }
 
+// wings
+
+uint16_t Player::getRandomWing() const
+{
+	std::vector<uint16_t> wingsId;
+	for (const Wing& wing : g_game.wings.getWings()) {
+		if (hasWing(&wing)) {
+			wingsId.push_back(wing.id);
+		}
+	}
+
+	return wingsId[uniform_random(0, wingsId.size() - 1)];
+}
+
+uint16_t Player::getCurrentWing() const { return currentWing; }
+
+void Player::setCurrentWing(uint16_t wingId) { currentWing = wingId; }
+
+bool Player::toggleWing(bool wing)
+{
+	if ((OTSYS_TIME() - lastToggleWing) < 3000 && !wasWinged) {
+		sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return false;
+	}
+
+	if (wing) {
+		if (isWinged()) {
+			return false;
+		}
+
+		if (!group->access && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+			sendCancelMessage(RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE);
+			return false;
+		}
+
+		const Outfit* playerOutfit = Outfits::getInstance().getOutfitByLookType(defaultOutfit.lookType);
+		if (!playerOutfit) {
+			return false;
+		}
+
+		uint16_t currentWingId = getCurrentWing();
+		if (currentWingId == 0) {
+			sendOutfitWindow();
+			return false;
+		}
+
+		Wing* currentWing = g_game.wings.getWingByID(currentWingId);
+		if (!currentWing) {
+			return false;
+		}
+
+		if (!hasWing(currentWing)) {
+			setCurrentWing(0);
+			sendOutfitWindow();
+			return false;
+		}
+
+		if (currentWing->premium && !isPremium()) {
+			sendCancelMessage(RETURNVALUE_YOUNEEDPREMIUMACCOUNT);
+			return false;
+		}
+
+		if (hasCondition(CONDITION_OUTFIT)) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return false;
+		}
+
+		defaultOutfit.lookWing = currentWing->id;
+
+	}
+	else {
+		if (!isWinged()) {
+			return false;
+		}
+
+		diswing();
+	}
+
+	g_game.internalCreatureChangeOutfit(this, defaultOutfit);
+	lastToggleWing = OTSYS_TIME();
+	return true;
+}
+
+bool Player::tameWing(uint16_t wingId)
+{
+	if (!g_game.wings.getWingByID(wingId)) {
+		return false;
+	}
+
+	Wing* wing = g_game.wings.getWingByID(wingId);
+	if (hasWing(wing)) {
+		return false;
+	}
+
+	wings.insert(wingId);
+	return true;
+}
+
+bool Player::untameWing(uint16_t wingId)
+{
+	if (!g_game.wings.getWingByID(wingId)) {
+		return false;
+	}
+
+	Wing* wing = g_game.wings.getWingByID(wingId);
+	if (!hasWing(wing)) {
+		return false;
+	}
+
+	wings.erase(wingId);
+
+	if (getCurrentWing() == wingId) {
+		if (isWinged()) {
+			diswing();
+			g_game.internalCreatureChangeOutfit(this, defaultOutfit);
+		}
+
+		setCurrentWing(0);
+	}
+
+	return true;
+}
+
+bool Player::hasWing(const Wing* wing) const
+{
+	if (isAccessPlayer()) {
+		return true;
+	}
+
+	if (wing->premium && !isPremium()) {
+		return false;
+	}
+
+	return wings.find(wing->id) != wings.end();
+}
+
+bool Player::hasWings() const
+{
+	for (const Wing& wing : g_game.wings.getWings()) {
+		if (hasWing(&wing)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void Player::diswing() { defaultOutfit.lookWing = 0; }
+// auras
+
+uint16_t Player::getRandomAura() const
+{
+	std::vector<uint16_t> aurasId;
+	for (const Aura& aura : g_game.auras.getAuras()) {
+		if (hasAura(&aura)) {
+			aurasId.push_back(aura.id);
+		}
+	}
+
+	return aurasId[uniform_random(0, aurasId.size() - 1)];
+}
+
+uint16_t Player::getCurrentAura() const { return currentAura; }
+
+void Player::setCurrentAura(uint16_t auraId) { currentAura = auraId; }
+
+bool Player::toggleAura(bool aura)
+{
+	if ((OTSYS_TIME() - lastToggleAura) < 3000 && !wasAuraed) {
+		sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return false;
+	}
+
+	if (aura) {
+		if (isAuraed()) {
+			return false;
+		}
+
+		if (!group->access && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+			sendCancelMessage(RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE);
+			return false;
+		}
+
+		const Outfit* playerOutfit = Outfits::getInstance().getOutfitByLookType(defaultOutfit.lookType);
+		if (!playerOutfit) {
+			return false;
+		}
+
+		uint16_t currentAuraId = getCurrentAura();
+		if (currentAuraId == 0) {
+			sendOutfitWindow();
+			return false;
+		}
+
+		Aura* currentAura = g_game.auras.getAuraByID(currentAuraId);
+		if (!currentAura) {
+			return false;
+		}
+
+		if (!hasAura(currentAura)) {
+			setCurrentAura(0);
+			sendOutfitWindow();
+			return false;
+		}
+
+		if (currentAura->premium && !isPremium()) {
+			sendCancelMessage(RETURNVALUE_YOUNEEDPREMIUMACCOUNT);
+			return false;
+		}
+
+		if (hasCondition(CONDITION_OUTFIT)) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return false;
+		}
+
+		defaultOutfit.lookAura = currentAura->id;
+
+	}
+	else {
+		if (!isAuraed()) {
+			return false;
+		}
+
+		disaura();
+	}
+
+	g_game.internalCreatureChangeOutfit(this, defaultOutfit);
+	lastToggleAura = OTSYS_TIME();
+	return true;
+}
+
+bool Player::tameAura(uint16_t auraId)
+{
+	if (!g_game.auras.getAuraByID(auraId)) {
+		return false;
+	}
+
+	Aura* aura = g_game.auras.getAuraByID(auraId);
+	if (hasAura(aura)) {
+		return false;
+	}
+
+	auras.insert(auraId);
+	return true;
+}
+
+bool Player::untameAura(uint16_t auraId)
+{
+	if (!g_game.auras.getAuraByID(auraId)) {
+		return false;
+	}
+
+	Aura* aura = g_game.auras.getAuraByID(auraId);
+	if (!hasAura(aura)) {
+		return false;
+	}
+
+	auras.erase(auraId);
+
+	if (getCurrentAura() == auraId) {
+		if (isAuraed()) {
+			disaura();
+			g_game.internalCreatureChangeOutfit(this, defaultOutfit);
+		}
+
+		setCurrentAura(0);
+	}
+
+	return true;
+}
+
+bool Player::hasAura(const Aura* aura) const
+{
+	if (isAccessPlayer()) {
+		return true;
+	}
+
+	if (aura->premium && !isPremium()) {
+		return false;
+	}
+
+	return auras.find(aura->id) != auras.end();
+}
+
+bool Player::hasAuras() const
+{
+	for (const Aura& aura : g_game.auras.getAuras()) {
+		if (hasAura(&aura)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void Player::disaura() { defaultOutfit.lookAura = 0; }
+// effects
+
+uint16_t Player::getRandomEffect() const
+{
+	std::vector<uint16_t> effectsId;
+	for (const Effect& effect : g_game.effects.getEffects()) {
+		if (hasEffect(&effect)) {
+			effectsId.push_back(effect.id);
+		}
+	}
+
+	return effectsId[uniform_random(0, effectsId.size() - 1)];
+}
+
+uint16_t Player::getCurrentEffect() const { return currentEffect; }
+
+void Player::setCurrentEffect(uint16_t effectId) { currentEffect = effectId; }
+
+bool Player::toggleEffect(bool effect)
+{
+	if ((OTSYS_TIME() - lastToggleEffect) < 3000 && !wasEffected) {
+		sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return false;
+	}
+
+	if (effect) {
+		if (isEffected()) {
+			return false;
+		}
+
+		if (!group->access && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+			sendCancelMessage(RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE);
+			return false;
+		}
+
+		const Outfit* playerOutfit = Outfits::getInstance().getOutfitByLookType(defaultOutfit.lookType);
+		if (!playerOutfit) {
+			return false;
+		}
+
+		uint16_t currentEffectId = getCurrentEffect();
+		if (currentEffectId == 0) {
+			sendOutfitWindow();
+			return false;
+		}
+
+		Effect* currentEffect = g_game.effects.getEffectByID(currentEffectId);
+		if (!currentEffect) {
+			return false;
+		}
+
+		if (!hasEffect(currentEffect)) {
+			setCurrentEffect(0);
+			sendOutfitWindow();
+			return false;
+		}
+
+		if (currentEffect->premium && !isPremium()) {
+			sendCancelMessage(RETURNVALUE_YOUNEEDPREMIUMACCOUNT);
+			return false;
+		}
+
+		if (hasCondition(CONDITION_OUTFIT)) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return false;
+		}
+
+		defaultOutfit.lookEffect = currentEffect->id;
+
+	}
+	else {
+		if (!isEffected()) {
+			return false;
+		}
+
+		diseffect();
+	}
+
+	g_game.internalCreatureChangeOutfit(this, defaultOutfit);
+	lastToggleEffect = OTSYS_TIME();
+	return true;
+}
+
+bool Player::tameEffect(uint16_t effectId)
+{
+	if (!g_game.effects.getEffectByID(effectId)) {
+		return false;
+	}
+
+	Effect* effect = g_game.effects.getEffectByID(effectId);
+	if (hasEffect(effect)) {
+		return false;
+	}
+
+	effects.insert(effectId);
+	return true;
+}
+
+bool Player::untameEffect(uint16_t effectId)
+{
+	if (!g_game.effects.getEffectByID(effectId)) {
+		return false;
+	}
+
+	Effect* effect = g_game.effects.getEffectByID(effectId);
+	if (!hasEffect(effect)) {
+		return false;
+	}
+
+	effects.erase(effectId);
+
+	if (getCurrentEffect() == effectId) {
+		if (isEffected()) {
+			diseffect();
+			g_game.internalCreatureChangeOutfit(this, defaultOutfit);
+		}
+
+		setCurrentEffect(0);
+	}
+
+	return true;
+}
+
+bool Player::hasEffect(const Effect* effect) const
+{
+	if (isAccessPlayer()) {
+		return true;
+	}
+
+	if (effect->premium && !isPremium()) {
+		return false;
+	}
+
+	return effects.find(effect->id) != effects.end();
+}
+
+bool Player::hasEffects() const
+{
+	for (const Effect& effect : g_game.effects.getEffects()) {
+		if (hasEffect(&effect)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void Player::diseffect() { defaultOutfit.lookEffect = 0; }
+
+uint16_t Player::getRandomShader() const
+{
+	std::vector<uint16_t> shadersId;
+	for (const Shader& shader : g_game.shaders.getShaders()) {
+		if (hasShader(&shader)) {
+			shadersId.push_back(shader.id);
+		}
+	}
+
+	return shadersId[uniform_random(0, shadersId.size() - 1)];
+}
+
+
+uint16_t Player::getCurrentShader() const { return currentShader; }
+
+
+void Player::setCurrentShader(uint16_t shaderId) { currentShader = shaderId; }
+
+bool Player::toggleShader(bool shader)
+{
+	if ((OTSYS_TIME() - lastToggleShader) < 3000 && !wasShadered) {
+		sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return false;
+	}
+
+	if (shader) {
+		if (isShadered()) {
+			return false;
+		}
+
+		if (!group->access && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+			sendCancelMessage(RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE);
+			return false;
+		}
+
+		const Outfit* playerOutfit = Outfits::getInstance().getOutfitByLookType(defaultOutfit.lookType);
+		if (!playerOutfit) {
+			return false;
+		}
+
+		uint16_t currentShaderId = getCurrentShader();
+		if (currentShaderId == 0) {
+			sendOutfitWindow();
+			return false;
+		}
+
+		Shader* currentShader = g_game.shaders.getShaderByID(currentShaderId);
+		if (!currentShader) {
+			return false;
+		}
+
+		if (!hasShader(currentShader)) {
+			setCurrentShader(0);
+			sendOutfitWindow();
+			return false;
+		}
+
+		if (currentShader->premium && !isPremium()) {
+			sendCancelMessage(RETURNVALUE_YOUNEEDPREMIUMACCOUNT);
+			return false;
+		}
+
+		if (hasCondition(CONDITION_OUTFIT)) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return false;
+		}
+
+		defaultOutfit.lookShader = currentShader->id;
+
+	}
+	else {
+		if (!isShadered()) {
+			return false;
+		}
+
+		disshader();
+	}
+
+	g_game.internalCreatureChangeOutfit(this, defaultOutfit);
+	lastToggleShader = OTSYS_TIME();
+	return true;
+}
+
+bool Player::tameShader(uint16_t shaderId)
+{
+	if (!g_game.shaders.getShaderByID(shaderId)) {
+		return false;
+	}
+
+	Shader* shader = g_game.shaders.getShaderByID(shaderId);
+	if (hasShader(shader)) {
+		return false;
+	}
+
+	shaders.insert(shaderId);
+	return true;
+}
+
+bool Player::untameShader(uint16_t shaderId)
+{
+	if (!g_game.shaders.getShaderByID(shaderId)) {
+		return false;
+	}
+
+	Shader* shader = g_game.shaders.getShaderByID(shaderId);
+	if (!hasShader(shader)) {
+		return false;
+	}
+
+	shaders.erase(shaderId);
+
+	if (getCurrentShader() == shaderId) {
+		if (isShadered()) {
+			disshader();
+			g_game.internalCreatureChangeOutfit(this, defaultOutfit);
+		}
+
+		setCurrentShader(0);
+	}
+
+	return true;
+}
+
+bool Player::hasShader(const Shader* shader) const
+{
+	if (isAccessPlayer()) {
+		return true;
+	}
+
+	if (shader->premium && !isPremium()) {
+		return false;
+	}
+
+	return shaders.find(shader->id) != shaders.end();
+}
+
+bool Player::hasShaders() const
+{
+	for (const Shader& shader : g_game.shaders.getShaders()) {
+		if (hasShader(&shader)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void Player::disshader() { defaultOutfit.lookShader = 0; }
+
+std::string Player::getCurrentShader_NAME() const
+{
+
+	uint16_t currentShaderId = getCurrentShader();
+
+	Shader* currentShader = g_game.shaders.getShaderByID(static_cast<uint8_t>(currentShaderId));
+
+	if (currentShader != nullptr) {
+
+		return currentShader->name;
+	}
+	else {
+
+		return "Outfit - Default";
+	}
+}
+
 bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 	if (tries == 0 || skill == SKILL_LEVEL) {
 		return false;
