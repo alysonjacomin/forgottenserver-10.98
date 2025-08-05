@@ -727,10 +727,10 @@ void lua::pushThing(lua_State* L, Thing* thing) {
 	}
 
 	if (Item* item = thing->getItem()) {
-		lua::pushUserdata(L, item);
+		pushUserdata(L, item);
 		lua::setItemMetatable(L, -1, item);
 	} else if (Creature* creature = thing->getCreature()) {
-		lua::pushUserdata(L, creature);
+		pushUserdata(L, creature);
 		lua::setCreatureMetatable(L, -1, creature);
 	} else {
 		lua_pushnil(L);
@@ -739,13 +739,13 @@ void lua::pushThing(lua_State* L, Thing* thing) {
 
 void lua::pushCylinder(lua_State* L, Cylinder* cylinder) {
 	if (Creature* creature = cylinder->getCreature()) {
-		lua::pushUserdata(L, creature);
+		pushUserdata(L, creature);
 		lua::setCreatureMetatable(L, -1, creature);
 	} else if (Item* parentItem = cylinder->getItem()) {
-		lua::pushUserdata(L, parentItem);
+		pushUserdata(L, parentItem);
 		lua::setItemMetatable(L, -1, parentItem);
 	} else if (Tile* tile = cylinder->getTile()) {
-		lua::pushUserdata(L, tile);
+		pushUserdata(L, tile);
 		setMetatable(L, -1, "Tile");
 	} else if (cylinder == VirtualCylinder::virtualCylinder) {
 		pushBoolean(L, true);
@@ -11660,7 +11660,7 @@ int LuaScriptInterface::luaHouseGetBeds(lua_State* L) {
 
 	int index = 0;
 	for (BedItem* bedItem : beds) {
-		lua::pushUserdata(L, bedItem);
+		lua::pushUserdata<Item>(L, bedItem);
 		lua::setItemMetatable(L, -1, bedItem);
 		lua_rawseti(L, -2, ++index);
 	}
@@ -11691,7 +11691,7 @@ int LuaScriptInterface::luaHouseGetDoors(lua_State* L) {
 
 	int index = 0;
 	for (Door* door : doors) {
-		lua::pushUserdata(L, door);
+		lua::pushUserdata<Item>(L, door);
 		lua::setItemMetatable(L, -1, door);
 		lua_rawseti(L, -2, ++index);
 	}
@@ -14830,7 +14830,7 @@ int LuaScriptInterface::luaSpellCreate(lua_State* L) {
 		RuneSpell* rune = g_spells->getRuneSpell(id);
 
 		if (rune) {
-			lua::pushUserdata(L, rune);
+			lua::pushUserdata<Spell>(L, rune);
 			lua::setMetatable(L, -1, "Spell");
 			return 1;
 		}
@@ -14840,19 +14840,19 @@ int LuaScriptInterface::luaSpellCreate(lua_State* L) {
 		std::string arg = lua::getString(L, 2);
 		InstantSpell* instant = g_spells->getInstantSpellByName(arg);
 		if (instant) {
-			lua::pushUserdata(L, instant);
+			lua::pushUserdata<Spell>(L, instant);
 			lua::setMetatable(L, -1, "Spell");
 			return 1;
 		}
 		instant = g_spells->getInstantSpell(arg);
 		if (instant) {
-			lua::pushUserdata(L, instant);
+			lua::pushUserdata<Spell>(L, instant);
 			lua::setMetatable(L, -1, "Spell");
 			return 1;
 		}
 		RuneSpell* rune = g_spells->getRuneSpellByName(arg);
 		if (rune) {
-			lua::pushUserdata(L, rune);
+			lua::pushUserdata<Spell>(L, rune);
 			lua::setMetatable(L, -1, "Spell");
 			return 1;
 		}
@@ -14868,14 +14868,14 @@ int LuaScriptInterface::luaSpellCreate(lua_State* L) {
 	if (spellType == SPELL_INSTANT) {
 		InstantSpell* spell = new InstantSpell(lua::getScriptEnv()->getScriptInterface());
 		spell->fromLua = true;
-		lua::pushUserdata(L, spell);
+		lua::pushUserdata<Spell>(L, spell);
 		lua::setMetatable(L, -1, "Spell");
 		spell->spellType = SPELL_INSTANT;
 		return 1;
 	} else if (spellType == SPELL_RUNE) {
 		RuneSpell* spell = new RuneSpell(lua::getScriptEnv()->getScriptInterface());
 		spell->fromLua = true;
-		lua::pushUserdata(L, spell);
+		lua::pushUserdata<Spell>(L, spell);
 		lua::setMetatable(L, -1, "Spell");
 		spell->spellType = SPELL_RUNE;
 		return 1;
