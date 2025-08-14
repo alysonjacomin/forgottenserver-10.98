@@ -5086,7 +5086,9 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 			return;
 		}
 
-		std::forward_list<Item*> itemList = getMarketItemList(it.wareId, amount, depotChest.get(), player->getInbox().get());
+		Inbox_ptr inbox = player->getInbox();
+
+		std::forward_list<Item*> itemList = getMarketItemList(it.wareId, amount, depotChest, inbox);
 		if (itemList.empty()) {
 			return;
 		}
@@ -5235,7 +5237,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			return;
 		}
 
-		std::forward_list<Item*> itemList = getMarketItemList(it.wareId, amount, depotChest.get(), player->getInbox().get());
+		Inbox_ptr inbox = player->getInbox();
+
+		std::forward_list<Item*> itemList = getMarketItemList(it.wareId, amount, depotChest, inbox);
 		if (itemList.empty()) {
 			return;
 		}
@@ -5392,11 +5396,11 @@ void Game::parsePlayerNetworkMessage(uint32_t playerId, uint8_t recvByte, Networ
 	events::player::onNetworkMessage(player, recvByte, msg);
 }
 
-std::forward_list<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotChest* depotChest, Inbox* inbox) {
+std::forward_list<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotChest_ptr& depotChest, Inbox_ptr& inbox) {
 	std::forward_list<Item*> itemList;
 	uint16_t count = 0;
 
-	std::list<Container*> containers { depotChest, inbox };
+	std::list<Container*> containers { depotChest.get(), inbox.get() };
 	do {
 		Container* container = containers.front();
 		containers.pop_front();

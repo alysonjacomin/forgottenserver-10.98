@@ -217,14 +217,6 @@ class Player final : public Creature, public Cylinder {
 			lastWalkthroughPosition = walkthroughPosition;
 		}
 
-		Inbox_ptr getInbox() {
-			if (!inbox) {
-				inbox = std::make_shared<Inbox>(ITEM_INBOX);
-			}
-
-			return inbox;
-		}
-
 		StoreInbox* getStoreInbox() const {
 			return storeInbox;
 		}
@@ -486,8 +478,10 @@ class Player final : public Creature, public Cylinder {
 		void addConditionSuppressions(uint32_t conditions);
 		void removeConditionSuppressions(uint32_t conditions);
 
+		Inbox_ptr getInbox();
 		DepotChest_ptr getDepotChest(uint32_t depotId, bool autoCreate);
-		DepotLocker* getDepotLocker(uint32_t depotId);
+		DepotLocker_ptr getDepotLocker(uint32_t depotId);
+
 		void onReceiveMail() const;
 		bool isNearDepotBox() const;
 
@@ -1224,8 +1218,6 @@ class Player final : public Creature, public Cylinder {
 		std::unordered_set<uint32_t> VIPList;
 
 		std::map<uint8_t, OpenContainer> openContainers;
-		std::map<uint32_t, DepotLocker_ptr> depotLockerMap;
-		std::map<uint32_t, DepotChest_ptr> depotChests;
 
 		std::map<uint16_t, uint8_t> outfits;
 		std::unordered_set<uint16_t> mounts;
@@ -1269,7 +1261,6 @@ class Player final : public Creature, public Cylinder {
 		Guild_ptr guild = nullptr;
 		GuildRank_ptr guildRank = nullptr;
 		Group* group = nullptr;
-		Inbox_ptr inbox = nullptr;
 		Item* tradeItem = nullptr;
 		Item* inventory[CONST_SLOT_LAST + 1] = {};
 		Item* writeItem = nullptr;
@@ -1281,6 +1272,10 @@ class Player final : public Creature, public Cylinder {
 		Town* town = nullptr;
 		Vocation* vocation = nullptr;
 		StoreInbox* storeInbox = nullptr;
+
+		Inbox_ptr inbox = nullptr;
+		std::map<uint32_t, DepotChest_ptr> depotChests;
+		std::map<uint32_t, DepotLocker_ptr> depotLockerMap;
 
 		uint32_t inventoryWeight = 0;
 		uint32_t capacity = 40000;

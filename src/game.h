@@ -404,7 +404,7 @@ class Game {
 
 		void parsePlayerNetworkMessage(uint32_t playerId, uint8_t recvByte, NetworkMessage_ptr msg);
 
-		std::forward_list<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotChest* depotChest, Inbox* inbox);
+		std::forward_list<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotChest_ptr& depotChest, Inbox_ptr& inbox);
 
 		void cleanup();
 		void shutdown();
