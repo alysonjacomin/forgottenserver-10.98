@@ -50,14 +50,6 @@ Player::~Player() {
 		}
 	}
 
-	for (const auto& [_, depot] : depotChests) {
-		if (Cylinder* parent = depot->getRealParent()) {
-			// remove chest from depot locker, because of possible double free when shared_ptr decides to free up the
-			// resource
-			parent->internalRemoveThing(depot.get());
-		}
-	}
-
 	for (const auto& it : depotLockerMap) {
 		it.second->removeInbox(inbox.get());
 	}
@@ -747,12 +739,7 @@ DepotChest_ptr Player::getDepotChest(uint32_t depotId, bool autoCreate) {
 		return nullptr;
 	}
 
-	uint16_t depotItemId = ITEM_DEPOT;
-	if (depotItemId == 0) {
-		return nullptr;
-	}
-
-	const DepotChest_ptr& depotChest = depotChests.emplace(depotId, std::make_shared<DepotChest>(depotItemId)).first->second;
+	const DepotChest_ptr& depotChest = depotChests.emplace(depotId, std::make_shared<DepotChest>(ITEM_DEPOT)).first->second;
 	depotChest->setMaxDepotItems(getMaxDepotItems());
 	return depotChest;
 }
@@ -764,7 +751,7 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId) {
 		return it->second.get();
 	}
 
-	it = depotLockerMap.emplace(depotId, new DepotLocker(ITEM_LOCKER1)).first;
+	it = depotLockerMap.emplace(depotId, new DepotLocker(ITEM_LOCKER)).first;
 	it->second->setDepotId(depotId);
 	it->second->internalAddThing(Item::CreateItem(ITEM_MARKET));
 	it->second->internalAddThing(getInbox().get());
