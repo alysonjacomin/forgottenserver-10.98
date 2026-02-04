@@ -2049,7 +2049,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId) {
 		msg.add<uint16_t>(0x00);
 	}
 
-	MarketStatistics* statistics = IOMarket::getInstance().getPurchaseStatistics(itemId);
+	MarketStatistics* statistics = IOMarket::getPurchaseStatistics(itemId);
 	if (statistics) {
 		msg.addByte(0x01);
 		msg.add<uint32_t>(statistics->numTransactions);
@@ -2060,7 +2060,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId) {
 		msg.addByte(0x00);
 	}
 
-	statistics = IOMarket::getInstance().getSaleStatistics(itemId);
+	statistics = IOMarket::getSaleStatistics(itemId);
 	if (statistics) {
 		msg.addByte(0x01);
 		msg.add<uint32_t>(statistics->numTransactions);
