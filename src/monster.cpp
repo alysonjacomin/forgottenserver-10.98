@@ -1132,7 +1132,6 @@ bool Monster::pushCreature(Creature* creature) {
 		DIRECTION_WEST, DIRECTION_EAST,
 			DIRECTION_SOUTH
 	};
-	std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
 
 	for (Direction dir : dirList) {
 		const Position& tryPos = Spells::getCasterPosition(creature, dir);
