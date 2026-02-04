@@ -554,6 +554,8 @@ bool Game::removeCreature(Creature* creature, bool isLogout/* = true*/) {
 		return false;
 	}
 
+	creature->releaseFollowers();
+
 	Tile* tile = creature->getTile();
 
 	std::vector<int32_t> oldStackPosVector;
