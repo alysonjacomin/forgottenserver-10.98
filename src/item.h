@@ -542,6 +542,12 @@ class Item : virtual public Thing {
 		const Item* getItem() const override final {
 			return this;
 		}
+		virtual Container* getContainer() {
+			return nullptr;
+		}
+		virtual const Container* getContainer() const {
+			return nullptr;
+		}
 		virtual Teleport* getTeleport() {
 			return nullptr;
 		}
