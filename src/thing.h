@@ -35,9 +35,6 @@ class Thing {
 			//
 		}
 
-		virtual Tile* getTile();
-		virtual const Tile* getTile() const;
-
 		virtual const Position& getPosition() const;
 		virtual int32_t getThrowRange() const = 0;
 		virtual bool isPushable() const = 0;
@@ -52,6 +49,12 @@ class Thing {
 			return nullptr;
 		}
 		virtual const Creature* getCreature() const {
+			return nullptr;
+		}
+		virtual Tile* getTile() {
+			return nullptr;
+		}
+		virtual const Tile* getTile() const {
 			return nullptr;
 		}
 

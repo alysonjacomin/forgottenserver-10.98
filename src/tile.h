@@ -141,6 +141,13 @@ class Tile : public Cylinder {
 		Tile(const Tile&) = delete;
 		Tile& operator=(const Tile&) = delete;
 
+		Tile* getTile() override final {
+			return this;
+		}
+		const Tile* getTile() const override final {
+			return this;
+		}
+
 		virtual TileItemVector* getItemList() = 0;
 		virtual const TileItemVector* getItemList() const = 0;
 		virtual TileItemVector* makeItemList() = 0;
