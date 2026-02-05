@@ -10,6 +10,7 @@
 
 class BedItem;
 class Creature;
+class HouseTile;
 class MagicField;
 class Mailbox;
 class SpectatorVec;
@@ -146,6 +147,13 @@ class Tile : public Cylinder {
 		}
 		const Tile* getTile() const override final {
 			return this;
+		}
+
+		virtual HouseTile* getHouseTile() {
+			return nullptr;
+		}
+		virtual const HouseTile* getHouseTile() const {
+			return nullptr;
 		}
 
 		virtual TileItemVector* getItemList() = 0;

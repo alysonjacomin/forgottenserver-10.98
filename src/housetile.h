@@ -12,6 +12,13 @@ class HouseTile final : public DynamicTile {
 	public:
 		HouseTile(int32_t x, int32_t y, int32_t z, House* house);
 
+		HouseTile* getHouseTile() override final {
+			return this;
+		}
+		const HouseTile* getHouseTile() const override final {
+			return this;
+		}
+
 		//cylinder implementations
 		ReturnValue queryAdd(int32_t index, const Thing& thing, uint32_t count,
 				uint32_t flags, Creature* actor = nullptr) const override;

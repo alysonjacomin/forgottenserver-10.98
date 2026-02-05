@@ -5745,7 +5745,7 @@ int LuaScriptInterface::luaTileGetHouse(lua_State* L) {
 		return 1;
 	}
 
-	if (HouseTile* houseTile = dynamic_cast<HouseTile*>(tile)) {
+	if (HouseTile* houseTile = tile->getHouseTile()) {
 		lua::pushUserdata(L, houseTile->getHouse());
 		lua::setMetatable(L, -1, "House");
 	} else {
