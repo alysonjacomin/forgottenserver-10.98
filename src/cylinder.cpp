@@ -42,7 +42,3 @@ void Cylinder::internalAddThing(Thing*) {
 void Cylinder::internalAddThing(uint32_t, Thing*) {
 	//
 }
-
-void Cylinder::startDecaying() {
-	//
-}
