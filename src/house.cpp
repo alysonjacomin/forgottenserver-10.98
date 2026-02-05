@@ -60,6 +60,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase/* = true*/, Player* play
 		//clean access lists
 		owner = 0;
 		ownerAccountId = 0;
+		ownerName.clear();
 		setAccessList(SUBOWNER_LIST, "");
 		setAccessList(GUEST_LIST, "");
 
