@@ -859,8 +859,7 @@ uint32_t Item::getWeight() const {
 	return weight;
 }
 
-std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
-                                const Item* item /*= nullptr*/, int32_t subType /*= -1*/, bool addArticle /*= true*/) {
+std::string Item::getDescription(const ItemType& it, int32_t lookDistance, const Item* item /*= nullptr*/, int32_t subType /*= -1*/, bool addArticle /*= true*/) {
 	const std::string* text = nullptr;
 
 	std::ostringstream s;

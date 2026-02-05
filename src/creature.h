@@ -112,6 +112,7 @@ class Creature : virtual public Thing {
 
 		virtual const std::string& getName() const = 0;
 		virtual const std::string& getNameDescription() const = 0;
+		virtual std::string getDescription(int32_t lookDistance) const = 0;
 
 		virtual CreatureType_t getType() const = 0;
 

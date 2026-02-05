@@ -798,7 +798,7 @@ class Item : virtual public Thing {
 		static std::string getNameDescription(const ItemType& it, const Item* item = nullptr, int32_t subType = -1, bool addArticle = true);
 		static std::string getWeightDescription(const ItemType& it, uint32_t weight, uint32_t count = 1);
 
-		std::string getDescription(int32_t lookDistance) const override final;
+		std::string getDescription(int32_t lookDistance) const;
 		std::string getNameDescription() const;
 		std::string getWeightDescription() const;
 
