@@ -594,22 +594,22 @@ const std::string& LuaScriptInterface::getFileById(int32_t scriptId) {
 }
 
 void lua::reportError(std::string_view function, std::string_view error_desc, lua_State* L /*= nullptr*/, bool stack_trace /*= false*/) {
-	auto [scriptId, scriptInterface, callbackId, timerEvent] = getScriptEnv()->getEventInfo();
+	auto [scriptId, luaScriptInterface, callbackId, timerEvent] = getScriptEnv()->getEventInfo();
 
 	std::cout << "\nLua Script Error: ";
 
-	if (scriptInterface) {
-		std::cout << '[' << scriptInterface->getInterfaceName() << "]\n";
+	if (luaScriptInterface) {
+		std::cout << '[' << luaScriptInterface->getInterfaceName() << "]\n";
 
 		if (timerEvent) {
 			std::cout << "in a timer event called from:\n";
 		}
 
 		if (callbackId) {
-			std::cout << "in callback: " << scriptInterface->getFileById(callbackId) << '\n';
+			std::cout << "in callback: " << luaScriptInterface->getFileById(callbackId) << '\n';
 		}
 
-		std::cout << scriptInterface->getFileById(scriptId) << '\n';
+		std::cout << luaScriptInterface->getFileById(scriptId) << '\n';
 	}
 
 	if (!function.empty()) {
