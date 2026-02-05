@@ -642,7 +642,6 @@ class Player final : public Creature, public Cylinder {
 		void onChangeZone(ZoneType_t zone) override;
 		void onAttackedCreatureChangeZone(ZoneType_t zone) override;
 		void onIdleStatus() override;
-		void onPlacedCreature() override;
 
 		LightInfo getCreatureLight() const override;
 

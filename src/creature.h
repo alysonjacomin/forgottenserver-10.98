@@ -414,8 +414,6 @@ class Creature : virtual public Thing {
 
 		virtual void onCreatureSay(Creature*, SpeakClasses, const std::string&) {}
 
-		virtual void onPlacedCreature() {}
-
 		virtual bool getCombatValues(int32_t&, int32_t&) {
 			return false;
 		}
