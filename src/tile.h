@@ -128,6 +128,7 @@ class TileItemVector : private ItemVector {
 		uint16_t downItemCount = 0;
 };
 
+inline constexpr size_t TILE_UPDATE_THRESHOLD = 8;
 class Tile : public Cylinder {
 	public:
 		static Tile& nullptr_tile;
@@ -270,7 +271,6 @@ class Tile : public Cylinder {
 		void onAddTileItem(Item* item);
 		void onUpdateTileItem(Item* oldItem, const ItemType& oldType, Item* newItem, const ItemType& newType);
 		void onRemoveTileItem(const SpectatorVec& spectators, const std::vector<int32_t>& oldStackPosVector, Item* item);
-		void onUpdateTile(const SpectatorVec& spectators);
 
 		void setTileFlags(const Item* item);
 		void resetTileFlags(const Item* item);
