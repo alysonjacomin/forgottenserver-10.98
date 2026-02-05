@@ -672,6 +672,7 @@ void Creature::setAttackedCreature(Creature* creature) {
 	creature->addFollower(this);
 	onAttackedCreature(attackedCreature);
 	attackedCreature->onAttacked();
+	forceUpdatePath();
 
 	for (Creature* summon : summons) {
 		summon->setAttackedCreature(creature);
@@ -717,6 +718,7 @@ void Creature::setFollowCreature(Creature* creature) {
 	creature->addFollower(this);
 	hasFollowPath = false;
 	onFollowCreature(creature);
+	forceUpdatePath();
 }
 
 void Creature::removeFollowCreature() {
