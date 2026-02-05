@@ -2210,6 +2210,9 @@ void LuaScriptInterface::registerFunctions() {
 	registerMethod(L, "Game", "getOutfits", LuaScriptInterface::luaGameGetOutfits);
 	registerMethod(L, "Game", "getMounts", LuaScriptInterface::luaGameGetMounts);
 
+	registerMethod(L, "Game", "getRuneSpells", LuaScriptInterface::luaGameGetRuneSpells);
+	registerMethod(L, "Game", "getInstantSpells", LuaScriptInterface::luaGameGetInstantSpells);
+
 	registerMethod(L, "Game", "getGameState", LuaScriptInterface::luaGameGetGameState);
 	registerMethod(L, "Game", "setGameState", LuaScriptInterface::luaGameSetGameState);
 
@@ -4510,6 +4513,38 @@ int LuaScriptInterface::luaGameGetMounts(lua_State* L) {
 		setField(L, "premium", mount.premium);
 		lua_rawseti(L, -2, ++index);
 	}
+	return 1;
+}
+
+int LuaScriptInterface::luaGameGetRuneSpells(lua_State* L) {
+	// Game.getRuneSpells()
+	auto runeSpells = g_spells->getRuneSpells();
+
+	lua_createtable(L, runeSpells.size(), 0);
+
+	int index = 0;
+	for (auto& spell : runeSpells | std::views::values) {
+		lua::pushUserdata<Spell>(L, &spell);
+		lua::setMetatable(L, -1, "Spell");
+		lua_rawseti(L, -2, ++index);
+	}
+
+	return 1;
+}
+
+int LuaScriptInterface::luaGameGetInstantSpells(lua_State* L) {
+	// Game.getInstantSpells()
+	auto instantSpells = g_spells->getInstantSpells();
+
+	lua_createtable(L, instantSpells.size(), 0);
+
+	int index = 0;
+	for (auto& spell : instantSpells | std::views::values) {
+		lua::pushUserdata<Spell>(L, &spell);
+		lua::setMetatable(L, -1, "Spell");
+		lua_rawseti(L, -2, ++index);
+	}
+
 	return 1;
 }
 
