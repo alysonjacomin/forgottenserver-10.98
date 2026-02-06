@@ -2404,9 +2404,10 @@ ReturnValue Player::queryAdd(int32_t index, const Thing& thing, uint32_t count, 
 	const Item* inventoryItem = getInventoryItem(static_cast<slots_t>(index));
 	if (inventoryItem && (!inventoryItem->isStackable() || inventoryItem->getID() != item->getID())) {
 		if (!getBoolean(ConfigManager::CLASSIC_EQUIPMENT_SLOTS)) {
-			const Cylinder* cylinder = item->getTopParent();
-			if (cylinder && (dynamic_cast<const DepotChest*>(cylinder) || dynamic_cast<const Player*>(cylinder))) {
-				return RETURNVALUE_NEEDEXCHANGE;
+			if (const auto topParent = item->getTopParent()) {
+				if (dynamic_cast<const DepotChest*>(topParent) || dynamic_cast<const Player*>(topParent)) {
+					return RETURNVALUE_NEEDEXCHANGE;
+				}
 			}
 			return RETURNVALUE_NOTENOUGHROOM;
 		}
@@ -2416,8 +2417,7 @@ ReturnValue Player::queryAdd(int32_t index, const Thing& thing, uint32_t count, 
 	return ret;
 }
 
-ReturnValue Player::queryMaxCount(int32_t index, const Thing& thing, uint32_t count, uint32_t& maxQueryCount,
-		uint32_t flags) const {
+ReturnValue Player::queryMaxCount(int32_t index, const Thing& thing, uint32_t count, uint32_t& maxQueryCount, uint32_t flags) const {
 	const Item* item = thing.getItem();
 	if (!item) {
 		maxQueryCount = 0;
@@ -2513,11 +2513,10 @@ ReturnValue Player::queryRemove(const Thing& thing, uint32_t count, uint32_t fla
 	return RETURNVALUE_NOERROR;
 }
 
-Cylinder* Player::queryDestination(int32_t& index, const Thing& thing, Item** destItem,
-		uint32_t& flags) {
-	if (index == 0 /*drop to capacity window*/ || index == INDEX_WHEREEVER) {
-		*destItem = nullptr;
+Thing* Player::queryDestination(int32_t& index, const Thing& thing, Item** destItem, uint32_t& flags) {
+	*destItem = nullptr;
 
+	if (index == 0 /*drop to capacity window*/ || index == INDEX_WHEREEVER) {
 		const Item* item = thing.getItem();
 		if (!item) {
 			return this;
@@ -2622,19 +2621,24 @@ Cylinder* Player::queryDestination(int32_t& index, const Thing& thing, Item** de
 		return this;
 	}
 
-	Thing* destThing = getThing(index);
-	if (destThing) {
-		*destItem = destThing->getItem();
+	const auto destThing = getThing(index);
+	if (!destThing) {
+		return this;
 	}
 
-	Cylinder* subCylinder = dynamic_cast<Cylinder*>(destThing);
-	if (subCylinder) {
-		index = INDEX_WHEREEVER;
-		*destItem = nullptr;
-		return subCylinder;
+	const auto item = destThing->getItem();
+	if (!item) {
+		return this;
 	}
 
-	return this;
+	const auto receiver = item->getReceiver();
+	if (!receiver) {
+		*destItem = item;
+		return this;
+	}
+
+	index = INDEX_WHEREEVER;
+	return receiver;
 }
 
 void Player::addThing(int32_t index, Thing* thing) {
@@ -2753,14 +2757,6 @@ int32_t Player::getThingIndex(const Thing* thing) const {
 	return -1;
 }
 
-size_t Player::getFirstIndex() const {
-	return CONST_SLOT_FIRST;
-}
-
-size_t Player::getLastIndex() const {
-	return CONST_SLOT_LAST + 1;
-}
-
 uint32_t Player::getItemTypeCount(uint16_t itemId, int32_t subType /*= -1*/) const {
 	uint32_t count = 0;
 	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
@@ -2859,7 +2855,7 @@ Thing* Player::getThing(size_t index) const {
 	return nullptr;
 }
 
-void Player::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, cylinderlink_t link /*= LINK_OWNER*/) {
+void Player::postAddNotification(Thing* thing, const Thing* oldParent, int32_t index, ReceiverLink_t link /*= LINK_OWNER*/) {
 	if (link == LINK_OWNER) {
 		//calling movement scripts
 		g_moveEvents->onPlayerEquip(this, thing->getItem(), static_cast<slots_t>(index), false);
@@ -2919,7 +2915,7 @@ void Player::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_
 	}
 }
 
-void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, cylinderlink_t link /*= LINK_OWNER*/) {
+void Player::postRemoveNotification(Thing* thing, const Thing* newParent, int32_t index, ReceiverLink_t link /*= LINK_OWNER*/) {
 	if (link == LINK_OWNER) {
 		//calling movement scripts
 		g_moveEvents->onPlayerDeEquip(this, thing->getItem(), static_cast<slots_t>(index));
@@ -3021,10 +3017,6 @@ bool Player::hasShopItemForSale(uint32_t itemId, uint8_t subType) const {
 	return std::any_of(shopItemList.begin(), shopItemList.end(), [&](const ShopInfo& shopInfo) {
 		return shopInfo.itemId == itemId && (shopInfo.buyPrice != 0 || shopInfo.sellPrice != 0) && (!itemType.isFluidContainer() || shopInfo.subType == subType);
 	});
-}
-
-void Player::internalAddThing(Thing* thing) {
-	internalAddThing(0, thing);
 }
 
 void Player::internalAddThing(uint32_t index, Thing* thing) {

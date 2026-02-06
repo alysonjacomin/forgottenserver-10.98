@@ -442,11 +442,11 @@ class Creature : virtual public Thing {
 		bool registerCreatureEvent(const std::string& name);
 		bool unregisterCreatureEvent(const std::string& name);
 
-		Cylinder* getParent() const override final {
+		Thing* getParent() const override final {
 			return tile;
 		}
-		void setParent(Cylinder* cylinder) override final {
-			tile = static_cast<Tile*>(cylinder);
+		void setParent(Thing* thing) override final {
+			tile = thing->getTile();
 			position = tile->getPosition();
 		}
 

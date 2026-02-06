@@ -764,8 +764,8 @@ namespace events::player {
 		return scriptInterface.callFunction(4);
 	}
 
-	ReturnValue onMoveItem(Player* player, Item* item, uint16_t count, const Position& fromPosition, const Position& toPosition, Cylinder* fromCylinder, Cylinder* toCylinder) {
-		// Player:onMoveItem(item, count, fromPosition, toPosition) or Player.onMoveItem(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
+	ReturnValue onMoveItem(Player* player, Item* item, uint16_t count, const Position& fromPosition, const Position& toPosition, Thing* fromThing, Thing* toThing) {
+		// Player:onMoveItem(item, count, fromPosition, toPosition) or Player.onMoveItem(self, item, count, fromPosition, toPosition, fromThing, toThing)
 		if (playerHandlers.onMoveItem == -1) {
 			return RETURNVALUE_NOERROR;
 		}
@@ -791,8 +791,8 @@ namespace events::player {
 		lua::pushPosition(L, fromPosition);
 		lua::pushPosition(L, toPosition);
 
-		lua::pushCylinder(L, fromCylinder);
-		lua::pushCylinder(L, toCylinder);
+		lua::pushThing(L, fromThing);
+		lua::pushThing(L, toThing);
 
 		ReturnValue returnValue;
 		if (lua::protectedCall(L, 7, 1) != 0) {
@@ -807,8 +807,8 @@ namespace events::player {
 		return returnValue;
 	}
 
-	void onItemMoved(Player* player, Item* item, uint16_t count, const Position& fromPosition, const Position& toPosition, Cylinder* fromCylinder, Cylinder* toCylinder) {
-		// Player:onItemMoved(item, count, fromPosition, toPosition) or Player.onItemMoved(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder)
+	void onItemMoved(Player* player, Item* item, uint16_t count, const Position& fromPosition, const Position& toPosition, Thing* fromThing, Thing* toThing) {
+		// Player:onItemMoved(item, count, fromPosition, toPosition) or Player.onItemMoved(self, item, count, fromPosition, toPosition, fromThing, toThing)
 		if (playerHandlers.onItemMoved == -1) {
 			return;
 		}
@@ -834,8 +834,8 @@ namespace events::player {
 		lua::pushPosition(L, fromPosition);
 		lua::pushPosition(L, toPosition);
 
-		lua::pushCylinder(L, fromCylinder);
-		lua::pushCylinder(L, toCylinder);
+		lua::pushThing(L, fromThing);
+		lua::pushThing(L, toThing);
 
 		scriptInterface.callVoidFunction(7);
 	}

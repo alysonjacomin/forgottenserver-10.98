@@ -4,7 +4,6 @@
 #ifndef FS_TILE_H
 #define FS_TILE_H
 
-#include "cylinder.h"
 #include "item.h"
 #include "tools.h"
 
@@ -130,7 +129,7 @@ class TileItemVector : private ItemVector {
 };
 
 inline constexpr size_t TILE_UPDATE_THRESHOLD = 8;
-class Tile : public Cylinder {
+class Tile : virtual public Thing {
 	public:
 		static Tile& nullptr_tile;
 		Tile(uint16_t x, uint16_t y, uint8_t z) : tilePos(x, y, z) {}
@@ -141,6 +140,13 @@ class Tile : public Cylinder {
 		// non-copyable
 		Tile(const Tile&) = delete;
 		Tile& operator=(const Tile&) = delete;
+
+		Thing* getReceiver() override final {
+			return this;
+		}
+		const Thing* getReceiver() const override final {
+			return this;
+		}
 
 		Tile* getTile() override final {
 			return this;
@@ -232,35 +238,31 @@ class Tile : public Cylinder {
 		int32_t getClientIndexOfCreature(const Player* player, const Creature* creature) const;
 		int32_t getStackposOfItem(const Player* player, const Item* item) const;
 
-		//cylinder implementations
-		ReturnValue queryAdd(int32_t index, const Thing& thing, uint32_t count,
-				uint32_t flags, Creature* actor = nullptr) const override;
-		ReturnValue queryMaxCount(int32_t index, const Thing& thing, uint32_t count,
-				uint32_t& maxQueryCount, uint32_t flags) const override final;
+		ReturnValue queryAdd(int32_t index, const Thing& thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
+		ReturnValue queryMaxCount(int32_t index, const Thing& thing, uint32_t count, uint32_t& maxQueryCount, uint32_t flags) const override;
 		ReturnValue queryRemove(const Thing& thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
 		Tile* queryDestination(int32_t& index, const Thing& thing, Item** destItem, uint32_t& flags) override;
 
-		void addThing(Thing* thing) override final;
+		void addThing(Thing* thing) override { addThing(0, thing); }
 		void addThing(int32_t index, Thing* thing) override;
 
-		void updateThing(Thing* thing, uint16_t itemId, uint32_t count) override final;
-		void replaceThing(uint32_t index, Thing* thing) override final;
+		void updateThing(Thing* thing, uint16_t itemId, uint32_t count) override;
+		void replaceThing(uint32_t index, Thing* thing) override;
 
-		void removeThing(Thing* thing, uint32_t count) override final;
+		void removeThing(Thing* thing, uint32_t count) override;
 
 		bool hasCreature(Creature* creature) const;
 		void removeCreature(Creature* creature);
 
-		int32_t getThingIndex(const Thing* thing) const override final;
-		size_t getFirstIndex() const override final;
-		size_t getLastIndex() const override final;
-		uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override final;
-		Thing* getThing(size_t index) const override final;
+		int32_t getThingIndex(const Thing* thing) const override;
+		size_t getLastIndex() const override { return getThingCount(); }
+		uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override;
+		Thing* getThing(size_t index) const override;
 
-		void postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, cylinderlink_t link = LINK_OWNER) override final;
-		void postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, cylinderlink_t link = LINK_OWNER) override final;
+		void postAddNotification(Thing* thing, const Thing* oldParent, int32_t index, ReceiverLink_t link = LINK_OWNER) override;
+		void postRemoveNotification(Thing* thing, const Thing* newParent, int32_t index, ReceiverLink_t link = LINK_OWNER) override;
 
-		void internalAddThing(Thing* thing) override final;
+		void internalAddThing(Thing* thing) override final { internalAddThing(0, thing); }
 		void internalAddThing(uint32_t index, Thing* thing) override;
 
 		const Position& getPosition() const override final {
@@ -331,8 +333,6 @@ class DynamicTile : public Tile {
 		CreatureVector* makeCreatures() override {
 			return &creatures;
 		}
-
-		using Tile::internalAddThing;
 };
 
 // For blocking tiles, where we very rarely actually have items
@@ -380,8 +380,6 @@ class StaticTile final : public Tile {
 			}
 			return creatures.get();
 		}
-
-		using Tile::internalAddThing;
 };
 
 #endif // FS_TILE_H

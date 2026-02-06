@@ -62,8 +62,8 @@ namespace events::player {
 	void onLookInTrade(Player* player, Player* partner, Item* item, int32_t lookDistance);
 	bool onLookInShop(Player* player, const ItemType* itemType, uint8_t count, const std::string& description);
 	bool onLookInMarket(Player* player, const ItemType* itemType);
-	ReturnValue onMoveItem(Player* player, Item* item, uint16_t count, const Position& fromPosition, const Position& toPosition, Cylinder* fromCylinder, Cylinder* toCylinder);
-	void onItemMoved(Player* player, Item* item, uint16_t count, const Position& fromPosition, const Position& toPosition, Cylinder* fromCylinder, Cylinder* toCylinder);
+	ReturnValue onMoveItem(Player* player, Item* item, uint16_t count, const Position& fromPosition, const Position& toPosition, Thing* fromThing, Thing* toThing);
+	void onItemMoved(Player* player, Item* item, uint16_t count, const Position& fromPosition, const Position& toPosition, Thing* fromThing, Thing* toThing);
 	bool onMoveCreature(Player* player, Creature* creature, const Position& fromPosition, const Position& toPosition);
 	void onReportRuleViolation(Player* player, const std::string& targetName, uint8_t reportType, uint8_t reportReason, const std::string& comment, const std::string& translation);
 	bool onReportBug(Player* player, const std::string& message, const Position& position, uint8_t category);

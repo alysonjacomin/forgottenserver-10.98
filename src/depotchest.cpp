@@ -42,21 +42,19 @@ ReturnValue DepotChest::queryAdd(int32_t index, const Thing& thing, uint32_t cou
 	return Container::queryAdd(index, thing, count, flags, actor);
 }
 
-void DepotChest::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, cylinderlink_t) {
-	Cylinder* parent = getParent();
-	if (parent) {
+void DepotChest::postAddNotification(Thing* thing, const Thing* oldParent, int32_t index, ReceiverLink_t) {
+	if (const auto parent = getParent()) {
 		parent->postAddNotification(thing, oldParent, index, LINK_PARENT);
 	}
 }
 
-void DepotChest::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, cylinderlink_t) {
-	Cylinder* parent = getParent();
-	if (parent) {
+void DepotChest::postRemoveNotification(Thing* thing, const Thing* newParent, int32_t index, ReceiverLink_t) {
+	if (const auto parent = getParent()) {
 		parent->postRemoveNotification(thing, newParent, index, LINK_PARENT);
 	}
 }
 
-Cylinder* DepotChest::getParent() const {
+Thing* DepotChest::getParent() const {
 	const auto parent = Container::getParent();
 	if (parent) {
 		return parent->getParent();

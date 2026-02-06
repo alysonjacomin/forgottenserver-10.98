@@ -4,7 +4,6 @@
 #ifndef FS_ITEM_H
 #define FS_ITEM_H
 
-#include "cylinder.h"
 #include "items.h"
 #include "luascript.h"
 #include "thing.h"
@@ -1026,8 +1025,8 @@ class Item : virtual public Thing {
 			}
 		}
 
-		Cylinder* getTopParent();
-		const Cylinder* getTopParent() const;
+		Thing* getTopParent();
+		const Thing* getTopParent() const;
 		Tile* getTile() override;
 		const Tile* getTile() const override;
 		bool isRemoved() const override {

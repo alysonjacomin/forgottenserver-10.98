@@ -19,13 +19,8 @@ class HouseTile final : public DynamicTile {
 			return this;
 		}
 
-		//cylinder implementations
-		ReturnValue queryAdd(int32_t index, const Thing& thing, uint32_t count,
-				uint32_t flags, Creature* actor = nullptr) const override;
-
-		Tile* queryDestination(int32_t& index, const Thing& thing, Item** destItem,
-				uint32_t& flags) override;
-
+		ReturnValue queryAdd(int32_t index, const Thing& thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
+		Tile* queryDestination(int32_t& index, const Thing& thing, Item** destItem, uint32_t& flags) override;
 		ReturnValue queryRemove(const Thing& thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;
 
 		void addThing(int32_t index, Thing* thing) override;
@@ -34,8 +29,6 @@ class HouseTile final : public DynamicTile {
 		House* getHouse() const {
 			return house;
 		}
-
-		using DynamicTile::internalAddThing;
 
 	private:
 		void updateHouse(Item* item);

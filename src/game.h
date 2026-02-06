@@ -99,9 +99,8 @@ class Game {
 			return worldType;
 		}
 
-		Cylinder* internalGetCylinder(Player* player, const Position& pos) const;
-		Thing* internalGetThing(Player* player, const Position& pos, int32_t index,
-		                        uint32_t spriteId, stackPosType_t type) const;
+		Thing* internalGetThing(Player* player, const Position& pos) const;
+		Thing* internalGetThing(Player* player, const Position& pos, int32_t index, uint32_t spriteId, stackPosType_t type) const;
 		static void internalGetPosition(Item* item, Position& pos, uint8_t& stackpos);
 
 		static std::string getTradeErrorDescription(ReturnValue ret, Item* item);
@@ -233,45 +232,40 @@ class Game {
 		ReturnValue internalMoveCreature(Creature* creature, Direction direction, uint32_t flags = 0);
 		ReturnValue internalMoveCreature(Creature& creature, Tile& toTile, uint32_t flags = 0);
 
-		ReturnValue internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder, int32_t index,
-		                             Item* item, uint32_t count, Item** _moveItem, uint32_t flags = 0, Creature* actor = nullptr, Item* tradeItem = nullptr, const Position* fromPos = nullptr, const Position* toPos = nullptr);
-
-		ReturnValue internalAddItem(Cylinder* toCylinder, Item* item, int32_t index = INDEX_WHEREEVER,
-		                            uint32_t flags = 0, bool test = false);
-		ReturnValue internalAddItem(Cylinder* toCylinder, Item* item, int32_t index,
-		                            uint32_t flags, bool test, uint32_t& remainderCount);
+		ReturnValue internalMoveItem(Thing* fromThing, Thing* toThing, int32_t index, Item* item, uint32_t count, Item** _moveItem, uint32_t flags = 0, Creature* actor = nullptr, Item* tradeItem = nullptr, const Position* fromPos = nullptr, const Position* toPos = nullptr);
+		ReturnValue internalAddItem(Thing* toThing, Item* item, int32_t index = INDEX_WHEREEVER, uint32_t flags = 0, bool test = false);
+		ReturnValue internalAddItem(Thing* toThing, Item* item, int32_t index, uint32_t flags, bool test, uint32_t& remainderCount);
 		ReturnValue internalRemoveItem(Item* item, int32_t count = -1, bool test = false, uint32_t flags = 0);
 
 		ReturnValue internalPlayerAddItem(Player* player, Item* item, bool dropOnMap = true, slots_t slot = CONST_SLOT_WHEREEVER);
 
 		/**
 		  * Find an item of a certain type
-		  * \param cylinder to search the item
+		  * \param thing to search the item
 		  * \param itemId is the item to remove
 		  * \param subType is the extra type an item can have such as charges/fluidtype, default is -1
 			* meaning it's not used
 		  * \param depthSearch if true it will check child containers aswell
 		  * \returns A pointer to the item to an item and nullptr if not found
 		  */
-		Item* findItemOfType(Cylinder* cylinder, uint16_t itemId,
-		                     bool depthSearch = true, int32_t subType = -1) const;
+		Item* findItemOfType(Thing* fromThing, uint16_t itemId, bool depthSearch = true, int32_t subType = -1) const;
 
 		/**
 		  * Remove/Add item(s) with a monetary value
-		  * \param cylinder to remove the money from
+		  * \param fromThing to remove the money from
 		  * \param money is the amount to remove
 		  * \param flags optional flags to modify the default behavior
 		  * \returns true if the removal was successful
 		  */
-		bool removeMoney(Cylinder* cylinder, uint64_t money, uint32_t flags = 0);
+		bool removeMoney(Thing* fromThing, uint64_t money, uint32_t flags = 0);
 
 		/**
 		  * Add item(s) with monetary value
-		  * \param cylinder which will receive money
+		  * \param thing which will receive money
 		  * \param money the amount to give
 		  * \param flags optional flags to modify default behavior
 		  */
-		void addMoney(Cylinder* cylinder, uint64_t money, uint32_t flags = 0);
+		void addMoney(Thing* thing, uint64_t money, uint32_t flags = 0);
 
 		/**
 		  * Transform one item to another type/count
@@ -324,13 +318,11 @@ class Game {
 		void broadcastMessage(const std::string& text, MessageClasses type) const;
 
 		//Implementation of player invoked events
-		void playerMoveThing(uint32_t playerId, const Position& fromPos, uint16_t spriteId, uint8_t fromStackPos,
-		                     const Position& toPos, uint8_t count);
+		void playerMoveThing(uint32_t playerId, const Position& fromPos, uint16_t spriteId, uint8_t fromStackPos, const Position& toPos, uint8_t count);
 		void playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, const Position& movingCreatureOrigPos, const Position& toPos);
 		void playerMoveCreature(Player* player, Creature* movingCreature, const Position& movingCreatureOrigPos, Tile* toTile);
 		void playerMoveItemByPlayerID(uint32_t playerId, const Position& fromPos, uint16_t spriteId, uint8_t fromStackPos, const Position& toPos, uint8_t count);
-		void playerMoveItem(Player* player, const Position& fromPos,
-		                    uint16_t spriteId, uint8_t fromStackPos, const Position& toPos, uint8_t count, Item* item, Cylinder* toCylinder);
+		void playerMoveItem(Player* player, const Position& fromPos, uint16_t spriteId, uint8_t fromStackPos, const Position& toPos, uint8_t count, Item* item, Thing* toThing);
 		void playerEquipItem(uint32_t playerId, uint16_t spriteId);
 		void playerMove(uint32_t playerId, Direction direction);
 		void playerCreatePrivateChannel(uint32_t playerId);
@@ -345,8 +337,7 @@ class Game {
 		void playerReceivePingBack(uint32_t playerId);
 		void playerAutoWalk(uint32_t playerId, const std::vector<Direction>& listDir);
 		void playerStopAutoWalk(uint32_t playerId);
-		void playerUseItemEx(uint32_t playerId, const Position& fromPos, uint8_t fromStackPos,
-		                     uint16_t fromSpriteId, const Position& toPos, uint8_t toStackPos, uint16_t toSpriteId);
+		void playerUseItemEx(uint32_t playerId, const Position& fromPos, uint8_t fromStackPos, uint16_t fromSpriteId, const Position& toPos, uint8_t toStackPos, uint16_t toSpriteId);
 		void playerUseItem(uint32_t playerId, const Position& pos, uint8_t stackPos, uint8_t index, uint16_t spriteId);
 		void playerUseWithCreature(uint32_t playerId, const Position& fromPos, uint8_t fromStackPos, uint32_t creatureId, uint16_t spriteId);
 		void playerCloseContainer(uint32_t playerId, uint8_t cid);
@@ -358,14 +349,11 @@ class Game {
 		void playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_t index);
 		void playerUpdateHouseWindow(uint32_t playerId, uint8_t listId, uint32_t windowTextId, const std::string& text);
 		void playerWrapItem(uint32_t playerId, const Position& position, uint8_t stackPos, const uint16_t spriteId);
-		void playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t stackPos,
-		                        uint32_t tradePlayerId, uint16_t spriteId);
+		void playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t stackPos, uint32_t tradePlayerId, uint16_t spriteId);
 		void playerAcceptTrade(uint32_t playerId);
 		void playerLookInTrade(uint32_t playerId, bool lookAtCounterOffer, uint8_t index);
-		void playerPurchaseItem(uint32_t playerId, uint16_t spriteId, uint8_t count, uint8_t amount,
-		                        bool ignoreCap = false, bool inBackpacks = false);
-		void playerSellItem(uint32_t playerId, uint16_t spriteId, uint8_t count,
-		                    uint8_t amount, bool ignoreEquipped = false);
+		void playerPurchaseItem(uint32_t playerId, uint16_t spriteId, uint8_t count, uint8_t amount, bool ignoreCap = false, bool inBackpacks = false);
+		void playerSellItem(uint32_t playerId, uint16_t spriteId, uint8_t count, uint8_t amount, bool ignoreEquipped = false);
 		void playerCloseShop(uint32_t playerId);
 		void playerLookInShop(uint32_t playerId, uint16_t spriteId, uint8_t count);
 		void playerCloseTrade(uint32_t playerId);
@@ -382,8 +370,7 @@ class Game {
 		void playerRequestOutfit(uint32_t playerId);
 		void playerShowQuestLog(uint32_t playerId);
 		void playerShowQuestLine(uint32_t playerId, uint16_t questId);
-		void playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type,
-		               const std::string& receiver, const std::string& text);
+		void playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, const std::string& receiver, const std::string& text);
 		void playerChangeOutfit(uint32_t playerId, Outfit_t outfit);
 		void playerInviteToParty(uint32_t playerId, uint32_t invitedId);
 		void playerJoinParty(uint32_t playerId, uint32_t leaderId);
