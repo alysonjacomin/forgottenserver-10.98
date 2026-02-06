@@ -126,7 +126,7 @@ class Npc final : public Creature {
 			return CREATURETYPE_NPC;
 		}
 
-		uint8_t getSpeechBubble() const override {
+		uint8_t getSpeechBubble() const {
 			return speechBubble;
 		}
 		void setSpeechBubble(const uint8_t bubble) {
