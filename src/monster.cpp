@@ -109,8 +109,20 @@ void Monster::onAttackedCreatureDisappear(bool) {
 	attackTicks = 0;
 }
 
-void Monster::onCreatureAppear(Creature* creature, bool isLogin) {
-	Creature::onCreatureAppear(creature, isLogin);
+void Monster::onCreatureAppear(Creature* creature, bool, MagicEffectClasses) {
+	if (creature == this) {
+		setLastPosition(getPosition());
+
+		// We just spawned lets look around to see who is there.
+		if (isSummon()) {
+			isMasterInRange = canSee(getMaster()->getPosition());
+		}
+
+		updateTargetList();
+		updateIdleStatus();
+	} else {
+		onCreatureEnter(creature);
+	}
 
 	if (mType->info.creatureAppearEvent != -1) {
 		// onCreatureAppear(self, creature)
@@ -135,18 +147,6 @@ void Monster::onCreatureAppear(Creature* creature, bool isLogin) {
 		if (scriptInterface->callFunction(2)) {
 			return;
 		}
-	}
-
-	if (creature == this) {
-		//We just spawned lets look around to see who is there.
-		if (isSummon()) {
-			isMasterInRange = canSee(getMaster()->getPosition());
-		}
-
-		updateTargetList();
-		updateIdleStatus();
-	} else {
-		onCreatureEnter(creature);
 	}
 }
 

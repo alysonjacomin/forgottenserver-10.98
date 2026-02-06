@@ -404,10 +404,9 @@ class Creature : virtual public Thing {
 		virtual void onUpdateTileItem(const Tile*, const Position&, const Item*, const ItemType&, const Item*, const ItemType&) {}
 		virtual void onRemoveTileItem(const Tile*, const Position&, const ItemType&, const Item*) {}
 
-		virtual void onCreatureAppear(Creature* creature, bool isLogin);
+		virtual void onCreatureAppear(Creature*, bool, MagicEffectClasses) {}
 		virtual void onRemoveCreature(Creature* creature, bool isLogout);
-		virtual void onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos,
-		                            const Tile* oldTile, const Position& oldPos, bool teleport);
+		virtual void onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos, const Tile* oldTile, const Position& oldPos, bool teleport);
 
 		virtual void onAttackedCreatureDisappear(bool) {}
 		virtual void onFollowCreatureDisappear(bool) {}

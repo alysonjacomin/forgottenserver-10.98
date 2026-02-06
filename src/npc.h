@@ -175,10 +175,9 @@ class Npc final : public Creature {
 	private:
 		explicit Npc(const std::string& name);
 
-		void onCreatureAppear(Creature* creature, bool isLogin) override;
+		void onCreatureAppear(Creature* creature, bool, MagicEffectClasses) override;
 		void onRemoveCreature(Creature* creature, bool isLogout) override;
-		void onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos,
-		                            const Tile* oldTile, const Position& oldPos, bool teleport) override;
+		void onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos, const Tile* oldTile, const Position& oldPos, bool teleport) override;
 
 		void onCreatureSay(Creature* creature, SpeakClasses type, const std::string& text) override;
 		void onThink(uint32_t interval) override;

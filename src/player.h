@@ -723,7 +723,7 @@ class Player final : public Creature {
 				client->sendChannelEvent(channelId, playerName, channelEvent);
 			}
 		}
-		void sendCreatureAppear(const Creature* creature, const Position& pos, MagicEffectClasses magicEffect = CONST_ME_NONE) {
+		void sendAddCreature(const Creature* creature, const Position& pos, MagicEffectClasses magicEffect = CONST_ME_NONE) {
 			if (client) {
 				client->sendAddCreature(creature, pos, creature->getTile()->getClientIndexOfCreature(this, creature), magicEffect);
 			}
@@ -858,15 +858,12 @@ class Player final : public Creature {
 		}
 
 		//event methods
-		void onUpdateTileItem(const Tile* tile, const Position& pos, const Item* oldItem,
-		                              const ItemType& oldType, const Item* newItem, const ItemType& newType) override;
-		void onRemoveTileItem(const Tile* tile, const Position& pos, const ItemType& iType,
-		                              const Item* item) override;
+		void onUpdateTileItem(const Tile* tile, const Position& pos, const Item* oldItem, const ItemType& oldType, const Item* newItem, const ItemType& newType) override;
+		void onRemoveTileItem(const Tile* tile, const Position& pos, const ItemType& iType, const Item* item) override;
 
-		void onCreatureAppear(Creature* creature, bool isLogin) override;
+		void onCreatureAppear(Creature* creature, bool isLogin, MagicEffectClasses magicEffect) override;
 		void onRemoveCreature(Creature* creature, bool isLogout) override;
-		void onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos,
-		                            const Tile* oldTile, const Position& oldPos, bool teleport) override;
+		void onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos, const Tile* oldTile, const Position& oldPos, bool teleport) override;
 
 		void onEquipInventory();
 		void onDeEquipInventory();
@@ -887,6 +884,27 @@ class Player final : public Creature {
 		void onUpdateInventoryItem(Item* oldItem, Item* newItem);
 		void onRemoveInventoryItem(Item* item);
 
+
+		void sendVIPEntries() const {
+			if (client) {
+				client->sendVIPEntries();
+			}
+		}
+		void sendWorldLight(LightInfo lightInfo) const {
+			if (client) {
+				client->sendWorldLight(lightInfo);
+			}
+		}
+		void sendMapDescription() const {
+			if (client) {
+				client->sendMapDescription(position);
+			}
+		}
+		void sendPendingStateEntered() const {
+			if (client) {
+				client->sendPendingStateEntered();
+			}
+		}
 		void sendCancelMessage(const std::string& msg) const {
 			if (client) {
 				client->sendTextMessage(TextMessage(MESSAGE_STATUS_SMALL, msg));

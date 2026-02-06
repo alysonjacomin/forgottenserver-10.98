@@ -977,10 +977,15 @@ void Player::onRemoveTileItem(const Tile* tile, const Position& pos, const ItemT
 	}
 }
 
-void Player::onCreatureAppear(Creature* creature, bool isLogin) {
-	Creature::onCreatureAppear(creature, isLogin);
+void Player::onCreatureAppear(Creature* creature, bool isLogin, MagicEffectClasses magicEffect) {
+	if (creature != this) {
+		sendAddCreature(creature, creature->getPosition(), magicEffect);
+		return;
+	}
 
-	if (isLogin && creature == this) {
+	setLastPosition(getPosition());
+
+	if (isLogin) {
 		sendItems();
 
 		onEquipInventory();
@@ -992,8 +997,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin) {
 
 		updateRegeneration();
 
-		BedItem* bed = g_game.getBedBySleeper(guid);
-		if (bed) {
+		if (BedItem* bed = g_game.getBedBySleeper(guid)) {
 			bed->wakeUp(this);
 		}
 
@@ -1005,12 +1009,10 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin) {
 			guild->addMember(this);
 		}
 
-		int32_t offlineTime;
+		int32_t offlineTime = 0;
 		if (getLastLogout() != 0) {
-			// Not counting more than 21 days to prevent overflow when multiplying with 1000 (for milliseconds).
+			// Cap offline time to 21 days to avoid integer overflow when converting to milliseconds
 			offlineTime = std::min<int32_t>(time(nullptr) - getLastLogout(), 86400 * 21);
-		} else {
-			offlineTime = 0;
 		}
 
 		for (Condition* condition : getMuteConditions()) {
@@ -1021,7 +1023,35 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin) {
 		}
 
 		g_game.checkPlayersRecord();
+
 		IOLoginData::updateOnlineStatus(guid, true);
+
+		if (!g_creatureEvents->playerLogin(this)) {
+			kickPlayer(true);
+			return;
+		}
+	}
+
+	sendPendingStateEntered();
+	sendEnterWorld();
+	sendMapDescription();
+
+	for (int i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
+		auto slot = static_cast<slots_t>(i);
+		sendInventoryItem(slot, getInventoryItem(slot));
+	}
+	sendInventoryItem(CONST_SLOT_STORE_INBOX, getStoreInbox()->getItem());
+
+	sendStats();
+	sendSkills();
+	sendWorldLight(g_game.getWorldLightInfo());
+	sendCreatureLight(this);
+	sendVIPEntries();
+	sendBasicData();
+	sendIcons();
+
+	if (magicEffect != CONST_ME_NONE) {
+		sendMagicEffect(getPosition(), magicEffect);
 	}
 }
 
@@ -2904,12 +2934,6 @@ void Player::postAddNotification(Thing* thing, const Thing* oldParent, int32_t i
 
 			for (const Container* container : containers) {
 				autoCloseContainers(container);
-			}
-
-			if (!oldParent && link == LINK_NEAR) {
-				if (!g_creatureEvents->playerLogin(this)) {
-					kickPlayer(true);
-				}
 			}
 		}
 	}
