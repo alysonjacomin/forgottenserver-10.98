@@ -252,58 +252,68 @@ void Item::setID(uint16_t newid) {
 	}
 }
 
-Cylinder* Item::getTopParent() {
-	Cylinder* aux = getParent();
-	Cylinder* prevaux = dynamic_cast<Cylinder*>(this);
-	if (!aux) {
-		return prevaux;
+Thing* Item::getTopParent() {
+	auto parent = getParent();
+	auto receiver = getReceiver();
+	if (!parent) {
+		return receiver;
 	}
 
-	while (aux->hasParent()) {
-		prevaux = aux;
-		aux = aux->getParent();
+	while (parent->hasParent()) {
+		receiver = parent;
+		parent = parent->getParent();
 	}
 
-	if (prevaux) {
-		return prevaux;
+	if (receiver) {
+		return receiver;
 	}
-	return aux;
+
+	return parent;
 }
 
-const Cylinder* Item::getTopParent() const {
-	const Cylinder* aux = getParent();
-	const Cylinder* prevaux = dynamic_cast<const Cylinder*>(this);
-	if (!aux) {
-		return prevaux;
+const Thing* Item::getTopParent() const {
+	auto parent = getParent();
+	auto receiver = getReceiver();
+	if (!parent) {
+		return receiver;
 	}
 
-	while (aux->hasParent()) {
-		prevaux = aux;
-		aux = aux->getParent();
+	while (parent->hasParent()) {
+		receiver = parent;
+		parent = parent->getParent();
 	}
 
-	if (prevaux) {
-		return prevaux;
+	if (receiver) {
+		return receiver;
 	}
-	return aux;
+
+	return parent;
 }
 
 Tile* Item::getTile() {
-	Cylinder* cylinder = getTopParent();
-	//get root cylinder
-	if (cylinder && cylinder->hasParent()) {
-		cylinder = cylinder->getParent();
+	auto topParent = getTopParent();
+	if (!topParent) {
+		return nullptr;
 	}
-	return dynamic_cast<Tile*>(cylinder);
+
+	if (const auto parent = topParent->getParent()) {
+		topParent = parent;
+	}
+
+	return topParent->getTile();
 }
 
 const Tile* Item::getTile() const {
-	const Cylinder* cylinder = getTopParent();
-	//get root cylinder
-	if (cylinder && cylinder->hasParent()) {
-		cylinder = cylinder->getParent();
+	auto topParent = getTopParent();
+	if (!topParent) {
+		return nullptr;
 	}
-	return dynamic_cast<const Tile*>(cylinder);
+
+	if (const auto parent = topParent->getParent()) {
+		topParent = parent;
+	}
+
+	return topParent->getTile();
 }
 
 uint16_t Item::getSubType() const {
@@ -319,7 +329,16 @@ uint16_t Item::getSubType() const {
 }
 
 const Player* Item::getHoldingPlayer() const {
-	return dynamic_cast<const Player*>(getTopParent());
+	const auto topParent = getTopParent();
+	if (!topParent) {
+		return nullptr;
+	}
+
+	if (const auto creature = topParent->getCreature()) {
+		return creature->getPlayer();
+	}
+
+	return nullptr;
 }
 
 void Item::setSubType(uint16_t n) {
@@ -859,8 +878,7 @@ uint32_t Item::getWeight() const {
 	return weight;
 }
 
-std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
-                                const Item* item /*= nullptr*/, int32_t subType /*= -1*/, bool addArticle /*= true*/) {
+std::string Item::getDescription(const ItemType& it, int32_t lookDistance, const Item* item /*= nullptr*/, int32_t subType /*= -1*/, bool addArticle /*= true*/) {
 	const std::string* text = nullptr;
 
 	std::ostringstream s;

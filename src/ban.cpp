@@ -18,8 +18,8 @@ namespace IOBan {
 			return std::nullopt;
 		}
 
-		int64_t expiresAt = result->getNumber<int64_t>("expires_at");
-		if (expiresAt != 0 && time(nullptr) > expiresAt) {
+		time_t expiresAt = result->getNumber<time_t>("expires_at");
+		if (expiresAt != 0 && std::chrono::system_clock::now() > std::chrono::system_clock::from_time_t(expiresAt)) {
 			// Move the ban to history if it has expired
 			g_databaseTasks.addTask(fmt::format("INSERT INTO `account_ban_history` (`account_id`, `reason`, `banned_at`, `expired_at`, `banned_by`) VALUES ({:d}, {:s}, {:d}, {:d}, {:d})", accountId, db.escapeString(result->getString("reason")), result->getNumber<time_t>("banned_at"), expiresAt, result->getNumber<uint32_t>("banned_by")));
 			g_databaseTasks.addTask(fmt::format("DELETE FROM `account_bans` WHERE `account_id` = {:d}", accountId));
@@ -50,8 +50,8 @@ namespace IOBan {
 			return std::nullopt;
 		}
 
-		int64_t expiresAt = result->getNumber<int64_t>("expires_at");
-		if (expiresAt != 0 && time(nullptr) > expiresAt) {
+		time_t expiresAt = result->getNumber<time_t>("expires_at");
+		if (expiresAt != 0 && std::chrono::system_clock::now() > std::chrono::system_clock::from_time_t(expiresAt)) {
 			g_databaseTasks.addTask(fmt::format("DELETE FROM `ip_bans` WHERE `ip` = INET6_ATON('{:s}')", clientIP.to_string()));
 			return std::nullopt;
 		}

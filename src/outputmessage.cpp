@@ -20,25 +20,25 @@ namespace {
 	// client connects/disconnects)
 	std::vector<Protocol_ptr> bufferedProtocols;
 
-	void sendAll(const std::vector<Protocol_ptr>& bufferedProtocol);
+	void sendAll(const std::vector<Protocol_ptr>& protocols);
 
-	void scheduleSendAll(const std::vector<Protocol_ptr>& bufferedProtocol) {
+	void scheduleSendAll(const std::vector<Protocol_ptr>& protocols) {
 		g_scheduler.addEvent(createSchedulerTask(OUTPUTMESSAGE_AUTOSEND_DELAY.count(), [&]() {
-			sendAll(bufferedProtocol);
+			sendAll(protocols);
 		}));
 	}
 
-	void sendAll(const std::vector<Protocol_ptr>& bufferedProtocol) {
+	void sendAll(const std::vector<Protocol_ptr>& protocols) {
 		//dispatcher thread
-		for (auto& protocol : bufferedProtocol) {
+		for (auto& protocol : protocols) {
 			auto& msg = protocol->getCurrentBuffer();
 			if (msg) {
 				protocol->send(std::move(msg));
 			}
 		}
 
-		if (!bufferedProtocol.empty()) {
-			scheduleSendAll(bufferedProtocol);
+		if (!protocols.empty()) {
+			scheduleSendAll(protocols);
 		}
 	}
 

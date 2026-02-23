@@ -1192,3 +1192,15 @@ bool RuneSpell::executeCastSpell(Creature* creature, const LuaVariant& var, bool
 
 	return scriptInterface->callFunction(3);
 }
+
+bool RuneSpell::canUse(const Player* player) const {
+	if (player->hasFlag(PlayerFlag_CannotUseSpells)) {
+		return false;
+	}
+
+	if (player->hasFlag(PlayerFlag_IgnoreSpellCheck)) {
+		return true;
+	}
+
+	return hasVocationSpellMap(player->getVocationId());
+}

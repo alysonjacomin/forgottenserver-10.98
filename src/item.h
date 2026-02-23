@@ -4,7 +4,6 @@
 #ifndef FS_ITEM_H
 #define FS_ITEM_H
 
-#include "cylinder.h"
 #include "items.h"
 #include "luascript.h"
 #include "thing.h"
@@ -438,7 +437,9 @@ class ItemAttributes {
 			if (hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
 				removeCustomAttribute(key);
 			} else {
-				getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom = new CustomAttributeMap();
+				if (!getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom) {
+					getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom = new CustomAttributeMap();
+				}
 			}
 			auto lowercaseKey = boost::algorithm::to_lower_copy(std::string{key});
 			getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom->emplace(lowercaseKey, value);
@@ -448,7 +449,9 @@ class ItemAttributes {
 			if (hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
 				removeCustomAttribute(key);
 			} else {
-				getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom = new CustomAttributeMap();
+				if (!getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom) {
+					getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom = new CustomAttributeMap();
+				}
 			}
 			auto lowercaseKey = boost::algorithm::to_lower_copy(std::string{key});
 			getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom->emplace(lowercaseKey, value);
@@ -537,6 +540,12 @@ class Item : virtual public Thing {
 		}
 		const Item* getItem() const override final {
 			return this;
+		}
+		virtual Container* getContainer() {
+			return nullptr;
+		}
+		virtual const Container* getContainer() const {
+			return nullptr;
 		}
 		virtual Teleport* getTeleport() {
 			return nullptr;
@@ -788,7 +797,7 @@ class Item : virtual public Thing {
 		static std::string getNameDescription(const ItemType& it, const Item* item = nullptr, int32_t subType = -1, bool addArticle = true);
 		static std::string getWeightDescription(const ItemType& it, uint32_t weight, uint32_t count = 1);
 
-		std::string getDescription(int32_t lookDistance) const override final;
+		std::string getDescription(int32_t lookDistance) const;
 		std::string getNameDescription() const;
 		std::string getWeightDescription() const;
 
@@ -1016,26 +1025,15 @@ class Item : virtual public Thing {
 			}
 		}
 
-		bool hasParent() const override {
-			return getParent();
-		}
-		Cylinder* getParent() const override {
-			return parent;
-		}
-		void setParent(Cylinder* cylinder) override {
-			parent = cylinder;
-		}
-		Cylinder* getTopParent();
-		const Cylinder* getTopParent() const;
+		Thing* getTopParent();
+		const Thing* getTopParent() const;
 		Tile* getTile() override;
 		const Tile* getTile() const override;
 		bool isRemoved() const override {
-			return !parent || parent->isRemoved();
+			return !getParent() || getParent()->isRemoved();
 		}
 
 	protected:
-		Cylinder* parent = nullptr;
-
 		uint16_t id; // the same id as in ItemType
 
 	private:

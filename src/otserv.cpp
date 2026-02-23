@@ -235,7 +235,7 @@ namespace {
 		g_game.map.houses.payHouses(rentPeriod);
 
 		IOMarket::checkExpiredOffers();
-		IOMarket::getInstance().updateStatistics();
+		IOMarket::updateStatistics();
 
 		std::cout << ">> Loaded all modules, server starting up..." << std::endl;
 
